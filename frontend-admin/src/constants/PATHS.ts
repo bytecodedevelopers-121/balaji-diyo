@@ -1,0 +1,87 @@
+export const PATHS = {
+  HOME: "/",
+  LOGIN: "/login",
+  FORBIDDEN: "/403",
+  NOT_FOUND: "/404",
+
+  DASHBOARD: "/dashboard",
+  PROFILE: "/profile",
+  CHANGE_PASSWORD: "/change-password",
+
+  USERS: "/users",
+  USER_CREATE: "/users/create",
+  USER_DETAIL: (id: string) => `/users/${id}`,
+
+  ROLES: "/roles",
+  ROLE_CREATE: "/roles/create",
+  ROLE_DETAIL: (id: string) => `/roles/${id}`,
+
+  PAGES: "/pages",
+  PAGE_CREATE: "/pages/create",
+  PAGE_DETAIL: (id: string) => `/pages/${id}`,
+
+  CATEGORY_TYPES: "/category-types",
+  CATEGORIES: "/categories",
+  TAGS: "/tags",
+
+  BLOG_AUTHORS: "/blog-authors",
+  BLOGS: "/blogs",
+  BLOG_CREATE: "/blogs/create",
+  BLOG_DETAIL: (id: string) => `/blogs/${id}`,
+  BLOG_COMMENTS: "/blog-comments",
+
+  CONTACTS: "/contacts",
+  MEDIA: "/media",
+
+  FAQS: "/faqs",
+  GROUP_FAQS: "/group-faqs",
+
+  PLACES: "/places",
+  PLACE_CREATE: "/places/create",
+  PLACE_DETAIL: (id: string) => `/places/${id}`,
+
+  GALLERY_ALBUMS: "/gallery-albums",
+  GALLERY_ALBUM_CREATE: "/gallery-albums/create",
+  GALLERY_ALBUM_DETAIL: (id: string) => `/gallery-albums/${id}`,
+
+  TEAM_MEMBERS: "/team-members",
+  TEAM_MEMBER_CREATE: "/team-members/create",
+  TEAM_MEMBER_DETAIL: (id: string) => `/team-members/${id}`,
+
+  COST_CATEGORIES: "/cost-categories",
+  COMPANY_DOCUMENTS: "/company-documents",
+  COMPANY_DOCUMENT_CREATE: "/company-documents/create",
+  COMPANY_DOCUMENT_DETAIL: (id: string) => `/company-documents/${id}`,
+
+  SERVICES: "/services",
+  SERVICE_CREATE: "/services/create",
+  SERVICE_DETAIL: (id: string) => `/services/${id}`,
+
+  TESTIMONIALS: "/testimonials",
+  TESTIMONIAL_CREATE: "/testimonials/create",
+  TESTIMONIAL_DETAIL: (id: string) => `/testimonials/${id}`,
+
+  TRIP_INFOS: "/trip-infos",
+  STORY_AUTHORS: "/story-authors",
+  STORIES: "/stories",
+  STORY_CREATE: "/stories/create",
+  STORY_DETAIL: (id: string) => `/stories/${id}`,
+
+  PACKAGES: "/packages",
+  PACKAGE_CREATE: "/packages/create",
+  PACKAGE_DETAIL: (id: string) => `/packages/${id}`,
+  TRIP_MAPS: "/trip-maps",
+  TRIP_MAP_CREATE: "/trip-maps/create",
+  TRIP_MAP_DETAIL: (id: string) => `/trip-maps/${id}`,
+
+  BOOKINGS: "/bookings",
+  CUSTOM_BOOKINGS: "/custom-bookings",
+  PAYMENTS: "/payments",
+
+  MENU_TYPES: "/menu-types",
+  MENU_ITEMS: (typeId: string) => `/menu-items/${typeId}`,
+
+  GLOBAL_SETTINGS: "/global-settings",
+  REDIRECTS: "/redirects",
+  ACTIVITY_LOG: "/activity-log",
+} as const;

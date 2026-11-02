@@ -1,0 +1,1 @@
+export { ResponsibleTourismSection } from "./ResponsibleTourismSection";

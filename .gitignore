@@ -1,0 +1,54 @@
+# --- Secrets: never commit ---
+**/.env
+**/.env.*
+!**/.env.example
+
+# --- Excluded projects ---
+/flamingo-base/
+/react-dashboard/
+
+# --- Laravel (flamingo-base) ---
+flamingo-base/vendor/
+flamingo-base/node_modules/
+flamingo-base/storage/*.key
+flamingo-base/storage/app/*
+!flamingo-base/storage/app/public
+!flamingo-base/storage/app/.gitignore
+flamingo-base/storage/framework/cache/*
+flamingo-base/storage/framework/sessions/*
+flamingo-base/storage/framework/testing/*
+flamingo-base/storage/framework/views/*
+flamingo-base/storage/logs/*
+flamingo-base/public/hot
+flamingo-base/public/storage
+flamingo-base/.phpunit.result.cache
+flamingo-base/db.log
+
+# --- Node backend ---
+backend/node_modules/
+backend/dist/
+backend/build/
+backend/uploads/
+!backend/uploads/public/.gitkeep
+!backend/uploads/private/.gitkeep
+backend/tsconfig.tsbuildinfo
+backend/db-backups/
+
+# --- React apps ---
+react-dashboard/node_modules/
+react-front/node_modules/
+**/node_modules/
+
+# --- OS / editor ---
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+/*.sql
+/*.zip
+
+# --- DB backups: local only ---
+/manpower_boundless_backup.dump

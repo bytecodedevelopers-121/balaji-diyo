@@ -1,0 +1,1 @@
+export { BookingTermsSection } from "./BookingTermsSection";

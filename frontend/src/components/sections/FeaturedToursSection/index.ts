@@ -1,0 +1,1 @@
+export { FeaturedToursSection } from "./FeaturedToursSection";

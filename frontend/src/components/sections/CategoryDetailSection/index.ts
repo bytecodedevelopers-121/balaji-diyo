@@ -1,0 +1,1 @@
+export { CategoryDetailSection } from "./CategoryDetailSection";

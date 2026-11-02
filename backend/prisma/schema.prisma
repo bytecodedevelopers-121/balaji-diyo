@@ -1,0 +1,1391 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// =====================================================================
+// DRAFT SCHEMA — derived from flamingo-base (Laravel) Eloquent models,
+// controller validate() rules, and controller property-assignment code
+// (the code that actually writes to the live DB). No SQL dump used yet.
+// Reconcile against the real dump/DB introspection when available —
+// especially exact column types/precision, indexes, and any columns no
+// current controller path touches. See backend/CLAUDE.md for layer
+// conventions.
+//
+// Modernization decisions made vs. the legacy Laravel schema (flagged
+// inline where they occur):
+//  - Avatar/Banner/SingleBanner/CarouselContent/FeaturedMedia/Reel were
+//    6 near-duplicate polymorphic "image" tables -> collapsed into one
+//    Media + Attachment(role) pair.
+//  - GlobalSetting's 6 typed-value columns -> collapsed into value + valueType.
+//  - NabilPayment/HblPayment/NicaPayment (+ PACO, env-only) were 3+
+//    near-duplicate gateway tables -> collapsed into one Payment(gateway).
+//  - base_blog_categories (legacy, separate from base_categories) was not
+//    reintroduced — Blog categorization uses the generic Category/CategoryType
+//    taxonomy (type = "blog"), same system Package/TeamMember/GroupFAQ use.
+//  - Prisma has no native polymorphic association (unlike Eloquent morphTo).
+//    Modeled the same way Attachment/Meta/UrlInfo did it originally: an
+//    ownerType (string discriminator) + ownerId pair, resolved in app code
+//    at the repository layer — not a DB-level FK.
+// =====================================================================
+
+// ==================== AUTH ====================
+
+model User {
+  id        String  @id @default(cuid())
+  email     String  @unique
+  password  String
+  firstName String?
+  lastName  String?
+  avatar    String?
+
+  roleId       String
+  role         Role    @relation(fields: [roleId], references: [id])
+  isSuperAdmin Boolean @default(false)
+
+  isActive    Boolean   @default(true)
+  lastLoginAt DateTime?
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("users")
+}
+
+model Role {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  description String?
+  permissions Permission[] @relation("RolePermissions")
+  users       User[]
+  isSystem    Boolean      @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("roles")
+}
+
+model Permission {
+  id      String @id @default(cuid())
+  action  String
+  subject String
+  name    String @unique
+
+  roles Role[] @relation("RolePermissions")
+
+  @@unique([action, subject])
+  @@map("permissions")
+}
+
+// ==================== MEDIA (collapsed from 6 legacy tables) ====================
+
+enum AttachmentRole {
+  AVATAR
+  BANNER
+  SINGLE_BANNER
+  CAROUSEL
+  FEATURED
+  REEL
+  GALLERY
+  MAP
+}
+
+model Media {
+  id        String  @id @default(cuid())
+  mime      String?
+  extension String?
+  altText   String?
+  caption   String?
+  fullName  String
+  fullPath  String
+  thumbName String?
+  thumbPath String?
+  width     Int?
+  height    Int?
+  isActive  Boolean @default(true)
+
+  attachments Attachment[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("media")
+}
+
+// Replaces Attachment + Avatar/Banner/SingleBanner/CarouselContent/FeaturedMedia/Reel.
+// ownerType/ownerId = which entity (category, page, blog, package, ...) this is attached to.
+model Attachment {
+  id      String @id @default(cuid())
+  mediaId String
+  media   Media  @relation(fields: [mediaId], references: [id])
+
+  role      AttachmentRole
+  ownerType String // e.g. "category" | "page" | "blog" | "package" ...
+  ownerId   String
+
+  // Reel-specific (nullable elsewhere)
+  reelUrl          String?
+  shortDescription String?
+  isFeatured       Boolean? @default(false)
+
+  // Carousel-specific
+  contentUrl String?
+
+  sortOrder Int     @default(0)
+  isActive  Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ownerType, ownerId, role])
+  @@map("attachments")
+}
+
+// ==================== SEO / URL (polymorphic, one row per owner) ====================
+
+model Meta {
+  id              String  @id @default(cuid())
+  ownerType       String
+  ownerId         String
+  metaTitle       String?
+  metaKeywords    String?
+  metaDescription String?
+  isActive        Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([ownerType, ownerId])
+  @@map("meta")
+}
+
+model UrlInfo {
+  id        String  @id @default(cuid())
+  ownerType String
+  ownerId   String
+  urlTitle  String?
+  urlSlug   String
+  canonical String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([ownerType, ownerId])
+  @@unique([ownerType, urlSlug])
+  @@map("url_infos")
+}
+
+model RedirectManager {
+  id              String  @id @default(cuid())
+  source          String
+  destination     String
+  isPermanent     Boolean @default(true)
+  redirectCode    String?
+  redirectMessage String?
+  redirectStatus  Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([source])
+  @@map("redirect_manager")
+}
+
+// ==================== ACTIVITY LOG ====================
+
+model ActivityLog {
+  id                String  @id @default(cuid())
+  loggerType        String // "admin" | "user"
+  loggerId          String
+  primaryAction     String?
+  clientAction      String?
+  actionMethod      String?
+  actionData        Json?
+  actionResponse    Json?
+  actionCategory    String?
+  actionCategoryKey String?
+  actionCategoryId  String?
+  actionTitle       String?
+  actionKey         String?
+
+  createdAt DateTime @default(now())
+
+  @@index([loggerType, loggerId])
+  @@map("activity_logs")
+}
+
+// ==================== GLOBAL SETTINGS ====================
+
+enum SettingValueType {
+  STRING
+  TEXT
+  INTEGER
+  DECIMAL
+  BOOLEAN
+  IMAGE
+  FILE
+  DATE
+  JSON
+}
+
+model GlobalCategory {
+  id       String          @id @default(cuid())
+  name     String
+  key      String          @unique
+  settings GlobalSetting[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("global_categories")
+}
+
+model GlobalSetting {
+  id  String @id @default(cuid())
+  key String @unique // global_key
+
+  // The admin form sets a free-text `setting_category` string (keyGroup) —
+  // separate from the model's own `category_id` FK relation below. Both
+  // exist in the legacy code; unclear if keyGroup is still load-bearing or
+  // superseded by categoryId. Kept both pending the dump.
+  keyGroup   String?
+  categoryId String?
+  category   GlobalCategory? @relation(fields: [categoryId], references: [id])
+
+  label       String? // key_label
+  valueType   SettingValueType
+  value       String? // scalar values serialized as string
+  jsonValue   Json? // used when valueType = JSON
+  isProtected Boolean          @default(false)
+  description String?
+  isActive    Boolean          @default(true)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("global_settings")
+}
+
+// ==================== TAXONOMY (shared across Blog/Team/Package/GroupFAQ) ====================
+
+model CategoryType {
+  id         String     @id @default(cuid())
+  key        String     @unique // e.g. "blog", "destination", "grade", "style", "team", "faq-group"
+  name       String
+  categories Category[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("category_types")
+}
+
+model Category {
+  id            String  @id @default(cuid())
+  title         String
+  description   String? @db.Text
+  extraField1   String?
+  categoryOrder Int     @default(0)
+  isActive      Boolean @default(true)
+
+  typeId String
+  type   CategoryType @relation(fields: [typeId], references: [id])
+
+  parentId String?
+  parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryTree")
+
+  blogs     Blog[]       @relation("BlogCategories")
+  members   TeamMember[] @relation("TeamMemberCategories")
+  groupFaqs GroupFAQ[]   @relation("GroupFaqCategories")
+
+  // Package taxonomy: 6 single-value dimension FKs + 2 distinct many-to-many uses
+  destinationPackages    Package[]              @relation("PackageDestination")
+  gradePackages          Package[]              @relation("PackageGrade")
+  stylePackages          Package[]              @relation("PackageStyle")
+  transportationPackages Package[]              @relation("PackageTransportation")
+  mealsPackages          Package[]              @relation("PackageMeals")
+  accommodationPackages  Package[]              @relation("PackageAccommodation")
+  packages               Package[]              @relation("PackageCategories")
+  packageOrders          CategoryPackageOrder[]
+  faqCategoryPackages    Package[]              @relation("PackageFaqCategories")
+
+  // Place taxonomy. Regions intentionally reuse the destination tree so the
+  // same "Everest Region" record can organize packages and attractions.
+  placeRegions PlaceRegion[]
+  typedPlaces  Place[]       @relation("PlaceType")
+
+  // Gallery albums reuse the same destination tree as Place regions/Package
+  // destination, so one "Everest Region" category groups all three.
+  galleryAlbums GalleryAlbum[] @relation("GalleryAlbumDestination")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("categories")
+}
+
+// ==================== MENU ====================
+
+model MenuType {
+  id    String     @id @default(cuid())
+  key   String     @unique
+  name  String
+  items MenuItem[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("menu_types")
+}
+
+model MenuItem {
+  id           String  @id @default(cuid())
+  itemOrder    Int     @default(0)
+  label        String
+  isExternal   Boolean @default(false)
+  externalLink String?
+  urlSegment   String?
+  isActive     Boolean @default(true)
+
+  typeId String
+  type   MenuType @relation(fields: [typeId], references: [id])
+
+  parentId String?
+  parent   MenuItem?  @relation("MenuTree", fields: [parentId], references: [id])
+  children MenuItem[] @relation("MenuTree")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("menu_items")
+}
+
+// ==================== CMS PAGES ====================
+
+model Page {
+  id        String  @id @default(cuid())
+  title     String
+  content   String? @db.Text
+  pageOrder Int     @default(0)
+  isActive  Boolean @default(true)
+
+  parentId String?
+  parent   Page?   @relation("PageTree", fields: [parentId], references: [id])
+  children Page[]  @relation("PageTree")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("pages")
+}
+
+// ==================== TAGS ====================
+
+model Tag {
+  id   String @id @default(cuid())
+  name String @unique
+  slug String @unique
+
+  blogs Blog[] @relation("BlogTags")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tags")
+}
+
+// ==================== BLOG ====================
+
+model BlogAuthor {
+  id          String  @id @default(cuid())
+  name        String
+  salutation  String?
+  email       String  @unique
+  description String? @db.Text
+  isActive    Boolean @default(true)
+
+  blogs Blog[] @relation("BlogAuthors")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("blog_authors")
+}
+
+model Blog {
+  id       String   @id @default(cuid())
+  title    String
+  abstract String?
+  content  String   @db.Text
+  blogDate DateTime
+  isActive Boolean  @default(true)
+
+  authors    BlogAuthor[]  @relation("BlogAuthors")
+  categories Category[]    @relation("BlogCategories")
+  tags       Tag[]         @relation("BlogTags")
+  places     Place[]       @relation("BlogPlaces")
+  comments   BlogComment[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("blogs")
+}
+
+// Public submission, admin-moderated (isActive gates visibility — legacy code
+// defaults new comments to unapproved).
+model BlogComment {
+  id       String        @id @default(cuid())
+  blogId   String
+  blog     Blog          @relation(fields: [blogId], references: [id])
+  parentId String?
+  parent   BlogComment?  @relation("BlogCommentTree", fields: [parentId], references: [id])
+  children BlogComment[] @relation("BlogCommentTree")
+
+  commentorName    String
+  commentorEmail   String?
+  commentorAddress String?
+  commentorContact String?
+  comment          String  @db.Text
+  isActive         Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("blog_comments")
+}
+
+// ==================== FAQ ====================
+
+model FAQ {
+  id       String  @id @default(cuid())
+  question String
+  answer   String  @db.Text
+  faqOrder Int     @default(0)
+  isActive Boolean @default(true)
+
+  packages Package[] @relation("PackageFaqs")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("faqs")
+}
+
+model GroupFAQ {
+  id       String  @id @default(cuid())
+  question String
+  answer   String  @db.Text
+  faqOrder Int     @default(0)
+  isActive Boolean @default(true)
+
+  categories Category[] @relation("GroupFaqCategories")
+  packages   Package[]  @relation("PackageGroupFaqs")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("group_faqs")
+}
+
+// ==================== TESTIMONIALS ====================
+
+model Testimonial {
+  id                      String    @id @default(cuid())
+  salutation              String?
+  fullName                String
+  reviewAbstract          String?
+  reviewTitle             String?
+  review                  String    @db.Text
+  reviewRating            Decimal?  @db.Decimal(3, 1)
+  reviewDate              DateTime?
+  countryCode             String
+  countryName             String
+  address                 String?
+  affiliateOrganization   String?
+  organizationAddress     String?
+  organizationPosition    String?
+  organizationDescription String?
+  organizationLink        String?
+  isFeatured              Boolean   @default(false)
+  isActive                Boolean   @default(true)
+
+  packages Package[]    @relation("PackageTestimonials")
+  members  TeamMember[] @relation("TeamMemberTestimonials")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("testimonials")
+}
+
+// ==================== PLACES ====================
+
+model Place {
+  id               String  @id @default(cuid())
+  placeName        String
+  placeAbstract    String?
+  placeDescription String? @db.Text
+  placeElevation   String?
+  placeCoordinates String?
+  placeMap         String?
+  placeExtra       String?
+  attractionOrder  Int     @default(0)
+  isFeatured       Boolean @default(false)
+  isActive         Boolean @default(true)
+
+  placeTypeId String?
+  placeType   Category? @relation("PlaceType", fields: [placeTypeId], references: [id])
+
+  // The trekking route map this attraction opens on its public page. The
+  // admin creates the route map (PackageMap) first, then picks it here —
+  // the attraction page links into it instead of embedding its own map.
+  routeMapId String?
+  routeMap   PackageMap? @relation("PlaceRouteMap", fields: [routeMapId], references: [id], onDelete: SetNull)
+
+  regions PlaceRegion[]
+  facts   PlaceFact[]
+
+  blogs    Blog[]    @relation("BlogPlaces")
+  packages Package[] @relation("PackagePlaces")
+
+  itineraryOrigins      ItineraryDetail[] @relation("ItineraryOriginPlace")
+  itineraryDestinations ItineraryDetail[] @relation("ItineraryDestinationPlace")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([routeMapId])
+  @@map("places")
+}
+
+// A place can appear in more than one trekking region. Keeping this explicit
+// (rather than Prisma's implicit many-to-many) gives editors deterministic
+// ordering on the public attraction index.
+model PlaceRegion {
+  placeId    String
+  place      Place    @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+  sortOrder  Int      @default(0)
+  isPrimary  Boolean  @default(false)
+
+  @@id([placeId, categoryId])
+  @@index([categoryId, sortOrder])
+  @@map("place_regions")
+}
+
+model PlaceFact {
+  id        String @id @default(cuid())
+  placeId   String
+  place     Place  @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  label     String
+  value     String
+  sortOrder Int    @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([placeId, sortOrder])
+  @@map("place_facts")
+}
+
+// ==================== GALLERY ====================
+
+// A curated, admin-managed photo album for one destination (e.g. "Everest
+// Region"). Images live on the generic Attachment table (ownerType:
+// "gallery-album", role: GALLERY for the photo set, FEATURED for the cover
+// thumbnail) — same pattern as Place/Package/Itinerary. There is no legacy
+// equivalent: the old Laravel admin only ever had per-entity image sets
+// (itinerary/trip galleries), never a standalone site-wide gallery.
+model GalleryAlbum {
+  id           String  @id @default(cuid())
+  title        String
+  description  String? @db.Text
+  displayOrder Int     @default(0)
+  isFeatured   Boolean @default(false)
+  isActive     Boolean @default(true)
+
+  destinationId String
+  destination   Category @relation("GalleryAlbumDestination", fields: [destinationId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([destinationId, displayOrder])
+  @@map("gallery_albums")
+}
+
+// ==================== TEAM ====================
+
+model TeamMember {
+  id              String  @id @default(cuid())
+  position        String
+  positionOrder   Int     @default(0)
+  salutation      String?
+  fullName        String
+  photoUrl        String?
+  countryCode     String
+  countryName     String
+  memberAddress   String
+  memberPhone     String?
+  memberEmail     String?
+  memberFacebook  String?
+  memberTwitter   String?
+  memberInstagram String?
+  memberWebsite   String?
+  quoteAbstract   String?
+  quote           String?
+  description     String? @db.Text
+  isFeatured      Boolean @default(false)
+  isActive        Boolean @default(true)
+
+  categories   Category[]    @relation("TeamMemberCategories")
+  testimonials Testimonial[] @relation("TeamMemberTestimonials")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("team_members")
+}
+
+// ==================== COMPANY DOCUMENTS ====================
+
+// The "Legal Documents" grid on /company-documents — each row is one
+// certificate/license card (Tourism Board, TAAN, VAT, etc.), not a
+// detail page, so unlike TeamMember there's no slug/urlInfo/meta or
+// category relation here.
+model CompanyDocument {
+  id          String  @id @default(cuid())
+  title       String
+  description String? @db.Text
+  imageUrl    String?
+  sortOrder   Int     @default(0)
+  isActive    Boolean @default(true)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("company_documents")
+}
+
+// Ordered homepage service cards for the "Everything We Take Care of"
+// section. These are presentation records rather than standalone pages, so
+// they intentionally do not own URL/Meta rows. Optional CTA fields let each
+// service point to the most relevant existing page.
+model Service {
+  id                   String  @id @default(cuid())
+  title                String
+  description          String  @db.Text
+  secondaryDescription String? @db.Text
+  imageUrl             String
+  ctaLabel             String  @default("Know More")
+  ctaUrl               String  @default("/about-us")
+  sortOrder            Int     @default(0)
+  isActive             Boolean @default(true)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([isActive, sortOrder])
+  @@map("services")
+}
+
+// Singleton copy/configuration for the homepage services section. Keeping it
+// separate prevents every service card from duplicating the same heading.
+model ServiceSectionConfig {
+  id           String @id
+  eyebrow      String
+  heading      String
+  introduction String @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("service_section_configs")
+}
+
+// ==================== TRAVEL: PACKAGE ====================
+
+model Package {
+  id       String  @id @default(cuid())
+  title    String
+  abstract String? @db.Text
+  details  String? @db.Text
+
+  tripInfoText     String? @db.Text // package_trip_info (free text; see also `tripInfos` relation)
+  highlights       String? @db.Text
+  costIncludesText String? @db.Text // package_cost_includes (free text; see also `costDetails`)
+  costExcludesText String? @db.Text
+  extraFaqs        Json? // package_extra_faqs — ad hoc Q&A list, no FK target found in code
+  // No legacy source (neither the old MySQL dump nor the pre-existing
+  // backend modeled this) — new, admin-authored content only. Intro copy
+  // shown above the categorized checklist; see `gearItems` below.
+  packingListIntro String? @db.Text
+
+  price            Decimal  @db.Decimal(12, 2)
+  duration         Decimal  @db.Decimal(6, 2)
+  durationType     String
+  groupSize        String?
+  discount         Decimal? @db.Decimal(12, 2)
+  maxAltitude      String?
+  geoLongitude     String?
+  geoLatitude      String?
+  usefulInfo       String?  @db.Text
+  departureNote    String?  @db.Text
+  additionalField1 String?
+  additionalField2 String?
+  isFeatured       Boolean  @default(false)
+  isActive         Boolean  @default(true)
+  // Manual display order, both for the admin's own Packages list and for
+  // where a package lands among other `isFeatured` rows on the public
+  // homepage carousel (previously just `createdAt desc`, so a client had
+  // no way to pick which featured trip shows first). All existing rows
+  // default to 0, which — combined with the `createdAt desc` tiebreaker
+  // findMany() already orders by — keeps today's display order unchanged
+  // until an admin actually drags something, same reasoning as
+  // ItineraryDetail.sortOrder's own migration.
+  sortOrder        Int      @default(0)
+  // Independent from `isFeatured`/`sortOrder` above — the homepage's
+  // "Most Popular Journeys" section used to just reuse the Featured pool,
+  // giving admins no way to curate/order that section separately from the
+  // Featured carousel and "The 2026/27 Lineup". This pair mirrors
+  // isFeatured/sortOrder exactly but is its own pool: an admin can flag a
+  // package `isPopular` and set its `popularSortOrder` without touching
+  // `sortOrder` or the Featured list at all.
+  isPopular        Boolean  @default(false)
+  popularSortOrder Int      @default(0)
+  // Admin-editable "Published" date shown on the Packages list — distinct
+  // from `createdAt` (which never changes) so an admin can set/backdate it
+  // independently, same request as blog's real `blogDate` field. Defaults
+  // to now() for brand-new rows; the migration backfills existing rows
+  // from their own `createdAt` instead of resetting them all to the
+  // migration's run date.
+  publishedAt      DateTime @default(now())
+
+  destinationId    String
+  destination      Category  @relation("PackageDestination", fields: [destinationId], references: [id])
+  gradeId          String?
+  grade            Category? @relation("PackageGrade", fields: [gradeId], references: [id])
+  styleId          String?
+  style            Category? @relation("PackageStyle", fields: [styleId], references: [id])
+  transportationId String?
+  transportation   Category? @relation("PackageTransportation", fields: [transportationId], references: [id])
+  mealsId          String?
+  meals            Category? @relation("PackageMeals", fields: [mealsId], references: [id])
+  accommodationId  String?
+  accommodation    Category? @relation("PackageAccommodation", fields: [accommodationId], references: [id])
+
+  categories     Category[]             @relation("PackageCategories")
+  categoryOrders CategoryPackageOrder[]
+  faqCategories  Category[]             @relation("PackageFaqCategories")
+  places         Place[]                @relation("PackagePlaces")
+  faqs           FAQ[]                  @relation("PackageFaqs")
+  groupFaqs      GroupFAQ[]             @relation("PackageGroupFaqs")
+  tripInfos      TripInfo[]             @relation("PackageTripInfos")
+  testimonials   Testimonial[]          @relation("PackageTestimonials")
+
+  customRelated Package[] @relation("PackageCustomRelated")
+  relatedFrom   Package[] @relation("PackageCustomRelated")
+
+  costDetails    CostDetail[]
+  priceGroups    PriceGroup[]
+  facts          PackageFact[]
+  addOns         AddOn[]
+  tiers          PackageTier[]
+  gearItems      PackageGearItem[]
+  departures     Departure[]
+  itinerary      Itinerary?
+  maps           PackageMap[]
+  bookings       Booking[]
+  customBookings CustomBooking[]
+  payments       Payment[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([isFeatured, sortOrder])
+  @@index([isPopular, popularSortOrder])
+  @@map("packages")
+}
+
+// Per-category manual display order for category-browse pages
+// (/nepal-tour-packages, /everest-region-treks, ...). Kept beside the
+// implicit `PackageCategories` many-to-many rather than replacing it, so
+// every existing categoryIds connect/set and the legacy migration keep
+// working untouched. A row only exists once an admin has reordered that
+// category; membership still comes from `PackageCategories` alone — a
+// stale row for a package no longer in the category is simply ignored.
+model CategoryPackageOrder {
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  packageId  String
+  package    Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  sortOrder  Int
+
+  @@id([categoryId, packageId])
+  @@map("category_package_orders")
+}
+
+enum CostDetailType {
+  INCLUDE
+  EXCLUDE
+}
+
+// Shared, admin-managed "what's included / excluded" groups (e.g.
+// "Transportation", "Accommodation"). `type` decides which tab of the
+// package form offers it. A package's CostDetail rows point at one of these
+// via `costCategoryId`; `detailKey` keeps a denormalized copy of the name so
+// legacy rows (no category) and older readers keep working.
+model CostCategory {
+  id        String         @id @default(cuid())
+  name      String
+  type      CostDetailType
+  icon      String?
+  sortOrder Int            @default(0)
+  isActive  Boolean        @default(true)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  costDetails CostDetail[]
+
+  @@map("cost_categories")
+}
+
+model CostDetail {
+  id                String         @id @default(cuid())
+  packageId         String
+  package           Package        @relation(fields: [packageId], references: [id])
+  costCategoryId    String?
+  costCategory      CostCategory?  @relation(fields: [costCategoryId], references: [id])
+  sortOrder         Int            @default(0)
+  detailKey         String
+  detailTitle       String
+  detailDescription String?        @db.Text
+  detailExtra       String?
+  detailType        CostDetailType
+  isActive          Boolean        @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("package_cost_details")
+}
+
+model PriceGroup {
+  id               String   @id @default(cuid())
+  packageId        String
+  package          Package  @relation(fields: [packageId], references: [id])
+  packageTier      String
+  minPeople        Int
+  maxPeople        Int
+  shortDescription String?
+  unitPrice        Decimal  @db.Decimal(12, 2)
+  offerUnitPrice   Decimal? @db.Decimal(12, 2)
+  offerLabel       String?
+  offerInformation String?
+  isDefault        Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("package_price_groups")
+}
+
+model PackageFact {
+  id        String  @id @default(cuid())
+  packageId String
+  package   Package @relation(fields: [packageId], references: [id])
+  factTitle String
+  factValue String
+
+  createdAt DateTime @default(now())
+
+  @@map("package_facts")
+}
+
+// The "Gear" tab's Packing List — a checklist grouped by category (e.g.
+// "Clothing", "Equipment", "Documents"). `category` is a free-text label
+// rather than an FK, matching CostDetail's own `detailKey` grouping
+// pattern immediately below rather than introducing a new taxonomy table
+// for what's really just a handful of admin-authored group names per package.
+model PackageGearItem {
+  id        String  @id @default(cuid())
+  packageId String
+  package   Package @relation(fields: [packageId], references: [id])
+  category  String
+  itemLabel String
+  imageUrl  String?
+  sortOrder Int     @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@map("package_gear_items")
+}
+
+enum AddOnChargeBy {
+  PERSON
+  ROOM
+  FLAT
+}
+
+model AddOn {
+  id               String  @id @default(cuid())
+  packageId        String
+  package          Package @relation(fields: [packageId], references: [id])
+  addonTitle       String
+  addonDescription String? @db.Text
+  addonPrice       Decimal @db.Decimal(12, 2)
+  addonUnit        String?
+  // How the checkout multiplies addonPrice: per traveller, per room
+  // (peoplePerRoom travellers share one), or a flat one-off amount.
+  chargeBy         AddOnChargeBy @default(PERSON)
+  peoplePerRoom    Int           @default(2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("package_addons")
+}
+
+model PackageTier {
+  id                     String  @id @default(cuid())
+  packageId              String
+  package                Package @relation(fields: [packageId], references: [id])
+  packageTier            String
+  packageTierAlias       String
+  packageTierDescription String  @db.Text
+  costIncludes           String? @db.Text
+  costExcludes           String? @db.Text
+  wetravelUuid           String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("package_tiers")
+}
+
+model Departure {
+  id              String   @id @default(cuid())
+  packageId       String
+  package         Package  @relation(fields: [packageId], references: [id])
+  departureDate   DateTime
+  departureCost   Decimal  @db.Decimal(12, 2)
+  departureNote   String?
+  departureStatus String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("package_departures")
+}
+
+model TripInfo {
+  id          String  @id @default(cuid())
+  title       String // page_title
+  description String  @db.Text // page_description
+  infoOrder   Int     @default(0)
+  isActive    Boolean @default(true)
+
+  packages Package[] @relation("PackageTripInfos")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("trip_infos")
+}
+
+model Itinerary {
+  id          String  @id @default(cuid())
+  title       String
+  packageId   String  @unique
+  package     Package @relation(fields: [packageId], references: [id])
+  detailsText String? @db.Text // itinerary_details free text
+  mapData     String? @db.Text // map_data — likely serialized GeoJSON, unconfirmed
+
+  details ItineraryDetail[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("itineraries")
+}
+
+model ItineraryDetail {
+  id                        String    @id @default(cuid())
+  itineraryId               String
+  itinerary                 Itinerary @relation(fields: [itineraryId], references: [id])
+  // Global display position across the whole itinerary. itineraryDay/itineraryStop
+  // describe the grouping, but neither can order the *days* themselves
+  // (itineraryDay is free text — "Day 10" sorts before "Day 2"), so row order
+  // is stamped explicitly on write.
+  sortOrder                 Int       @default(0)
+  itineraryDay              String
+  itineraryTitle            String?
+  itineraryShortDescription String?
+  itineraryDescription      String?   @db.Text
+  itineraryStop             Decimal?  @db.Decimal(6, 2)
+  accommodation             String?
+  meals                     String?
+  // Per-day lunch stop, admin-entered (2026-09-02, client-requested) — the
+  // public itinerary day card shows this next to `accommodation` ("Name of
+  // hotel"), but unlike accommodation, nothing in the legacy migration had
+  // an equivalent field to backfill from — every existing row starts null.
+  lunchPlace                String?
+  origin                    String?
+  originCoordinate          String?
+  originElevation           String?
+  originPlaceId             String?
+  originPlace               Place?    @relation("ItineraryOriginPlace", fields: [originPlaceId], references: [id])
+  destination               String?
+  destinationCoordinate     String?
+  destinationElevation      String?
+  destinationPlaceId        String?
+  destinationPlace          Place?    @relation("ItineraryDestinationPlace", fields: [destinationPlaceId], references: [id])
+  travelMode                String?
+  distance                  String?
+  duration                  String? // travel time for this leg, e.g. "15 Min"
+  encodedPolyline           String?   @db.Text // Google-encoded polyline for drawing this leg's route
+  footnote                  String?
+  isActive                  Boolean   @default(true)
+
+  facts ItineraryFact[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("itinerary_details")
+}
+
+// Inferred by symmetry with PackageFact — no direct controller evidence found;
+// verify against the dump before relying on this one.
+model ItineraryFact {
+  id        String          @id @default(cuid())
+  detailId  String
+  detail    ItineraryDetail @relation(fields: [detailId], references: [id])
+  factTitle String
+  factValue String
+
+  createdAt DateTime @default(now())
+
+  @@map("itinerary_facts")
+}
+
+// Legacy App\Models\Admin\Travel\PackageMap (travel_package_maps) — a first-class
+// entity in the legacy app with its own attachments/meta/url rows, distinct from
+// Itinerary.mapData. Found while reconciling against the real SQL dump.
+model PackageMap {
+  id          String  @id @default(cuid())
+  packageId   String
+  package     Package @relation(fields: [packageId], references: [id])
+  mapTitle    String
+  mapAbstract String? @db.Text
+  mapDetails  String? @db.Text
+  isActive    Boolean @default(true)
+
+  places Place[] @relation("PlaceRouteMap")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("package_maps")
+}
+
+model StoryAuthor {
+  id          String  @id @default(cuid())
+  name        String
+  salutation  String?
+  email       String  @unique
+  description String? @db.Text
+  isActive    Boolean @default(true)
+
+  stories Story[] @relation("StoryAuthors")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("story_authors")
+}
+
+model Story {
+  id        String   @id @default(cuid())
+  title     String
+  abstract  String?
+  content   String   @db.Text
+  storyDate DateTime
+  isActive  Boolean  @default(true)
+
+  authors StoryAuthor[] @relation("StoryAuthors")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("stories")
+}
+
+// ==================== TRAVEL: BOOKING / PAYMENT ====================
+
+model Booking {
+  id                String    @id @default(cuid())
+  // Human-readable "BA-<number>" reference shown to the customer (email +
+  // payment pages) — direct client request 2026-09-07: numbers must start
+  // above 1443 (whatever count/log they're already using elsewhere), not
+  // restart from 1. `id` (cuid) stays the real primary key/FK target
+  // everywhere else; this is purely a customer-facing display number —
+  // formatted as `BA-${bookingNumber}` in application code, not stored
+  // with the prefix baked in. See the migration for the sequence's actual
+  // starting value.
+  bookingNumber     Int       @unique @default(autoincrement())
+  packageId         String?
+  package           Package?  @relation(fields: [packageId], references: [id])
+  startDate         DateTime
+  endDate           DateTime
+  numberOfTraveller Int
+  fullName          String
+  email             String
+  dateOfBirth       DateTime?
+  nationality       String
+  countryCode       String
+  mobileNumber      String?
+  pickupDetails     String?
+  paymentOptions    String
+  totalPrice        Decimal   @db.Decimal(12, 2)
+  payablePercentage Int?
+  ipAddress         String?
+
+  invoice    Invoice?
+  travellers Traveller[]
+  payments   Payment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("bookings")
+}
+
+// Field shape inferred by symmetry with CustomTraveller — the packageBooking
+// flow collects travellers in a separate step not fully covered in the code
+// read so far; verify against the dump.
+model Traveller {
+  id            String    @id @default(cuid())
+  bookingId     String
+  booking       Booking   @relation(fields: [bookingId], references: [id])
+  fullName      String
+  gender        String?
+  email         String
+  dateOfBirth   DateTime?
+  nationality   String
+  countryCode   String
+  mobileNumber  String?
+  passportNo    String?
+  passportImage String?
+  photo         String?
+  isLead        Boolean   @default(false)
+  isActive      Boolean   @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("travellers")
+}
+
+model CustomBooking {
+  id                 String    @id @default(cuid())
+  packageId          String
+  package            Package   @relation(fields: [packageId], references: [id])
+  startDate          DateTime
+  endDate            DateTime?
+  numberOfTraveller  Int
+  arrivalDate        DateTime?
+  arrivalFlightNo    String?
+  airportPickup      Boolean   @default(false)
+  departureDate      DateTime?
+  departureFlightNo  String?
+  airportDropoff     Boolean   @default(false)
+  travelInsurance    Boolean   @default(false)
+  findingUs          String?
+  specialRequirement String?   @db.Text
+  ipAddress          String?
+
+  travellers CustomTraveller[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("custom_bookings")
+}
+
+model CustomTraveller {
+  id              String        @id @default(cuid())
+  customBookingId String
+  customBooking   CustomBooking @relation(fields: [customBookingId], references: [id])
+  fullName        String
+  gender          String
+  email           String
+  dateOfBirth     DateTime?
+  nationality     String
+  countryCode     String
+  mobileNumber    String?
+  passportNo      String?
+  passportImage   String?
+  isLead          Boolean       @default(false)
+  isActive        Boolean       @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("custom_travellers")
+}
+
+model Invoice {
+  id              String  @id @default(cuid())
+  bookingId       String  @unique
+  booking         Booking @relation(fields: [bookingId], references: [id])
+  invoiceAmount   Decimal @db.Decimal(12, 2)
+  invoicePayType  String
+  invoiceStatus   Int
+  invoiceNote     String?
+  transactionCode String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("invoices")
+}
+
+enum PaymentGateway {
+  NABIL
+  HBL
+  NICA
+  PACO
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  CANCELLED
+}
+
+// Collapsed from 3 near-duplicate legacy tables (travel_payment_nabil/hbl/nica)
+// — same modernization call as Media/Attachment. PACO has env config
+// (PACO_ENABLE/PACO_API_KEY) but no dedicated model was found in code, so it's
+// included here as a 4th gateway value pending confirmation. Re-split into
+// per-gateway tables if the dump shows fields this shared shape can't hold.
+model Payment {
+  id            String         @id @default(cuid())
+  gateway       PaymentGateway
+  packageId     String?
+  package       Package?       @relation(fields: [packageId], references: [id])
+  // Set by the /book-now flow (booking is created first, then the PACO
+  // checkout is initiated) so a booking's admin view can show whether it
+  // was actually paid. Null for standalone /online-payment payments and
+  // every legacy-migrated row.
+  bookingId     String?
+  booking       Booking?       @relation(fields: [bookingId], references: [id])
+  customTitle   String?
+  customerName  String?
+  customerEmail String?
+  description   String?
+  percentage    Int?
+  totalAmount   Decimal        @db.Decimal(12, 2)
+  // totalAmount is always the USD price. PACO charges in `currency`
+  // (NPR since 2026-10-29): chargedAmount = round(totalAmount * exchangeRate),
+  // exchangeRate = the live NRB USD→NPR rate used. Both null on legacy
+  // rows / USD payments.
+  currency       String         @default("USD") @db.VarChar(3)
+  exchangeRate   Decimal?       @db.Decimal(12, 4)
+  chargedAmount  Decimal?       @db.Decimal(14, 2)
+  status        PaymentStatus  @default(PENDING)
+
+  gatewayReference     String? // nabil_pay_id / hbl_order_id / nica_reference_no
+  gatewayTransactionId String? // nica_transaction_id
+  gatewaySignature     String? // nica_signature
+  gatewaySessionId     String? // nabil_session_id / nabil_create_session_id
+  requestPayload       Json? // create_request_order / execute_jose_payload
+  responsePayload      Json? // create_order_response / nica_payload
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("payments")
+}
+
+// ==================== CONTACT ====================
+
+model ContactMessage {
+  id                String  @id @default(cuid())
+  name              String
+  email             String
+  type              String
+  url               String
+  phone             String?
+  message           String  @db.Text
+  packageId         String?
+  numberOfTraveller Int?
+  ipAddress         String?
+  // Resolved server-side from `ipAddress` via a best-effort IP-geolocation
+  // lookup at submission time (see `lib/ip-geolocation.ts`) — not visitor
+  // input, so both are null whenever the lookup fails/is skipped (private
+  // IP, service down) rather than blocking the enquiry. Direct client
+  // request 2026-09-07 ("country and ip address and country code should
+  // go to admin mail"), distinct from the free-text "Your Country" the
+  // visitor already picks on the form (that one's folded into `message`).
+  country           String?
+  countryCode       String?
+  // Not in the legacy schema — added for the admin inbox UI (read/unread is
+  // the practical minimum for a message list; skipping spam/archive states
+  // as unwarranted complexity for what's a low-volume contact form).
+  isRead            Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@map("contact_messages")
+}
+
+// Birthday greeting emails (lead booker only). `email` is always stored
+// lowercased. The (email, year) unique key is what makes the daily job safe
+// to re-run (e.g. the startup catch-up) without double-sending.
+model BirthdayGreetingSent {
+  id     String   @id @default(cuid())
+  email  String
+  year   Int
+  sentAt DateTime @default(now())
+
+  @@unique([email, year])
+  @@map("birthday_greetings_sent")
+}
+
+model BirthdayOptOut {
+  email     String   @id
+  createdAt DateTime @default(now())
+
+  @@map("birthday_optouts")
+}

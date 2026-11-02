@@ -1,0 +1,129 @@
+@import "tailwindcss";
+@import "./theme.css";
+
+/*
+ * Tailwind v4's preflight, unlike earlier community resets, leaves
+ * <button>'s default `cursor: default` alone — every clickable button
+ * across the app (itinerary page's Book Now/Trip Enquiry/tab controls,
+ * the booking modal, checkout, DatePicker, etc.) was rendering with the
+ * plain arrow cursor instead of a pointer. Fixed once, site-wide, rather
+ * than adding `cursor-pointer` by hand to every button element.
+ */
+@layer base {
+  body {
+    background-color: var(--color-site-bg);
+  }
+
+  button:not(:disabled),
+  [type="button"]:not(:disabled),
+  [type="submit"]:not(:disabled),
+  [type="reset"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [type="button"]:disabled,
+  [type="submit"]:disabled,
+  [type="reset"]:disabled {
+    cursor: not-allowed;
+  }
+}
+
+/*
+ * The package detail page's mobile-only fixed booking bar
+ * (`#mobile-booking-bar`, see BookingSidebar.tsx's `MobileBookingBar`)
+ * sits flush along the bottom of the viewport, which is exactly where
+ * the root layout's separate, always-mounted `#global-whatsapp-button`
+ * (`bottom-6 right-6`) also fixes itself — so left alone, the two stack
+ * on top of each other in the same corner (the bar's own "Book Now"
+ * button hidden behind the WhatsApp circle in particular). Rather than
+ * hiding the WhatsApp button there (2026-09-03: it's the only WhatsApp
+ * CTA left on mobile now that the bar's buttons are Trip Enquiry / Book
+ * Now, not WhatsApp), lift it clear of the bar instead.
+ *
+ * `96px` matches `PackageDetailView`'s own `pb-24` reserved for this bar
+ * and the Tawk launcher's mobile `yOffset` in `TawkChat.tsx` — same
+ * bar-height figure, kept in sync by hand in all three places (no
+ * shared constant/CSS variable exists across a Tailwind utility class,
+ * this stylesheet, and a JS config object).
+ *
+ * `:has()` lets that root-layout singleton react to a page-specific
+ * element it otherwise has no relationship to, without prop-drilling
+ * an "is a sticky bar present" flag down through the layout tree.
+ * Scoped to the same `max-width: 767px` the bar's own `md:hidden`
+ * disappears at, so nothing changes at `md` and up, where the bar
+ * isn't rendered (and the button sits at its default `bottom-6`).
+ */
+@media (max-width: 767px) {
+  body:has(#mobile-booking-bar) #global-whatsapp-button {
+    bottom: calc(96px + env(safe-area-inset-bottom));
+  }
+  body:has(#mobile-booking-bar) #global-scroll-top-button {
+    bottom: calc(164px + env(safe-area-inset-bottom));
+  }
+}
+
+/*
+ * "What is included / excluded" category cards (`InclusionsSection.tsx`)
+ * render admin-authored rich text. Its lists get the design's check (include)
+ * / cross (exclude) bullets instead of the browser default; colour matches
+ * `--color-primary-500`.
+ */
+.cost-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.cost-list li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.cost-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.35em;
+  width: 1rem;
+  height: 1rem;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.cost-list-include li::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23078cbf' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+}
+.cost-list-exclude li::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23078cbf' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E");
+}
+
+/* Destinations mega-menu scrollbar (logo sun yellow on a pale track). */
+.destination-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-logo-sun) #cfe3f1;
+}
+.destination-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.destination-scroll::-webkit-scrollbar-track {
+  background: #cfe3f1;
+  border-radius: 4px;
+}
+.destination-scroll::-webkit-scrollbar-thumb {
+  background: var(--color-logo-sun);
+  border-radius: 4px;
+}
+
+/* Scroll reveal (see components/animation/MotionProvider.tsx). Hidden only
+   while <html> carries `.js`, which the layout adds before first paint and
+   removes again if the motion layer never starts. */
+.js .reveal:not(.is-revealed) {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal:not(.is-revealed) {
+    opacity: 1;
+    transform: none;
+  }
+}
