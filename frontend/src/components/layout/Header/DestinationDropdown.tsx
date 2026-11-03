@@ -564,36 +564,11 @@ export function DestinationDropdown({
                 </ul>
               </div>
 
-              {/* Regions — only for Trekking and Hiking. "All" shows every trekking package of the country. */}
+              {/* Regions — only for Trekking and Hiking. Click a region to narrow the packages; click it again to show them all. */}
               {regionsVisible ? (
                 <div className="destination-dropdown-group destination-scroll overflow-y-auto border-white/10 px-5 py-6 min-[1120px]:border-r">
                   <p className="mb-2 text-[11px] font-bold tracking-[0.14em] text-logo-sun uppercase">{trekkingCategory.label}</p>
                   <ul className="flex flex-col gap-1">
-                    <li>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSelectedRegionHref(null);
-                          setHovered(null);
-                        }}
-                        aria-pressed={!selectedRegion}
-                        className="group block w-full rounded-md px-3 py-2 text-left transition-colors hover:bg-white/5"
-                      >
-                        <span
-                          className={cn(
-                            "font-playfair-display block text-[18px] leading-snug font-bold",
-                            !selectedRegion ? "text-logo-sun" : "text-white group-hover:text-logo-sun",
-                          )}
-                        >
-                          All {countryLabel}
-                        </span>
-                        {categoryCounts[categoryKey] > 0 ? (
-                          <span className="mt-0.5 block text-[11px] font-bold tracking-[0.08em] text-white/50 uppercase">
-                            {categoryCounts[categoryKey]} {categoryCounts[categoryKey] === 1 ? "Package" : "Packages"}
-                          </span>
-                        ) : null}
-                      </button>
-                    </li>
                     {browseRegions.map((region) => {
                       const isSelected = region.href === regionHref;
                       const count = regionCount(region);
@@ -602,7 +577,7 @@ export function DestinationDropdown({
                           <button
                             type="button"
                             onClick={() => {
-                              setSelectedRegionHref(region.href);
+                              setSelectedRegionHref(isSelected ? null : region.href);
                               setHovered(null);
                             }}
                             aria-pressed={isSelected}
