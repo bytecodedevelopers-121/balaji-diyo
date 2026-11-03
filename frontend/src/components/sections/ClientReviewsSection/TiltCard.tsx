@@ -1,9 +1,12 @@
 "use client";
 
-import { useRef, type ReactNode } from "react";
+import { useRef, type CSSProperties, type ReactNode } from "react";
 
-/** Review card that tilts in 3D toward the pointer, over the wireframe terrain. */
-export function TiltCard({ children }: { children: ReactNode }) {
+/**
+ * Review card resting at a slight angle (`angle`, degrees). It straightens on
+ * hover and tilts in 3D toward the pointer, over the wireframe terrain.
+ */
+export function TiltCard({ children, angle = 0 }: { children: ReactNode; angle?: number }) {
   const ref = useRef<HTMLLIElement>(null);
 
   const onMove = (e: React.PointerEvent<HTMLLIElement>) => {
@@ -25,7 +28,8 @@ export function TiltCard({ children }: { children: ReactNode }) {
       ref={ref}
       onPointerMove={onMove}
       onPointerLeave={reset}
-      className="rounded-[4px] border border-white/70 bg-white/60 p-4 shadow-[0_2px_10px_rgba(6,74,112,0.12)] backdrop-blur-md transition-[transform,box-shadow] duration-200 ease-out will-change-transform hover:shadow-[0_10px_28px_rgba(6,74,112,0.22)]"
+      style={{ "--r": `${angle}deg` } as CSSProperties}
+      className="rotate-(--r) rounded-[24px] border border-[#efe6da] bg-white p-6 shadow-[0_10px_30px_rgba(6,74,112,0.10)] transition-[transform,rotate,box-shadow] duration-300 ease-out will-change-transform hover:rotate-0 hover:shadow-[0_16px_40px_rgba(6,74,112,0.18)]"
     >
       {children}
     </li>

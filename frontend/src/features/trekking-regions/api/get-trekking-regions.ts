@@ -40,13 +40,22 @@ export async function getTrekkingRoutesCategory(): Promise<TrekkingRegion> {
   });
 }
 
+/**
+ * Resolves to `[]` instead of throwing when the parent category is missing
+ * or the API is unreachable, so a missing record (e.g. an empty production
+ * database during `next build`) can't fail prerendering of the overview page.
+ */
 export async function getTrekkingRegions(): Promise<TrekkingRegion[]> {
-  const parent = await getTrekkingRoutesCategory();
-  const result = await apiFetch<Paginated<TrekkingRegion>>(
-    `/categories?parentId=${parent.id}&isActive=true&perPage=50`,
-    { next: { revalidate: 900, tags: ["trekking-regions"] } },
-  );
-  return result.items.filter((region) => region.slug && trekkingRegionSlugSet.has(region.slug));
+  try {
+    const parent = await getTrekkingRoutesCategory();
+    const result = await apiFetch<Paginated<TrekkingRegion>>(
+      `/categories?parentId=${parent.id}&isActive=true&perPage=50`,
+      { next: { revalidate: 900, tags: ["trekking-regions"] } },
+    );
+    return result.items.filter((region) => region.slug && trekkingRegionSlugSet.has(region.slug));
+  } catch {
+    return [];
+  }
 }
 
 export async function getTrekkingRegionDetail(slug: string, page = 1): Promise<TrekkingRegionDetail | null> {

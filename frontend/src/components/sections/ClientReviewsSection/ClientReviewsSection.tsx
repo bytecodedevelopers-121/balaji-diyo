@@ -1,13 +1,12 @@
 import Link from "next/link";
-import { ArrowRight, Mountain, Star } from "lucide-react";
+import { ArrowRight, Mountain, Quote, Star } from "lucide-react";
 import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
 import { getFeaturedTestimonials } from "@/features/testimonials/api/get-testimonials";
 import { TiltCard } from "./TiltCard";
-import { WireframeTerrain } from "./WireframeTerrain";
 
 /**
- * "What Our Clients Say?" — a review-platform bar plus three review cards
- * on a pale-blue panel. Cards come from the admin's featured testimonials
+ * "What Our Clients Say?" — centred heading, review-platform ratings and three
+ * slightly tilted review cards. Cards come from the admin's featured testimonials
  * (`isFeatured`); when there are none, development shows sample reviews
  * (never in production) and production hides the section.
  */
@@ -58,6 +57,9 @@ const SAMPLE_REVIEWS: ReviewCard[] = [
   },
 ];
 
+/** Resting tilt (degrees) of each card, repeating. */
+const ANGLES = [-1.5, 1, -1];
+
 const dateFormat = new Intl.DateTimeFormat("en-US", { month: "short", day: "2-digit", year: "numeric", timeZone: "UTC" });
 
 function Stars({ rating }: { rating: number }) {
@@ -93,36 +95,22 @@ export async function ClientReviewsSection() {
   if (cards.length === 0) return null;
 
   return (
-    <section className="bg-site-bg px-4 pt-12 pb-10 min-[768px]:px-10 min-[1120px]:px-[72px]">
-      <div className="mx-auto w-full max-w-[1280px]">
-        <div suppressHydrationWarning className="reveal mb-5 flex items-end justify-between gap-4">
-          <div>
-            <p className="mb-1 flex items-center gap-2 text-body-s font-medium text-logo-navy">
-              <Mountain aria-hidden="true" className="size-4" />
-              Joyful Trekking Reviews
-            </p>
-            <h2 className="font-display text-[clamp(22px,5vw,32px)] leading-tight font-bold text-brand-neutral-1000">
-              What Our Clients Say?
-            </h2>
-          </div>
-          <p className="hidden items-center gap-2 text-[12px] font-semibold text-brand-neutral-900 sm:flex">
-            <span className="grid size-7 place-items-center rounded-full bg-[#00aa6c] text-white">
-              <Star aria-hidden="true" className="size-4 fill-current" />
-            </span>
-            <span>
-              Travelers&apos; Choice
-              <span className="block font-normal text-logo-navy">2026</span>
-            </span>
+    <section className="relative overflow-hidden bg-site-bg px-4 pt-16 pb-16 min-[768px]:px-10 min-[1120px]:px-[72px]">
+      <div className="relative mx-auto w-full max-w-[1100px]">
+        <div suppressHydrationWarning className="reveal flex flex-col items-center text-center">
+          <p className="inline-flex items-center gap-2 rounded-pill border border-logo-sun/50 bg-logo-sun/10 px-4 py-1.5 text-[11px] font-semibold tracking-[0.14em] text-logo-navy uppercase">
+            <Mountain aria-hidden="true" className="size-3.5" />
+            Joyful Trekking Reviews
           </p>
-        </div>
-
-        <div className="relative overflow-hidden rounded-[4px] bg-[#dce9f3]">
-          <WireframeTerrain />
-          <ul className="relative flex flex-wrap gap-x-10 gap-y-3 bg-[#c9dcec]/80 px-5 py-3">
+          <h2 className="font-playfair-display mt-5 text-[clamp(30px,6vw,48px)] leading-[1.1] font-bold text-logo-navy-dark">
+            What Our Clients
+            <span className="block text-logo-sun italic">Say?</span>
+          </h2>
+          <ul className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-3">
             {PLATFORMS.map((platform) => (
               <li key={platform.name} className="text-[13px] font-bold text-brand-neutral-900">
                 {platform.name}
-                <span className="flex items-center gap-1.5 text-[11px] font-normal text-brand-neutral-800">
+                <span className="flex items-center justify-center gap-1.5 text-[11px] font-normal text-brand-neutral-800">
                   <span className={`flex ${platform.color}`} aria-hidden="true">
                     {[0, 1, 2, 3, 4].map((i) => (
                       <Star key={i} className="size-3 fill-current" />
@@ -133,44 +121,45 @@ export async function ClientReviewsSection() {
               </li>
             ))}
           </ul>
+        </div>
 
-          <ul className="relative grid grid-cols-1 items-start gap-4 px-5 pt-8 pb-6 md:grid-cols-3">
-            {cards.map((card) => (
-              <TiltCard key={card.id}>
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <InitialsAvatar name={card.name} />
-                    <p className="text-[12px] font-semibold text-brand-neutral-900">
-                      {card.name}
-                      <span className="block font-normal text-brand-neutral-700">{card.country}</span>
-                    </p>
-                  </div>
-                  <div className="text-right text-[11px] text-brand-neutral-700">
-                    <Stars rating={card.rating} />
-                    {card.date}
-                  </div>
+        <ul className="mt-12 grid grid-cols-1 items-start gap-6 md:grid-cols-3">
+          {cards.map((card, i) => (
+            <TiltCard key={card.id} angle={ANGLES[i % ANGLES.length]}>
+              <Quote aria-hidden="true" className="size-5 fill-logo-sun text-logo-sun" />
+              <h3 className="mt-4 text-[15px] leading-snug font-bold text-logo-navy-dark">{card.title}</h3>
+              <div
+                className="mt-2 line-clamp-6 text-[14px] leading-[1.7] text-brand-neutral-800"
+                dangerouslySetInnerHTML={{ __html: card.body }}
+              />
+              <Link href="/reviews" className="mt-2 inline-block text-[12px] font-semibold text-logo-navy hover:underline">
+                read more »
+              </Link>
+              <div className="mt-5 flex items-center justify-between gap-3 border-t border-dashed border-[#e7dfd2] pt-4">
+                <div className="flex items-center gap-3">
+                  <InitialsAvatar name={card.name} />
+                  <p className="text-[13px] font-bold text-brand-neutral-900">
+                    {card.name}
+                    <span className="block text-[12px] font-normal text-logo-navy">{card.country}</span>
+                  </p>
                 </div>
-                <h3 className="mt-3 text-[14px] leading-snug font-bold text-brand-neutral-900">{card.title}</h3>
-                <div
-                  className="mt-2 line-clamp-5 text-[12px] leading-relaxed text-brand-neutral-800"
-                  dangerouslySetInnerHTML={{ __html: card.body }}
-                />
-                <Link href="/reviews" className="mt-2 inline-block text-[12px] font-semibold text-logo-navy hover:underline">
-                  read more »
-                </Link>
-              </TiltCard>
-            ))}
-          </ul>
+                <div className="text-right text-[11px] text-brand-neutral-700">
+                  <Stars rating={card.rating} />
+                  {card.date}
+                </div>
+              </div>
+            </TiltCard>
+          ))}
+        </ul>
 
-          <div className="relative px-5 pb-5">
-            <Link
-              href="/reviews"
-              className="inline-flex items-center gap-2 rounded-pill border border-logo-sun bg-brand-neutral-000 px-5 py-2 text-[12px] font-semibold text-logo-navy transition-colors hover:bg-logo-sun"
-            >
-              Read All Reviews
-              <ArrowRight aria-hidden="true" className="size-4" />
-            </Link>
-          </div>
+        <div className="mt-10 flex justify-center">
+          <Link
+            href="/reviews"
+            className="inline-flex items-center gap-2 rounded-pill border border-logo-sun bg-brand-neutral-000 px-5 py-2 text-[12px] font-semibold text-logo-navy transition-colors hover:bg-logo-sun"
+          >
+            Read All Reviews
+            <ArrowRight aria-hidden="true" className="size-4" />
+          </Link>
         </div>
       </div>
     </section>

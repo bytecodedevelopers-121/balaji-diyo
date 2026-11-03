@@ -229,16 +229,17 @@ export function Footer({
         </div>
       </div>
 
-      {/* Faded brand watermark over soft pink / yellow glows. */}
-      <div aria-hidden="true" className="relative mt-4 overflow-hidden pb-[0.1em] text-[clamp(56px,13vw,190px)] select-none">
+      {/* Faded brand watermark over a soft pink → peach → yellow glow. */}
+      <div aria-hidden="true" className="relative mt-4 overflow-hidden pt-6 pb-4 text-[clamp(44px,9.5vw,136px)] select-none">
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage:
-              "radial-gradient(ellipse 45% 70% at 15% 100%, rgba(247,168,184,0.85), transparent 70%), radial-gradient(ellipse 45% 70% at 88% 100%, rgba(250,214,110,0.8), transparent 70%)",
+            backgroundImage: "linear-gradient(90deg, rgba(247,168,184,0.9), rgba(250,205,160,0.85) 50%, rgba(250,214,110,0.9))",
+            maskImage: "linear-gradient(to bottom, transparent, black 55%)",
+            WebkitMaskImage: "linear-gradient(to bottom, transparent, black 55%)",
           }}
         />
-        <p className="font-display relative text-center text-[1em] leading-[1.2] font-extrabold whitespace-nowrap text-[#8a6f4d]/20">
+        <p className="font-display relative text-center text-[1em] leading-[1.15] font-extrabold whitespace-nowrap text-[#8a6f4d]/20">
           {brandName}
         </p>
       </div>
