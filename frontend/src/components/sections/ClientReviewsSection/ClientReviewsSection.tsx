@@ -3,12 +3,13 @@ import { ArrowRight, Mountain, Quote, Star } from "lucide-react";
 import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
 import { getFeaturedTestimonials } from "@/features/testimonials/api/get-testimonials";
 import { TiltCard } from "./TiltCard";
+import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
 
 /**
  * "What Our Clients Say?" — centred heading, review-platform ratings and three
  * slightly tilted review cards. Cards come from the admin's featured testimonials
  * (`isFeatured`); when there are none, development shows sample reviews
- * (never in production) and production hides the section.
+ * (unless `SHOW_SAMPLE_DATA=false`) and the section is hidden otherwise.
  */
 interface ReviewCard {
   id: string;
@@ -89,7 +90,7 @@ export async function ClientReviewsSection() {
           title: t.reviewTitle || t.fullName,
           body: t.reviewAbstract || t.review,
         }))
-      : process.env.NODE_ENV !== "production"
+      : SHOW_SAMPLE_DATA
         ? SAMPLE_REVIEWS
         : [];
   if (cards.length === 0) return null;

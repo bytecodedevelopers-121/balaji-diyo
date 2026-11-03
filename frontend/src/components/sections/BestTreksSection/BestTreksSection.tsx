@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Mountain } from "lucide-react";
 import { getPopularTrips } from "@/features/trips/api/get-trips";
 import { PackageCard, type CardTrip } from "@/components/ui/PackageCard";
+import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
 
 /**
  * "10 Best Treks – Offered for 2026" — a 4-up grid of trek cards right
@@ -14,9 +15,9 @@ const TREKS_PAGE = "/trekking-routes-in-nepal";
 
 
 /**
- * Sample cards shown ONLY in development when the API has no popular
+ * Sample cards shown when the API has no popular
  * trips yet (fresh/empty database), so the section's design is visible.
- * Never rendered in production.
+ * Controlled by `SHOW_SAMPLE_DATA` (see lib/sample-data.ts).
  */
 export const SAMPLE_TREKS: CardTrip[] = [
   { id: "s1", slug: "everest-base-camp-trekking", title: "Everest Base Camp Trek", imageUrl: "/images/journey/trek.jpg", duration: 14, durationType: "Days", priceFrom: 1300, rating: 5, reviewCount: 10, badge: "Best Seller" },
@@ -32,7 +33,7 @@ export const SAMPLE_TREKS: CardTrip[] = [
 export async function BestTreksSection() {
   const fetched: CardTrip[] = await getPopularTrips(8).catch(() => []);
   const trips =
-    fetched.length === 0 && process.env.NODE_ENV !== "production" ? SAMPLE_TREKS : fetched;
+    fetched.length === 0 && SHOW_SAMPLE_DATA ? SAMPLE_TREKS : fetched;
   if (trips.length === 0) return null;
 
   return (

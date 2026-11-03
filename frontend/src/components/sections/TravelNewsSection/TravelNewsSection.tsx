@@ -3,11 +3,12 @@ import { ArrowRight, CalendarDays, Mountain, PenLine } from "lucide-react";
 import { FillImage } from "@/components/ui/FillImage";
 import { getBlogs } from "@/features/blogs/api/get-blogs";
 import { formatBlogDate } from "@/features/blogs/lib/format-blog-date";
+import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
 
 /**
  * "Travel News & Articles" — the three latest blog posts as cards (title,
  * date, author, then photo). Real posts come from `GET /blogs`; when there
- * are none, development shows sample posts (never in production) and
+ * are none, sample posts show (unless `SHOW_SAMPLE_DATA=false`) and
  * production hides the section.
  */
 interface Post {
@@ -37,7 +38,7 @@ export async function TravelNewsSection() {
           author: post.authors[0]?.name ?? "Joyful Trekking Pvt. Ltd.",
           image: post.imageUrl ?? "/images/blog/ebc-fitness-level.jpg",
         }))
-      : process.env.NODE_ENV !== "production"
+      : SHOW_SAMPLE_DATA
         ? SAMPLE_POSTS
         : [];
   if (posts.length === 0) return null;

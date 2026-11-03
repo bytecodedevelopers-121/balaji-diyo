@@ -3,13 +3,14 @@ import { ArrowRight, Info, Mountain } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import { getUpcomingDepartures } from "@/features/departures/api/get-upcoming-departures";
 import type { Departure } from "@/features/departures/types/departure.types";
+import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
 
 /**
  * "Join Upcoming Trips" — a departures table right after the Best Sellers
  * grid: trip, date range, status, price, and a "Join This Date" button
  * that opens a WhatsApp enquiry. Real rows come from `GET /departures`;
  * `oldPrice` / `spaces` aren't in that API yet, so they only show on the
- * development-only sample rows used when the database has no departures.
+ * sample rows used when the database has no departures.
  */
 interface Row {
   id: string;
@@ -71,7 +72,7 @@ export async function UpcomingTripsSection() {
   const rows: Row[] =
     departures.length > 0
       ? departures.slice(0, MAX_ROWS).map(toRow)
-      : process.env.NODE_ENV !== "production"
+      : SHOW_SAMPLE_DATA
         ? SAMPLE_ROWS
         : [];
   if (rows.length === 0) return null;

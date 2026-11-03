@@ -3,6 +3,7 @@ import { ArrowRight, Mountain } from "lucide-react";
 import type { CardTrip } from "@/components/ui/PackageCard";
 import { FeaturedTripCard } from "./FeaturedTripCard";
 import { getFeaturedTrips } from "@/features/trips/api/get-trips";
+import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
 
 /**
  * "10 Best Tours & Holidays for 2026" — same card grid as the Best Sellers
@@ -13,8 +14,8 @@ import { getFeaturedTrips } from "@/features/trips/api/get-trips";
 const TOURS_PAGE = "/nepal-tour-packages";
 
 /**
- * Sample cards shown ONLY in development when the API has no featured
- * trips yet (fresh/empty database). Never rendered in production.
+ * Sample cards shown when the API has no featured
+ * trips yet (fresh/empty database). Controlled by `SHOW_SAMPLE_DATA` (see lib/sample-data.ts).
  */
 const SAMPLE_TOURS: CardTrip[] = [
   { id: "t1", slug: "nepal-tour-packages", title: "Spirit of Nepal Tour", imageUrl: "/images/journey/tour.jpg", duration: 10, durationType: "Days", priceFrom: 600, rating: 5, reviewCount: 10, badge: "Nepal Highlights" },
@@ -44,7 +45,7 @@ const SLOTS = [
 export async function FeaturedToursSection() {
   const fetched: CardTrip[] = await getFeaturedTrips(8).catch(() => []);
   const trips =
-    fetched.length === 0 && process.env.NODE_ENV !== "production" ? SAMPLE_TOURS : fetched;
+    fetched.length === 0 && SHOW_SAMPLE_DATA ? SAMPLE_TOURS : fetched;
   if (trips.length === 0) return null;
 
   return (
