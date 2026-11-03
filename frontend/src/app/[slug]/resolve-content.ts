@@ -1,4 +1,6 @@
 import { getAllPackageSlugs, getPackageDetail, type PackageDetail } from "./data";
+import { getSamplePackageDetail } from "./sample-packages";
+import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
 import { getTrekkingRegionDetail, TREKKING_REGION_SLUGS } from "@/features/trekking-regions/api/get-trekking-regions";
 import type { TrekkingRegionDetail } from "@/features/trekking-regions/types/trekking-region.types";
 import { getCategoryBySlug, getAllCategorySlugsWithPackages } from "@/features/trips/api/get-category-by-slug";
@@ -74,6 +76,11 @@ export async function resolveContentBySlug(slug: string, page = 1): Promise<Reso
   const pkg = await getPackageDetail(slug);
   if (pkg) {
     return { type: "package", data: pkg };
+  }
+
+  const sample = SHOW_SAMPLE_DATA ? getSamplePackageDetail(slug) : null;
+  if (sample) {
+    return { type: "package", data: sample };
   }
 
   const category = await getCategoryBySlug(slug);

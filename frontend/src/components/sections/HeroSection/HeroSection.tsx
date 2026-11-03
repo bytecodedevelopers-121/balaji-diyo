@@ -46,9 +46,9 @@ export async function HeroSection() {
     CATEGORIES.map((c) => ("countSlug" in c && c.countSlug ? getCategoryPackageCount(c.countSlug) : null)),
   );
   return (
-    <section id="home-hero" className="relative isolate flex min-h-[100dvh] w-full flex-col overflow-hidden bg-[#121d4b] text-white">
+    <section id="home-hero" className="relative isolate flex min-h-[100dvh] w-full flex-col overflow-hidden bg-[#064a70] text-white">
       {/* Background video (poster image for reduced motion) under a navy fade. */}
-      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[#121d4b]">
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[#064a70]">
         <HeroVideo />
         <FillImage
           src="/images/hero/hero-poster.jpg"
@@ -57,7 +57,7 @@ export async function HeroSection() {
           className="hidden object-cover motion-reduce:block"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0c1840]/55 via-[#0c1840]/35 to-[#0c1840]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#064a70]/55 via-[#064a70]/35 to-[#064a70]" />
       </div>
 
       <div className="relative mx-auto flex w-full max-w-[1440px] flex-1 flex-col items-center px-4 pt-[calc(var(--site-header-h,72px)+72px)] text-center min-[768px]:px-10 min-[1120px]:px-[72px] min-[1120px]:pt-[calc(var(--site-header-h,96px)+80px)]">

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Mountain } from "lucide-react";
-import { SAMPLE_TREKS } from "@/components/sections/BestTreksSection/BestTreksSection";
+import { SAMPLE_BEST_SELLERS } from "@/lib/sample-trips";
 import type { CardTrip } from "@/components/ui/PackageCard";
 import { getPopularTrips } from "@/features/trips/api/get-trips";
 import { BestSellersCarousel } from "./BestSellersCarousel";
@@ -18,7 +18,7 @@ const MAX_CARDS = 8;
 
 export async function BestSellersSection() {
   const fetched: CardTrip[] = await getPopularTrips(MAX_CARDS).catch(() => []);
-  const trips = fetched.length === 0 && SHOW_SAMPLE_DATA ? SAMPLE_TREKS : fetched;
+  const trips = fetched.length === 0 && SHOW_SAMPLE_DATA ? SAMPLE_BEST_SELLERS : fetched;
   if (trips.length === 0) return null;
 
   return (

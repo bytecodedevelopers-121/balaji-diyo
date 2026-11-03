@@ -1,57 +1,29 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import Link from "next/link";
 import { setTawkVisible } from "@/components/analytics/TawkChat";
-import { DatePicker } from "@/components/ui/DatePicker";
-import { WHATSAPP_HREF, WhatsAppGlyph } from "@/components/ui/WhatsAppButton";
 import type { PackageDetail } from "../data";
 import { useBookingFlow } from "./booking-flow-context";
-import { pricePerPersonForAdults } from "./booking-helpers";
+import { DownloadPdfButton } from "./DownloadPdfButton";
 
 /**
- * Sticky "Start Booking" widget — matches Figma node 1000006535 (the
- * card alongside the main content column): departure date, a pax
- * stepper with per-person price, a running total, Trip Enquiry / Book
- * Now buttons, and an "Expert Advice" contact card.
+ * Sticky price sidebar: a navy "Price from" card with the group-discount tiers,
+ * then Join Upcoming Departure / Check Availability / Send Inquiry actions, the
+ * group-cost note and quick links. Check Availability opens the booking flow
+ * (first departure, 1 traveler) and Send Inquiry opens the enquiry form.
  *
- * No add-ons here, deliberately (2026-09-02 client request, applies to
- * every package) — this card has no selection UI, so it used to just
- * always add the trip's first two `addOns` into the total regardless of
- * whether the traveler wanted them (and the actual booking payload below
- * ignored them anyway, `addOnLabels: []`). Add-ons stay opt-in only,
- * via the interactive checklist in the page's own Cost section.
- *
- * Below `md` the card above scrolls away inline with the rest of the
- * page (Figma node 596:26470's mobile frame), so the design adds a
- * second, viewport-fixed bar — Trip Enquiry / Book Now, the same pair
- * as this card's own buttons — that stays reachable the whole time.
- * `<MobileBookingBar>` renders that; `PackageDetailView` pads the
- * page's bottom on mobile so it doesn't cover the last section.
- *
- * That bar (2026-09-03) replaced an earlier WhatsApp / Book Now pairing
- * — WhatsApp is still reachable via the root layout's floating button
- * elsewhere on the site, and Tawk chat is deliberately hidden on mobile
- * here (see the effect below) so this one enquiry/booking CTA is the
- * single sticky contact point on this page, without competing chat
- * entry points stacking up in the same corner.
+ * Below `md` the card scrolls away inline with the page, so `<MobileBookingBar>`
+ * renders a second, viewport-fixed Trip Enquiry / Book Now bar that stays
+ * reachable; `PackageDetailView` pads the page bottom so it doesn't cover the
+ * last section. Tawk chat is hidden on mobile here (see the effect below).
  */
 export function BookingSidebar({ trip }: { trip: PackageDetail }) {
-  const [pax, setPax] = useState(1);
-  const [departureDate, setDepartureDate] = useState(
+  const [departureDate] = useState(
     trip.departures[0]?.startDate ?? new Date().toISOString().slice(0, 10),
   );
   const [stickyTop, setStickyTop] = useState(60); // ~ old `md:top-15` fallback before the first measurement
   const { openBooking, openEnquiry } = useBookingFlow();
-  // FIXED 2026-09-03 (user-reported: increasing travelers just doubled
-  // the 1-person price instead of following the "Group Price Breakdown"
-  // table). This always read `costTiers[0]` — the 1-person tier — no
-  // matter how many `pax` were selected, so e.g. 2 travelers priced at
-  // 2× the solo rate instead of the real 2-4 person group rate. Same
-  // tiered lookup `BookingConfirmModal`/`CheckoutView` already use for
-  // this exact math, now recomputed as `pax` changes.
-  const pricePerPax = pricePerPersonForAdults(trip, pax);
-  const total = pricePerPax * pax;
 
   // Same overlap problem as TabNav (see its own comment): a fixed
   // `top` offset here was tuned for the header alone, so once the tab
@@ -104,127 +76,77 @@ export function BookingSidebar({ trip }: { trip: PackageDetail }) {
         onBookNow={() =>
           openBooking({
             departureDate,
-            adults: pax,
+            adults: 1,
             addOnLabels: [],
           })
         }
       />
-      <aside style={{ top: stickyTop }} className="rounded-2xl border border-[#fbc99d] bg-primary-100 p-5 md:sticky">
-        <h2 className="border-b border-[#fbc99d] pb-3 font-poppins text-2xl font-medium text-brand-neutral-1000">
-          Start Booking
-        </h2>
-
-        <div className="flex flex-col gap-3 py-4">
-          <DatePicker
-            label="Departure Date"
-            value={departureDate}
-            onChange={setDepartureDate}
-          />
-
-          <div className="flex items-center justify-between border-b border-[#fbc99d] pb-3">
-            <div className="flex items-center gap-1.5">
-              <button
-                type="button"
-                onClick={() => setPax((p) => Math.max(1, p - 1))}
-                className="flex size-10 items-center justify-center rounded-full bg-white font-poppins text-body-l text-brand-neutral-700"
-                aria-label="Decrease travelers"
-              >
-                −
-              </button>
-              <span className="flex size-10 items-center justify-center rounded-full border border-[#ebebeb] bg-white font-poppins text-body-l font-medium text-brand-neutral-700">
-                {pax}
+      <aside style={{ top: stickyTop }} className="md:sticky">
+        <div className="overflow-hidden rounded-md bg-[#064a70] text-white shadow-card-strong">
+          <div className="px-6 pt-6 pb-5">
+            <p className="text-[19px]">Price from</p>
+            <p className="mt-1 text-[28px] leading-none font-semibold">US${trip.priceFrom.toLocaleString()}</p>
+            <a href="#departures" className="mt-3 inline-flex items-center gap-2 text-[15px] underline underline-offset-4">
+              <span aria-hidden="true" className="grid size-5 place-items-center rounded-full bg-[#f7931e] text-[12px] font-bold italic">
+                i
               </span>
-              <button
-                type="button"
-                onClick={() => setPax((p) => p + 1)}
-                className="flex size-10 items-center justify-center rounded-full bg-white font-poppins text-body-l text-brand-neutral-700"
-                aria-label="Increase travelers"
-              >
-                +
-              </button>
-            </div>
-            <div className="text-right">
-              <p className="font-poppins text-heading-xl font-medium text-brand-neutral-1000">
-                ${pricePerPax.toLocaleString()}
-              </p>
-              <p className="font-poppins text-body-s font-medium text-brand-neutral-700">
-                Per pax
-              </p>
-            </div>
+              Join Upcoming Trips
+            </a>
           </div>
 
-          <div className="flex items-center justify-between">
-            <span className="font-poppins text-body-l font-medium text-brand-neutral-700">
-              Total
-            </span>
-            <span className="font-poppins text-2xl font-medium text-primary-500">
-              ${total.toLocaleString()}
-            </span>
-          </div>
-
-          <div className="mt-1 flex items-center gap-1.5">
-            <button
-              type="button"
-              onClick={openEnquiry}
-              className="flex flex-1 items-center justify-center rounded-pill bg-primary-500 px-6 py-3 font-poppins text-body-m font-medium text-white"
-            >
-              Trip Enquiry
-            </button>
-            <button
-              type="button"
-              onClick={() =>
-                openBooking({
-                  departureDate,
-                  adults: pax,
-                  addOnLabels: [],
-                })
-              }
-              className="flex flex-1 items-center justify-center rounded-pill bg-secondary-500 px-6 py-3 font-poppins text-body-m font-medium text-white"
-            >
-              Book Now
-            </button>
-          </div>
+          {trip.costTiers.length > 0 ? (
+            <div className="bg-white px-5 pb-5 text-brand-neutral-900">
+              <div className="flex items-center justify-between py-4 text-[18px] font-medium text-brand-neutral-1000">
+                Group Discount Price
+                <span aria-hidden="true">−</span>
+              </div>
+              <ul className="border-t border-[#cfe3ef]">
+                {trip.costTiers.map((tier) => (
+                  <li key={tier.groupSize} className="flex items-center justify-between border-b border-[#cfe3ef] py-3 text-[16px] last:border-b-0">
+                    <span>{tier.groupSize}</span>
+                    <span>US${tier.pricePerPerson.toLocaleString()}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </div>
 
-        {/*
-          Desktop-only (2026-09-03): this whole card is still shown
-          inline on mobile per the doc comment above (Figma's own
-          mobile frame), but that made this "Expert Advice" WhatsApp
-          button a second, redundant WhatsApp CTA on top of
-          `MobileBookingBar`'s persistent one — which, unlike this
-          in-flow card, is always on screen, so nothing is lost by
-          only showing this one where the sticky sidebar itself
-          appears (`md` and up).
-        */}
-        <div className="-mx-5 -mb-5 hidden items-center justify-between gap-6 rounded-b-2xl bg-white p-5 md:flex">
-          <div className="flex items-center gap-3">
-            <span className="relative flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-primary-500 bg-primary-100 p-2">
-              <Image
-                src="/android-chrome-192x192.png"
-                alt=""
-                fill
-                sizes="44px"
-                className="object-contain"
-              />
-            </span>
-            <div>
-              <p className="font-poppins text-body-s font-medium text-brand-neutral-700">
-                Quick help?
-              </p>
-              <p className="font-poppins text-body-l font-medium text-brand-neutral-800">
-                Expert Advice
-              </p>
-            </div>
-          </div>
-          <a
-            href={WHATSAPP_HREF}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Chat with an expert on WhatsApp"
-            className="flex size-14 shrink-0 items-center justify-center rounded-full bg-[#25D366] text-white transition-colors hover:bg-[#20bd5a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-neutral-900"
+        <div className="mt-6 flex flex-col gap-3">
+          <button
+            type="button"
+            onClick={() => openBooking({ departureDate, adults: 1, addOnLabels: [] })}
+            className="rounded-sm bg-[#f7931e] px-6 py-4 text-[19px] font-medium text-white transition-opacity hover:opacity-90"
           >
-            <WhatsAppGlyph className="size-8" />
-          </a>
+            Join Upcoming Departure
+          </button>
+          <button
+            type="button"
+            onClick={() => openBooking({ departureDate, adults: 1, addOnLabels: [] })}
+            className="rounded-sm bg-[#064a70] px-6 py-4 text-[19px] font-medium text-white transition-opacity hover:opacity-90"
+          >
+            Check Availability
+          </button>
+          <button
+            type="button"
+            onClick={openEnquiry}
+            className="rounded-sm bg-[#4f98bf] px-6 py-4 text-[19px] font-medium text-white transition-opacity hover:opacity-90"
+          >
+            Send Inquiry
+          </button>
+        </div>
+
+        <div className="mt-6 rounded-md bg-[#fdf6ef] p-5 text-[16px] leading-relaxed text-brand-neutral-800 shadow-card-strong">
+          <p>
+            The <strong className="text-brand-neutral-1000">Group cost of {trip.title}</strong> applicable to your group
+            only, not the group created by us!
+          </p>
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[#e7dfd2] pt-4 text-[14px] font-semibold text-brand-neutral-900">
+            <Link href="/customize-trip" className="hover:underline">
+              Customize a Trip
+            </Link>
+            <DownloadPdfButton slug={trip.slug} />
+          </div>
         </div>
       </aside>
     </>

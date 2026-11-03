@@ -35,7 +35,7 @@ export function TripHeader({ trip }: { trip: PackageDetail }) {
   }));
 
   return (
-    <header id="trip-hero">
+    <header id="trip-hero" className="[background:linear-gradient(#064a70_0,#064a70_94px,transparent_94px)]">
       {/*
        * Client-requested narrower gallery (2026-09-02) — was near-full-bleed
        * per the original Figma spec (only ~9px inset from the page edge),
@@ -48,7 +48,7 @@ export function TripHeader({ trip }: { trip: PackageDetail }) {
        * than padding so the sm:/lg: fixed heights below still describe
        * the gallery itself.
        */}
-      <div className="mx-auto mt-[5px] w-full max-w-360 px-6 sm:h-80 md:px-16 lg:h-120">
+      <div className="mx-auto w-full pt-5 max-w-360 px-6 sm:h-[360px] md:px-16 lg:h-[540px]">
         <ImageGallery
           images={galleryImages}
           className="h-full"

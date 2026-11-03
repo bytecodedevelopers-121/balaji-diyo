@@ -4,6 +4,7 @@ import type { CardTrip } from "@/components/ui/PackageCard";
 import { FeaturedTripCard } from "./FeaturedTripCard";
 import { getFeaturedTrips } from "@/features/trips/api/get-trips";
 import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
+import { SAMPLE_FEATURED } from "@/lib/sample-trips";
 
 /**
  * "10 Best Tours & Holidays for 2026" — same card grid as the Best Sellers
@@ -13,20 +14,6 @@ import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
  */
 const TOURS_PAGE = "/nepal-tour-packages";
 
-/**
- * Sample cards shown when the API has no featured
- * trips yet (fresh/empty database). Controlled by `SHOW_SAMPLE_DATA` (see lib/sample-data.ts).
- */
-const SAMPLE_TOURS: CardTrip[] = [
-  { id: "t1", slug: "nepal-tour-packages", title: "Spirit of Nepal Tour", imageUrl: "/images/journey/tour.jpg", duration: 10, durationType: "Days", priceFrom: 600, rating: 5, reviewCount: 10, badge: "Nepal Highlights" },
-  { id: "t2", slug: "bhutan-tours", title: "Nepal and Bhutan Highlights", imageUrl: "/images/hero/hero-2.jpeg", duration: 12, durationType: "Days", priceFrom: 2200, rating: 5, reviewCount: 4, badge: "Two Countries" },
-  { id: "t3", slug: "nepal-helicopter-tours", title: "Everest Base Camp Helicopter Tour with Landing", imageUrl: "/images/journey/heli.jpg", duration: 5, durationType: "Hours", priceFrom: 1400, badge: "Best Heli Tour" },
-  { id: "t4", slug: "nepal-day-tours", title: "Kathmandu Day Tour - 1 Full Day", imageUrl: "/images/hero/hero-3.jpeg", duration: 1, durationType: "Day", priceFrom: 32, rating: 5, reviewCount: 6, badge: "Best of Kathmandu" },
-  { id: "t5", slug: "nepal-tour-packages", title: "Nepal Premium Adventure", imageUrl: "/images/hero/hero-4.jpeg", duration: 12, durationType: "Days", priceFrom: 1200 },
-  { id: "t6", slug: "nepal-tour-packages", title: "Chitwan Jungle Safari", imageUrl: "/images/hero/hero-1.png", duration: 3, durationType: "Days", priceFrom: 200, rating: 5, reviewCount: 3, badge: "Jungle Adventure" },
-  { id: "t7", slug: "bhutan-tours", title: "Bhutan Highlights Tour", imageUrl: "/images/hero/12.jpeg", duration: 5, durationType: "Days", priceFrom: 1570, badge: "Bhutan Highlights" },
-  { id: "t8", slug: "nepal-helicopter-tours", title: "Everest Heli Tour with Stay at Everest View Hotel", imageUrl: "/images/trips/featured-heli-tour.jpg", duration: 2, durationType: "Days", priceFrom: 3000, badge: "Himalayan Luxury Tour" },
-];
 
 /** Desktop scatter positions around the centred heading: left %, top px, tilt deg. */
 const SLOTS = [
@@ -45,7 +32,7 @@ const SLOTS = [
 export async function FeaturedToursSection() {
   const fetched: CardTrip[] = await getFeaturedTrips(8).catch(() => []);
   const trips =
-    fetched.length === 0 && SHOW_SAMPLE_DATA ? SAMPLE_TOURS : fetched;
+    fetched.length === 0 && SHOW_SAMPLE_DATA ? SAMPLE_FEATURED.slice(0, 8) : fetched;
   if (trips.length === 0) return null;
 
   return (

@@ -43,7 +43,7 @@ function formatAltitude(meters: number, unit: Unit): string {
  * screenshot isn't a real design decision. Flagged for a real design
  * review rather than invented.
  */
-export function AltitudeChart({ trip }: { trip: PackageDetail }) {
+export function AltitudeChart({ trip, bare = false }: { trip: PackageDetail; bare?: boolean }) {
   const [unit, setUnit] = useState<Unit>("m");
   const points = trip.altitudeProfile;
 
@@ -71,6 +71,7 @@ export function AltitudeChart({ trip }: { trip: PackageDetail }) {
 
   return (
     <section className="flex min-w-0 flex-col gap-4">
+      {bare ? null : (
       <div className="flex flex-wrap items-center gap-3">
         <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary-100 text-primary-500">
           <TrendingUpIcon className="size-6" />
@@ -86,6 +87,7 @@ export function AltitudeChart({ trip }: { trip: PackageDetail }) {
           Download Chart
         </button>
       </div>
+      )}
 
       <div className="min-w-0 rounded-2xl border border-brand-neutral-300 bg-white p-6">
         <div className="font-poppins text-body-m text-brand-neutral-600">

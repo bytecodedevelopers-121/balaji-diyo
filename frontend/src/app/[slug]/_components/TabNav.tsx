@@ -1,18 +1,21 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
 
 const ALL_TABS = [
+  { id: "trip-facts", label: "Trip Facts" },
   { id: "overview", label: "Overview" },
+  { id: "map", label: "Route Map" },
+  { id: "includes", label: "Service Details & Add-Ons" },
+  { id: "departures", label: "Departures" },
+  { id: "media-gallery", label: "Media Gallery" },
   { id: "itinerary", label: "Itinerary" },
-  { id: "includes", label: "Includes" },
-  { id: "excludes", label: "Excludes" },
-  { id: "cost", label: "Cost" },
-  { id: "map", label: "Map" },
-  { id: "gear", label: "Gear" },
-  { id: "know-before-you-go", label: "Know before you go" },
-  { id: "reviews", label: "Reviews" },
+  { id: "gear", label: "Equipments" },
+  { id: "know-before-you-go", label: "Practical Info" },
   { id: "faqs", label: "FAQs" },
+  { id: "reviews", label: "Reviews" },
+  { id: "video-reviews", label: "Video Reviews" },
 ];
 
 /**
@@ -21,12 +24,10 @@ const ALL_TABS = [
  * border + label, inactive tabs are neutral-700. Scrollspy-highlights
  * the section currently in view.
  */
-export function TabNav({ hasGear = false }: { hasGear?: boolean }) {
-  // "Gear" only appears when the package actually has admin-authored
-  // packing-list content (same check `PackingAndKnowBefore` uses to
-  // render the `#gear` section it scrolls to).
-  const TABS = useMemo(() => (hasGear ? ALL_TABS : ALL_TABS.filter((tab) => tab.id !== "gear")), [hasGear]);
-  const [active, setActive] = useState(TABS[0].id);
+export function TabNav() {
+  // Every tab always shows: sections without content render a placeholder.
+  const TABS = ALL_TABS;
+  const [active, setActive] = useState(ALL_TABS[0].id);
   const [stickyTop, setStickyTop] = useState(0);
   const navRef = useRef<HTMLElement>(null);
 
@@ -241,7 +242,7 @@ export function TabNav({ hasGear = false }: { hasGear?: boolean }) {
       ref={navRef}
       id="trip-tab-nav"
       style={{ top: stickyTop }}
-      className="sticky z-10 flex gap-x-2 overflow-x-auto bg-white [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      className="sticky z-10 flex gap-x-2 overflow-x-auto bg-[#064a70] shadow-[0_0_0_100vmax_#064a70] [-ms-overflow-style:none] [clip-path:inset(0_-100vmax)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     >
       {TABS.map((tab) => (
         <a
@@ -249,10 +250,8 @@ export function TabNav({ hasGear = false }: { hasGear?: boolean }) {
           data-tab-id={tab.id}
           href={`#${tab.id}`}
           onClick={(event) => handleTabClick(event, tab.id)}
-          className={`shrink-0 border-b px-4 py-4 font-poppins text-body-m font-medium whitespace-nowrap ${
-            active === tab.id
-              ? "border-primary-500 text-primary-500"
-              : "border-transparent text-brand-neutral-700"
+          className={`shrink-0 border-b-2 px-3 py-4 text-[15px] font-medium whitespace-nowrap text-white transition-opacity ${
+            active === tab.id ? "border-white" : "border-transparent opacity-80 hover:opacity-100"
           }`}
         >
           {tab.label}

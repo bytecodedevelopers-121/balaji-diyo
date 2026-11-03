@@ -23,6 +23,10 @@ export interface Trip {
   /** Average of active testimonial ratings, computed for region listing cards. */
   rating?: number;
   reviewCount?: number;
+  /** Admin flag: shown in the homepage "Best Sellers" pool. */
+  isPopular?: boolean;
+  /** Admin flag: shown in the Featured Trips pool. */
+  isFeatured?: boolean;
 }
 
 /** Raw `GET /packages` price-group shape, just enough to derive `Trip.priceFrom`. Decimal fields serialize as numeric strings — see `lib/decimal.ts`. */

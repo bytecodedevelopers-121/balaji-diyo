@@ -3,6 +3,7 @@ import { ArrowRight, Mountain } from "lucide-react";
 import { getPopularTrips } from "@/features/trips/api/get-trips";
 import { PackageCard, type CardTrip } from "@/components/ui/PackageCard";
 import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
+import { SAMPLE_TREKS } from "@/lib/sample-trips";
 
 /**
  * "10 Best Treks – Offered for 2026" — a 4-up grid of trek cards right
@@ -14,21 +15,6 @@ import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
 const TREKS_PAGE = "/trekking-routes-in-nepal";
 
 
-/**
- * Sample cards shown when the API has no popular
- * trips yet (fresh/empty database), so the section's design is visible.
- * Controlled by `SHOW_SAMPLE_DATA` (see lib/sample-data.ts).
- */
-export const SAMPLE_TREKS: CardTrip[] = [
-  { id: "s1", slug: "everest-base-camp-trekking", title: "Everest Base Camp Trek", imageUrl: "/images/journey/trek.jpg", duration: 14, durationType: "Days", priceFrom: 1300, rating: 5, reviewCount: 10, badge: "Best Seller" },
-  { id: "s2", slug: "annapurna-circuit-trekking", title: "Annapurna Base Camp Trek", imageUrl: "/images/trips/featured-annapurna-trek.jpg", duration: 14, durationType: "Days", priceFrom: 850, rating: 5, reviewCount: 16, badge: "Most Popular" },
-  { id: "s3", slug: "manaslu-circuit-trek", title: "Langtang Valley Trek", imageUrl: "/images/journey/climb.jpg", duration: 12, durationType: "Days", priceFrom: 700, rating: 5, reviewCount: 2, badge: "Less Crowded" },
-  { id: "s4", slug: "manaslu-circuit-trek", title: "Manaslu Circuit Trek", imageUrl: "/images/journey/tour.jpg", duration: 14, durationType: "Days", priceFrom: 1000, rating: 5, reviewCount: 2, badge: "Off Trodden" },
-  { id: "s5", slug: "annapurna-circuit-trekking", title: "Annapurna Circuit Trek", imageUrl: "/images/trips/featured-annapurna-trek.jpg", duration: 15, durationType: "Days", priceFrom: 1000, rating: 5, reviewCount: 1, badge: "Best Circuit Trek" },
-  { id: "s6", slug: "everest-base-camp-trekking", title: "Ghorepani Poon Hill Trek", imageUrl: "/images/journey/trek.jpg", duration: 4, durationType: "Days", priceFrom: 350, rating: 5, reviewCount: 7, badge: "Beginner Friendly" },
-  { id: "s7", slug: "everest-base-camp-trekking", title: "Cho La Pass With EBC Trek", imageUrl: "/images/journey/climb.jpg", duration: 19, durationType: "Days", priceFrom: 1500, rating: 5, reviewCount: 2, badge: "Cross Cho La Pass" },
-  { id: "s8", slug: "manaslu-circuit-trek", title: "Comfort Manaslu Circuit Trek", imageUrl: "/images/journey/tour.jpg", duration: 17, durationType: "Days", priceFrom: 1500, rating: 5, reviewCount: 1, badge: "Manaslu in Luxury" },
-];
 
 export async function BestTreksSection() {
   const fetched: CardTrip[] = await getPopularTrips(8).catch(() => []);
@@ -77,3 +63,4 @@ export async function BestTreksSection() {
     </section>
   );
 }
+export { SAMPLE_TREKS };

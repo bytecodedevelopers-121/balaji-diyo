@@ -11,13 +11,16 @@ import { ItinerarySection } from "./ItinerarySection";
 import { InclusionsSection } from "./InclusionsSection";
 import { CostSection } from "./CostSection";
 import { DeparturesSection } from "./DeparturesSection";
-import { MapSection } from "./MapSection";
-import { ChartsSection } from "./ChartsSection";
-import { PackingAndKnowBefore } from "./PackingAndKnowBefore";
-import { hasRichContent } from "../has-rich-content";
+import { RouteMapSection } from "./RouteMapSection";
+import { EquipmentSection, PracticalInfoSection } from "./PackingAndKnowBefore";
 import { FaqCategoriesSection } from "./FaqCategoriesSection";
 import { ReviewsSection } from "./ReviewsSection";
 import { StoriesAndSimilar } from "./StoriesAndSimilar";
+import { CalendarClock, Map, MessagesSquare } from "lucide-react";
+import { SectionRow } from "./SectionRow";
+import { AddOnsSection } from "./AddOnsSection";
+import { MediaGallerySection } from "./MediaGallerySection";
+import { VideoReviewsSection } from "./VideoReviewsSection";
 
 /**
  * Full render for the "package" content type — transcribed from the
@@ -80,11 +83,11 @@ export function PackageDetailView({ trip }: { trip: PackageDetail }) {
           doesn't sit over StoriesAndSimilar/CtaSection once scrolled
           all the way down; `md:pb-0` drops it once that bar is hidden.
         */}
-        <div className="bg-[#FFFAF0] pb-24 md:pb-0">
+        <div className="bg-white pb-24 md:pb-0">
           <TripHeader trip={trip} />
 
           <div className="mx-auto w-full max-w-360 px-6 pb-5 md:px-16">
-            <TabNav hasGear={hasRichContent(trip.packingListIntro)} />
+            <TabNav />
             <TripTitleBar trip={trip} />
 
             {/*
@@ -107,32 +110,34 @@ export function PackageDetailView({ trip }: { trip: PackageDetail }) {
               Departures, Map/Charts — a smaller, tighter pairing that
               was never part of any of these passes).
             */}
-            <div className="mt-[26px] grid grid-cols-1 gap-10 lg:grid-cols-[2fr_1fr]">
+            <div className="mt-[26px] grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_380px]">
               <div className="flex min-w-0 flex-col gap-[4px]">
                 <HighlightsAndOverview trip={trip} />
-                <div id="itinerary">
-                  <ItinerarySection trip={trip} />
-                </div>
-                {/* InclusionsSection owns its own `id="includes"`/`id="excludes"` on its two inner sections — TabNav now has separate tabs for each. */}
-                <InclusionsSection trip={trip} />
-                <div
-                  id="cost"
-                  className="flex flex-col gap-8"
-                >
-                  <CostSection trip={trip} />
+                <RouteMapSection trip={trip} />
+                {/* InclusionsSection owns its own `id="includes"`/`id="excludes"` on its two inner sections. */}
+                <SectionRow label="Service Details & Add-Ons">
+                  <div className="flex flex-col gap-8">
+                    <InclusionsSection trip={trip} />
+                    <AddOnsSection trip={trip} />
+                    <CostSection trip={trip} />
+                  </div>
+                </SectionRow>
+                <SectionRow id="departures" label="Trip Booking" icon={<CalendarClock aria-hidden="true" className="size-14" strokeWidth={1} />}>
                   <DeparturesSection trip={trip} />
-                </div>
-                <div
-                  id="map"
-                  className="flex min-w-0 flex-col gap-8"
-                >
-                  <MapSection trip={trip} />
-                  <ChartsSection trip={trip} />
-                </div>
-                <PackingAndKnowBefore trip={trip} />
-                <div id="reviews">
+                </SectionRow>
+                <MediaGallerySection trip={trip} />
+                <SectionRow id="itinerary" label="Roadmap" icon={<Map aria-hidden="true" className="size-14" strokeWidth={1} />}>
+                  <ItinerarySection trip={trip} />
+                </SectionRow>
+                <EquipmentSection trip={trip} />
+                <PracticalInfoSection trip={trip} />
+                <SectionRow id="faqs" label="Our FAQs" icon={<MessagesSquare aria-hidden="true" className="size-14" strokeWidth={1} />}>
+                  <FaqCategoriesSection trip={trip} />
+                </SectionRow>
+                <div id="reviews" className="scroll-mt-32 py-6">
                   <ReviewsSection trip={trip} />
                 </div>
+                <VideoReviewsSection trip={trip} />
               </div>
 
               <div>
@@ -140,12 +145,6 @@ export function PackageDetailView({ trip }: { trip: PackageDetail }) {
               </div>
             </div>
 
-            <div
-              id="faqs"
-              className="mt-[26px]"
-            >
-              <FaqCategoriesSection trip={trip} />
-            </div>
           </div>
 
           <StoriesAndSimilar trip={trip} />

@@ -173,6 +173,8 @@ export interface PackageDetail {
     rating: number;
   }[];
   stories: { image: string; title: string; date: string; author: string }[];
+  /** YouTube ids/URLs from the package's "video" facts, shown in the Video Reviews section. */
+  videoIds?: string[];
   similarPackages: {
     image: string;
     title: string;

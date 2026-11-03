@@ -339,8 +339,8 @@ export function Header({
         // Over the hero video the bar is see-through (just a soft top fade
         // for legibility); it turns solid once scrolled or a panel opens.
         isTransparent && !isSolid
-          ? "bg-gradient-to-b from-[#0c1840]/70 to-transparent"
-          : "bg-[#0c1840]",
+          ? "bg-gradient-to-b from-[#064a70]/70 to-transparent"
+          : "bg-[#064a70]",
         isDark ? "fixed inset-x-0 top-0" : "sticky top-0",
       )}
     >
@@ -494,7 +494,7 @@ export function Header({
                     />
                   </button>
                   {isDestination ? (
-                    <TrekkingMenu />
+                    <TrekkingMenu data={destinationDropdown} />
                   ) : null}
                   </Fragment>
                 );

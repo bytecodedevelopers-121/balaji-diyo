@@ -12,7 +12,7 @@ import { DownloadIcon } from "./icons";
  * `revokeObjectURL` sequence, same `disabled` state while the PDF
  * renders server-side (a multi-page brochure isn't instant).
  */
-export function DownloadPdfButton({ slug }: { slug: string }) {
+export function DownloadPdfButton({ slug, compact = false }: { slug: string; compact?: boolean }) {
   const [isGenerating, setIsGenerating] = useState(false);
 
   async function handleDownload() {
@@ -46,7 +46,11 @@ export function DownloadPdfButton({ slug }: { slug: string }) {
       type="button"
       onClick={handleDownload}
       disabled={isGenerating}
-      className="flex items-center gap-1.5 rounded-pill border border-primary-500 px-3 py-2 font-poppins text-body-s font-medium text-primary-500 disabled:cursor-not-allowed disabled:opacity-50 sm:gap-3 sm:px-5 sm:py-2.5 sm:text-body-m"
+      className={
+        compact
+          ? "flex shrink-0 items-center gap-1.5 text-[13px] font-medium text-brand-neutral-900 hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+          : "flex items-center gap-1.5 rounded-pill border border-primary-500 px-3 py-2 font-poppins text-body-s font-medium text-primary-500 disabled:cursor-not-allowed disabled:opacity-50 sm:gap-3 sm:px-5 sm:py-2.5 sm:text-body-m"
+      }
     >
       {isGenerating ? (
         <svg className="size-3.5 animate-spin sm:size-4.5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -60,7 +64,7 @@ export function DownloadPdfButton({ slug }: { slug: string }) {
       ) : (
         <DownloadIcon className="size-3.5 sm:size-4.5" />
       )}
-      {isGenerating ? "Generating PDF..." : "Download PDF"}
+      {isGenerating ? "Generating PDF..." : compact ? "Download" : "Download PDF"}
     </button>
   );
 }

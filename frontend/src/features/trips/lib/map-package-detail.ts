@@ -628,6 +628,7 @@ export function mapPackageDetail(
     rating,
     reviewCount: pkg.testimonials.length,
     quickFacts: buildQuickFacts(pkg),
+    videoIds: pkg.facts.filter((fact) => fact.factTitle.toLowerCase() === "video").map((fact) => fact.factValue.trim()).filter(Boolean),
     priceFrom,
     intro: pkg.abstract ? stripHtml(pkg.abstract) : "",
     highlights: splitHtmlBlocks(pkg.highlights),
