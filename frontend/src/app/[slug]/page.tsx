@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
+import { tripHref } from "@/lib/trip-href";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { getAllResolvableSlugs, resolveContentBySlug } from "./resolve-content";
 import { overviewText } from "./data";
-import { PackageDetailView } from "./_components/PackageDetailView";
 import { TrekkingRegionDetailSection } from "@/components/sections/TrekkingRegionsSection";
 import { CategoryDetailSection } from "@/components/sections/CategoryDetailSection";
 import { CtaSection } from "@/components/sections/CtaSection";
@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       return buildMetadata({
         title: `${trip.title} | ${trip.quickFacts.find((f) => f.label === "Duration")?.value}`,
         description: overviewText(trip, 200),
-        path: `/${trip.slug}`,
+        path: tripHref(trip.slug),
         image: trip.heroImages[0],
       });
     }
@@ -80,7 +80,8 @@ export default async function FlatSlugPage({ params, searchParams }: PageProps) 
 
   switch (content.type) {
     case "package":
-      return <PackageDetailView trip={content.data} />;
+      // Package pages live at /trip/<slug>; keep old links and bookmarks working.
+      permanentRedirect(tripHref(content.data.slug));
     case "trekking-region":
       return (
         <>

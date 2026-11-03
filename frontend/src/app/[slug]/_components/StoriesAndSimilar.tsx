@@ -1,3 +1,4 @@
+import { tripHref } from "@/lib/trip-href";
 import Image from "next/image";
 import Link from "next/link";
 import type { PackageDetail } from "../data";
@@ -61,7 +62,7 @@ export function StoriesAndSimilar({ trip }: { trip: PackageDetail }) {
           </p>
           <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
             {trip.similarPackages.map((pkg) => (
-              <Link key={pkg.slug} href={`/${pkg.slug}`} className="group relative aspect-4/3.75 overflow-hidden rounded-2xl">
+              <Link key={pkg.slug} href={tripHref(pkg.slug)} className="group relative aspect-4/3.75 overflow-hidden rounded-2xl">
                 <Image
                   src={pkg.image}
                   alt=""

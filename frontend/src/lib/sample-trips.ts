@@ -19,7 +19,7 @@ export type SampleTrip = CardTrip & {
  * page. Controlled by `SHOW_SAMPLE_DATA` (see `lib/sample-data.ts`).
  */
 export const SAMPLE_TREKS: SampleTrip[] = [
-  { id: "s1", isPopular: true, countries: ["Nepal"], regions: ["everest"], slug: "everest-base-camp-trekking", title: "Everest Base Camp Trek", imageUrl: "/images/journey/trek.jpg", duration: 14, durationType: "Days", priceFrom: 1300, rating: 5, reviewCount: 10, badge: "Best Seller" },
+  { id: "s1", isPopular: true, countries: ["Nepal"], regions: ["everest"], slug: "everest-base-camp-trek", title: "Everest Base Camp Trek", imageUrl: "/images/journey/trek.jpg", duration: 14, durationType: "Days", priceFrom: 1300, rating: 5, reviewCount: 10, badge: "Best Seller" },
   { id: "s2", isPopular: true, countries: ["Nepal"], regions: ["annapurna"], slug: "annapurna-base-camp-trekking", title: "Annapurna Base Camp Trek", imageUrl: "/images/trips/featured-annapurna-trek.jpg", duration: 14, durationType: "Days", priceFrom: 850, rating: 5, reviewCount: 16, badge: "Most Popular" },
   { id: "s3", isFeatured: true, countries: ["Nepal"], regions: ["langtang"], slug: "langtang-valley-trekking", title: "Langtang Valley Trek", imageUrl: "/images/journey/climb.jpg", duration: 12, durationType: "Days", priceFrom: 700, rating: 5, reviewCount: 2, badge: "Less Crowded" },
   { id: "s4", isFeatured: true, countries: ["Nepal"], regions: ["manaslu"], slug: "manaslu-circuit-trek", title: "Manaslu Circuit Trek", imageUrl: "/images/hero/hero-3.jpeg", duration: 14, durationType: "Days", priceFrom: 1000, rating: 5, reviewCount: 2, badge: "Off Trodden" },

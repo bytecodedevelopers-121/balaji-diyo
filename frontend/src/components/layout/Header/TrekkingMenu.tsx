@@ -1,5 +1,6 @@
 "use client";
 
+import { tripHref } from "@/lib/trip-href";
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
@@ -242,7 +243,7 @@ export function TrekkingMenu({
                             {treks.map((trek) => (
                               <li key={trek.id}>
                                 <Link
-                                  href={`/${trek.slug}`}
+                                  href={tripHref(trek.slug)}
                                   onClick={() => setOpen(false)}
                                   onMouseEnter={() => setHovered(trek)}
                                   onFocus={() => setHovered(trek)}
@@ -268,7 +269,7 @@ export function TrekkingMenu({
                   </div>
 
                   <Link
-                    href={preview ? `/${preview.slug}` : (active?.href ?? "/trekking-routes-in-nepal")}
+                    href={preview ? tripHref(preview.slug) : (active?.href ?? "/trekking-routes-in-nepal")}
                     onClick={() => setOpen(false)}
                     className="group relative hidden min-h-[320px] overflow-hidden min-[1120px]:block"
                   >

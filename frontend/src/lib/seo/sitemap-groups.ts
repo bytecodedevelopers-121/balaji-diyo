@@ -1,6 +1,7 @@
 import "server-only";
 import { isProduction } from "./canonical";
 import { buildSitemapIndex, buildUrlSet, xmlResponse, type SitemapEntry } from "./sitemap-xml";
+import { tripHref } from "@/lib/trip-href";
 import { getAllPackageSlugs } from "@/features/trips/api/get-package-slugs";
 import { getAllCategorySlugsWithPackages } from "@/features/trips/api/get-category-by-slug";
 import { getTrekkingRegions } from "@/features/trekking-regions/api/get-trekking-regions";
@@ -90,7 +91,7 @@ const GROUPS: SitemapGroup[] = [
     name: "package",
     entries: async () =>
       (await getAllPackageSlugs()).map((slug) => ({
-        path: `/${slug}`,
+        path: tripHref(slug),
         priority: 0.8,
         changeFrequency: "weekly" as const,
       })),

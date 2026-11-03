@@ -1,5 +1,6 @@
 "use client";
 
+import { tripHref } from "@/lib/trip-href";
 import Link from "next/link";
 import { CarouselNavButton } from "@/components/ui/CarouselNavButton";
 import { useScrollCarousel } from "@/hooks/useScrollCarousel";
@@ -69,7 +70,7 @@ export function TripsLineupCarousel({ trips }: { trips: LineupTrip[] }) {
         {trips.map((trip) => (
           <Link
             key={trip.id}
-            href={`/${trip.slug}`}
+            href={tripHref(trip.slug)}
             className="group relative h-[460px] w-full shrink-0 snap-start overflow-hidden rounded-[24px] md:aspect-[4/5] md:h-auto md:basis-[calc(33.333%-16px)]"
           >
             <FillImage

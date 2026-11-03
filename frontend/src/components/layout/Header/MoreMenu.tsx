@@ -13,7 +13,7 @@ interface MenuLink {
 /** Trekking and Hiking dropdown links (real trek pages, see navigation.ts). */
 export const TREKKING_LINKS: MenuLink[] = [
   { label: "Trekking Routes in Nepal", href: "/trekking-routes-in-nepal" },
-  { label: "Everest Base Camp Trek", href: "/everest-base-camp-trekking" },
+  { label: "Everest Base Camp Trek", href: "/trip/everest-base-camp-trek" },
   { label: "Annapurna Circuit Trek", href: "/annapurna-circuit-trekking" },
   { label: "Manaslu Circuit Trek", href: "/manaslu-circuit-trek" },
   { label: "Upper Mustang Trek", href: "/upper-mustang-trekking" },

@@ -1,3 +1,4 @@
+import { tripHref } from "@/lib/trip-href";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { CmsProse } from "@/components/ui/CmsProse";
@@ -125,7 +126,7 @@ export function AttractionDetailSection({ attraction }: { attraction: Attraction
                       <p className="mt-2 font-poppins text-body-m text-brand-neutral-700">{trip.duration} {trip.durationType}</p>
                     </>
                   );
-                  return trip.slug ? <Link key={trip.id} href={`/${trip.slug}`} className="rounded-card bg-brand-neutral-100 p-5 transition-colors hover:bg-primary-100">{card}</Link> : <article key={trip.id} className="rounded-card bg-brand-neutral-100 p-5">{card}</article>;
+                  return trip.slug ? <Link key={trip.id} href={tripHref(trip.slug)} className="rounded-card bg-brand-neutral-100 p-5 transition-colors hover:bg-primary-100">{card}</Link> : <article key={trip.id} className="rounded-card bg-brand-neutral-100 p-5">{card}</article>;
                 })}
               </div>
             </section>

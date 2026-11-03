@@ -1,3 +1,4 @@
+import { tripHref } from "@/lib/trip-href";
 import Link from "next/link";
 import { Clock, TrendingUp } from "lucide-react";
 import { FillImage } from "@/components/ui/FillImage";
@@ -10,7 +11,7 @@ import type { CardTrip } from "@/components/ui/PackageCard";
 export function FeaturedTripCard({ trip }: { trip: CardTrip }) {
   return (
     <Link
-      href={`/${trip.slug}`}
+      href={tripHref(trip.slug)}
       className="group block overflow-hidden rounded-[18px] bg-brand-neutral-000 shadow-[0_12px_28px_rgba(6,74,112,0.18)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-logo-navy"
     >
       <span className="relative block aspect-[4/3] w-full overflow-hidden bg-brand-neutral-200">

@@ -1,5 +1,6 @@
 "use client";
 
+import { tripHref } from "@/lib/trip-href";
 import Link from "next/link";
 import { CarouselNavButton } from "@/components/ui/CarouselNavButton";
 import { useScrollCarousel } from "@/hooks/useScrollCarousel";
@@ -18,7 +19,7 @@ export interface CarouselTrip {
  * The scrollable card row for `PopularTripsSection` — split into its own
  * Client Component because scrolling needs a ref + click handlers, while
  * the section itself stays a Server Component (it does the `getFeaturedTrips`
- * fetch). Cards link to the real package detail page (`/${trip.slug}`,
+ * fetch). Cards link to the real package detail page (tripHref(trip.slug),
  * same flat-URL route `[slug]/page.tsx` resolves); the prev/next buttons
  * were previously decorative (`aria-hidden`/`tabIndex={-1}`, no data to
  * page through) — now real, since the section can pull more than 2
@@ -65,7 +66,7 @@ export function TripsCarousel({ trips }: { trips: CarouselTrip[] }) {
         {trips.map((trip) => (
           <Link
             key={trip.id}
-            href={`/${trip.slug}`}
+            href={tripHref(trip.slug)}
             className="group relative h-[460px] w-full shrink-0 snap-start overflow-hidden rounded-card md:aspect-[5/4] md:h-auto md:basis-[calc(50%-12px)]"
           >
             <FillImage

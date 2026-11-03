@@ -1,5 +1,6 @@
 "use client";
 
+import { tripHref } from "@/lib/trip-href";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
@@ -208,7 +209,7 @@ export function HeaderSearchResults({
                 {results.map((trip) => (
                   <li key={trip.id}>
                     <Link
-                      href={`/${trip.slug}`}
+                      href={tripHref(trip.slug)}
                       onClick={onClose}
                       className="flex items-center gap-4 px-3 py-2.5 transition-colors hover:bg-brand-neutral-100 focus-visible:bg-brand-neutral-100 focus-visible:outline-none"
                     >
@@ -305,7 +306,7 @@ export function HeaderSearchResults({
                 )}
               >
                 <Link
-                  href={`/${trip.slug}`}
+                  href={tripHref(trip.slug)}
                   onClick={onClose}
                   className="flex items-center gap-4 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-neutral-900"
                 >

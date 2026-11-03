@@ -92,6 +92,13 @@ export async function resolveContentBySlug(slug: string, page = 1): Promise<Reso
   return null;
 }
 
+/** A package by slug — the real one, else (empty database) its sample — for the `/trip/<slug>` route. */
+export async function resolvePackageBySlug(slug: string): Promise<PackageDetail | null> {
+  const pkg = await getPackageDetail(slug);
+  if (pkg) return pkg;
+  return SHOW_SAMPLE_DATA ? getSamplePackageDetail(slug) : null;
+}
+
 /** All slugs this resolver can currently serve, for `generateStaticParams`. */
 export async function getAllResolvableSlugs(): Promise<string[]> {
   // Concatenate future content types' slug lists here as they're added,

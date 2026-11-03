@@ -1,5 +1,6 @@
 "use client";
 
+import { tripHref } from "@/lib/trip-href";
 import Image from "next/image";
 import Link from "next/link";
 import { AlertCircle, LoaderCircle, X } from "lucide-react";
@@ -169,7 +170,7 @@ export function CompareItinerariesSection() {
                     </button>
                   </div>
                   <h2 className="px-6 pb-1 pt-6 font-poppins text-[18px] leading-[1.6] font-bold text-primary-700">
-                    <Link href={`/${trip.slug}`} className="hover:underline">{trip.title}</Link>
+                    <Link href={tripHref(trip.slug)} className="hover:underline">{trip.title}</Link>
                   </h2>
                 </article>
               ))}
@@ -215,7 +216,7 @@ export function CompareItinerariesSection() {
                   </button>
                 </div>
                 <h2 className="px-4 pb-2 pt-4 font-poppins text-[18px] leading-[1.5] font-bold text-primary-700">
-                  <Link href={`/${trip.slug}`} className="hover:underline">{trip.title}</Link>
+                  <Link href={tripHref(trip.slug)} className="hover:underline">{trip.title}</Link>
                 </h2>
                 <dl className="px-4 pb-2">
                   {rows.map((row) => (

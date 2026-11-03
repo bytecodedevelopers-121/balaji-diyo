@@ -1,3 +1,4 @@
+import { tripHref } from "@/lib/trip-href";
 import Link from "next/link";
 import { CalendarDays, Camera, Heart, Medal, Star } from "lucide-react";
 import { FillImage } from "@/components/ui/FillImage";
@@ -16,7 +17,7 @@ export function PackageCard({ trip }: { trip: CardTrip }) {
   return (
     <div className="h-full">
       <Link
-        href={`/${trip.slug}`}
+        href={tripHref(trip.slug)}
         className="group relative flex h-full flex-col transition-transform duration-300 hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-logo-navy"
       >
         {/* Photo, with the white details card tucked slightly over its bottom edge. */}

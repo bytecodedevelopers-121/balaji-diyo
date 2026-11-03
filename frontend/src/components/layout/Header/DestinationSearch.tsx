@@ -1,5 +1,6 @@
 "use client";
 
+import { tripHref } from "@/lib/trip-href";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -67,7 +68,7 @@ export function DestinationSearch({ onNavigate }: { onNavigate: () => void }) {
     const first = matches[0];
     if (!first) return;
     onNavigate();
-    router.push(`/${first.slug}`);
+    router.push(tripHref(first.slug));
   }
 
   return (
@@ -79,7 +80,7 @@ export function DestinationSearch({ onNavigate }: { onNavigate: () => void }) {
               {results.map((trip) => (
                 <li key={trip.id}>
                   <Link
-                    href={`/${trip.slug}`}
+                    href={tripHref(trip.slug)}
                     onClick={onNavigate}
                     className="flex items-center justify-between gap-4 rounded-lg px-3 py-2 text-[14px] text-white hover:bg-white/10"
                   >

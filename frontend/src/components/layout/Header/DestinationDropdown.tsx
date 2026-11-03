@@ -1,5 +1,6 @@
 "use client";
 
+import { tripHref } from "@/lib/trip-href";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
@@ -754,7 +755,7 @@ function fallbackImage(key: string): string {
 function toPackageItem(trip: Trip): PackageItem {
   return {
     title: trip.title,
-    href: `/${trip.slug}`,
+    href: tripHref(trip.slug),
     meta: [
       trip.duration ? `${trip.duration} ${(trip.durationType ?? "Days").toUpperCase()}` : null,
       trip.priceFrom ? `FROM US$${trip.priceFrom.toLocaleString()}` : null,

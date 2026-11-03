@@ -1,5 +1,6 @@
 "use client";
 
+import { tripHref } from "@/lib/trip-href";
 import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { isApiEnvelope } from "@/lib/api/api-response";
@@ -498,7 +499,7 @@ export function CheckoutView({ trip, query, phone, phoneHref }: CheckoutViewProp
             WhatsApp us
           </a>
           <Link
-            href={`/${trip.slug}`}
+            href={tripHref(trip.slug)}
             className="rounded-pill border border-primary-200 px-6 py-3 font-poppins text-body-m font-medium text-brand-neutral-800"
           >
             Back to trip page
@@ -529,7 +530,7 @@ export function CheckoutView({ trip, query, phone, phoneHref }: CheckoutViewProp
       </div>
 
       <Link
-        href={`/${trip.slug}`}
+        href={tripHref(trip.slug)}
         className="mt-4 flex w-fit items-center gap-2 font-poppins text-body-m font-medium text-brand-neutral-700 hover:text-brand-neutral-1000"
       >
         <ArrowLeftIcon className="size-4" />
