@@ -21,16 +21,16 @@ export async function BestSellersSection() {
   if (trips.length === 0) return null;
 
   return (
-    <section className="relative overflow-hidden bg-[radial-gradient(ellipse_at_50%_40%,#0e5a82_0%,#064a70_45%,#03283d_100%)] px-4 pt-12 pb-12 text-brand-neutral-000 min-[768px]:px-10 min-[1120px]:px-[72px]">
+    <section className="relative overflow-hidden bg-[#e6f3fa] px-4 pt-12 pb-12 text-brand-neutral-1000 min-[768px]:px-10 min-[1120px]:px-[72px]">
       {/* Faint dotted "world map" texture behind the stage. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-30 [background-image:radial-gradient(rgba(255,255,255,0.35)_1px,transparent_1.4px)] [background-size:22px_22px] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]"
+        className="pointer-events-none absolute inset-0 opacity-30 [background-image:radial-gradient(rgba(6,74,112,0.3)_1px,transparent_1.4px)] [background-size:22px_22px] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]"
       />
       <div className="relative mx-auto w-full max-w-[1280px]">
         <div suppressHydrationWarning className="reveal mb-4 flex items-end justify-between gap-4">
           <div>
-            <p className="mb-1 flex items-center gap-2 text-body-s font-medium text-logo-sun">
+            <p className="mb-1 flex items-center gap-2 text-body-s font-medium text-logo-navy-dark">
               <Mountain aria-hidden="true" className="size-4" />
               Best Sellers
             </p>
@@ -40,7 +40,7 @@ export async function BestSellersSection() {
           </div>
           <Link
             href="/trekking-routes-in-nepal"
-            className="hidden shrink-0 items-center gap-2 rounded-pill border border-logo-sun px-5 py-2 text-body-s font-semibold text-brand-neutral-000 transition-colors hover:bg-logo-sun hover:text-logo-navy-dark sm:inline-flex"
+            className="hidden shrink-0 items-center gap-2 rounded-pill border border-logo-sun px-5 py-2 text-body-s font-semibold text-logo-navy-dark transition-colors hover:bg-logo-sun sm:inline-flex"
           >
             View All Treks
             <ArrowRight aria-hidden="true" className="size-4" />

@@ -16,7 +16,7 @@ const STORIES = [
 
 export function WebStoriesSection() {
   return (
-    <section className="bg-site-bg px-4 pt-6 pb-12 min-[768px]:px-10 min-[1120px]:px-[72px]">
+    <section className="bg-[#e6f3fa] px-4 pt-6 pb-12 min-[768px]:px-10 min-[1120px]:px-[72px]">
       <div className="mx-auto w-full max-w-[1280px]">
         <div suppressHydrationWarning className="reveal mb-5 flex items-end justify-between gap-4">
           <div>

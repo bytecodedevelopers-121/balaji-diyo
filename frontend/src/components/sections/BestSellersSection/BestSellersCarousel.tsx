@@ -241,7 +241,7 @@ export function BestSellersCarousel({ items }: { items: CardTrip[] }) {
             onClick={() => setActive(i)}
             className={cn(
               "h-2 rounded-full transition-all duration-300",
-              i === active ? "w-7 bg-logo-sun" : "w-2 bg-white/40 hover:bg-white/70",
+              i === active ? "w-7 bg-logo-sun" : "w-2 bg-logo-navy/25 hover:bg-logo-navy/50",
             )}
           />
         ))}

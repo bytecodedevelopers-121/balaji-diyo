@@ -68,8 +68,8 @@
   --color-logo-sky: #00b8e8;
   --color-logo-green: #38b050;
   --color-logo-sun: #f8c028;
-  /* Page background: a soft tint of the logo green. */
-  --color-site-bg: #e4f3e7;
+  /* Page background: warm cream, matching the footer. */
+  --color-site-bg: #faf5ee;
 
   /*
    * Neutral (Figma "Neutral/*"). Namespaced as brand-neutral-* rather

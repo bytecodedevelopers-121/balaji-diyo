@@ -78,18 +78,8 @@ export async function UpcomingTripsSection() {
 
   return (
     <section className="relative overflow-hidden bg-site-bg px-4 pt-14 pb-12 min-[768px]:px-10 min-[1120px]:px-[72px]">
-      {/* Blue band stops above the note box, which hangs onto the white below. */}
-      <div aria-hidden="true" className="absolute inset-x-0 top-0 bottom-[170px] overflow-hidden bg-logo-navy md:bottom-[125px]">
-        {/* Skyline silhouette: white JPG background multiplied into the blue. */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/images/deals/nepal-skyline.jpg"
-          alt=""
-          className="pointer-events-none absolute right-0 bottom-0 w-[min(760px,90%)] opacity-70 mix-blend-multiply select-none"
-        />
-      </div>
       <div className="relative mx-auto w-full max-w-[1280px]">
-        <div suppressHydrationWarning className="reveal mb-5 flex items-end justify-between gap-4 text-brand-neutral-000">
+        <div suppressHydrationWarning className="reveal mb-5 flex items-end justify-between gap-4 text-brand-neutral-1000">
           <div>
             <p className="mb-1 flex items-center gap-2 text-body-s font-medium">
               <Mountain aria-hidden="true" className="size-4" />

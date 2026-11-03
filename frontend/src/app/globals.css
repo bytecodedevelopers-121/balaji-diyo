@@ -127,3 +127,37 @@
     transform: none;
   }
 }
+
+/* Gentle bobbing for the scattered trip cards (FeaturedToursSection). */
+@keyframes trip-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+.trip-float {
+  animation: trip-float 6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .trip-float {
+    animation: none;
+  }
+}
+
+/* Destination marquee along the hero's bottom edge (two identical copies). */
+@keyframes hero-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.hero-marquee {
+  animation: hero-marquee 40s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-marquee {
+    animation: none;
+  }
+}

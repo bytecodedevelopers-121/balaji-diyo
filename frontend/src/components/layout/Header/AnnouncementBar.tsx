@@ -7,7 +7,7 @@ const STORAGE_KEY = "boundless:announcement-dismissed";
 
 /** Edit this copy to change the "Hot News" strip. */
 const ANNOUNCEMENT =
-  "Lukla flights operate from Manthali Airport in peak season — October, November, March, April and May …";
+  "Lukla flights operate from Manthali Airport in peak season — October, November, March, April and May";
 
 /**
  * Dismissible strip above the main header row. Dismissal lasts for the
@@ -43,11 +43,11 @@ export function AnnouncementBar() {
   }
 
   return (
-    <div className="relative flex items-center justify-center gap-3 bg-logo-sun px-10 py-2.5 text-logo-navy-dark">
-      <span className="shrink-0 rounded-[4px] bg-brand-neutral-000 px-1.5 py-0.5 text-[11px] leading-none font-semibold uppercase">
+    <div className="relative flex items-center justify-center gap-3 bg-logo-sun px-10 py-1.5 text-logo-navy-dark">
+      <span className="shrink-0 rounded-[4px] bg-logo-navy-dark px-1.5 py-0.5 text-[10px] leading-none font-bold text-brand-neutral-000 uppercase">
         Hot News
       </span>
-      <p className="min-w-0 truncate text-body-s font-medium md:text-body-m">{ANNOUNCEMENT}</p>
+      <p className="min-w-0 truncate text-[12px] font-medium">{ANNOUNCEMENT}</p>
       <button
         type="button"
         onClick={dismiss}

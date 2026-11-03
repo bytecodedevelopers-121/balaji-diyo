@@ -2,6 +2,8 @@ import Link from "next/link";
 import { ArrowRight, Mountain, Star } from "lucide-react";
 import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
 import { getFeaturedTestimonials } from "@/features/testimonials/api/get-testimonials";
+import { TiltCard } from "./TiltCard";
+import { WireframeTerrain } from "./WireframeTerrain";
 
 /**
  * "What Our Clients Say?" — a review-platform bar plus three review cards
@@ -114,8 +116,9 @@ export async function ClientReviewsSection() {
           </p>
         </div>
 
-        <div className="rounded-[4px] bg-[#dce9f3]">
-          <ul className="flex flex-wrap gap-x-10 gap-y-3 bg-[#c9dcec] px-5 py-3">
+        <div className="relative overflow-hidden rounded-[4px] bg-[#dce9f3]">
+          <WireframeTerrain />
+          <ul className="relative flex flex-wrap gap-x-10 gap-y-3 bg-[#c9dcec]/80 px-5 py-3">
             {PLATFORMS.map((platform) => (
               <li key={platform.name} className="text-[13px] font-bold text-brand-neutral-900">
                 {platform.name}
@@ -131,9 +134,9 @@ export async function ClientReviewsSection() {
             ))}
           </ul>
 
-          <ul className="grid grid-cols-1 items-start gap-4 px-5 pt-8 pb-6 md:grid-cols-3">
+          <ul className="relative grid grid-cols-1 items-start gap-4 px-5 pt-8 pb-6 md:grid-cols-3">
             {cards.map((card) => (
-              <li key={card.id} className="rounded-[4px] bg-brand-neutral-000 p-4 shadow-[0_2px_10px_rgba(6,74,112,0.12)]">
+              <TiltCard key={card.id}>
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <InitialsAvatar name={card.name} />
@@ -155,11 +158,11 @@ export async function ClientReviewsSection() {
                 <Link href="/reviews" className="mt-2 inline-block text-[12px] font-semibold text-logo-navy hover:underline">
                   read more »
                 </Link>
-              </li>
+              </TiltCard>
             ))}
           </ul>
 
-          <div className="px-5 pb-5">
+          <div className="relative px-5 pb-5">
             <Link
               href="/reviews"
               className="inline-flex items-center gap-2 rounded-pill border border-logo-sun bg-brand-neutral-000 px-5 py-2 text-[12px] font-semibold text-logo-navy transition-colors hover:bg-logo-sun"

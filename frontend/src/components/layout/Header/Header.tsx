@@ -169,6 +169,9 @@ export function Header({
 
   const [atTop, setAtTop] = useState(true);
   const [hidden, setHidden] = useState(false);
+  // True while the homepage hero (`#home-hero`) is still under the bar, so
+  // the video keeps showing through it until the next section arrives.
+  const [overHero, setOverHero] = useState(true);
   // Reported by the desktop nav's MobileMenu overlay (its own
   // `onOpenChange` prop) — forces the header solid below regardless of
   // scroll position while that overlay is open. Without this, opening
@@ -219,6 +222,8 @@ export function Header({
   useEffect(() => {
     function syncFromScroll() {
       const y = window.scrollY;
+      const hero = document.getElementById("home-hero");
+      setOverHero(hero ? hero.getBoundingClientRect().bottom > (headerRef.current?.offsetHeight ?? 80) : false);
       // Hysteresis: collapse past 60px, expand again only back under 10px.
       // A single threshold made the bar flip back and forth when the
       // collapse itself nudged the scroll position across it.
@@ -274,7 +279,7 @@ export function Header({
     if (searchOpen) closeSearch();
   }
 
-  const isTransparent = isDark && atTop;
+  const isTransparent = isDark && (atTop || overHero);
   // Gated on `!hidden` too, not just `!isTransparent`: color only ever
   // needs to change at the moment the header is about to be *shown*
   // (revealed on an upward scroll) — while it's hiding on a downward
@@ -300,6 +305,8 @@ export function Header({
   const textClass = "text-brand-neutral-000";
   const outlineClass = "focus-visible:outline-logo-sun";
   const iconClass = "size-5";
+
+  const [brandFirst = "", ...brandRest] = siteName.replace(/\s+pvt\.?\s*ltd\.?$/i, "").split(" ");
 
   const headerRef = useRef<HTMLElement>(null);
 
@@ -328,27 +335,34 @@ export function Header({
       ref={headerRef}
       id="site-header"
       className={cn(
-        "z-30 w-full bg-logo-navy-dark",
+        "z-30 w-full transition-colors duration-300",
+        // Over the hero video the bar is see-through (just a soft top fade
+        // for legibility); it turns solid once scrolled or a panel opens.
+        isTransparent && !isSolid
+          ? "bg-gradient-to-b from-[#0c1840]/70 to-transparent"
+          : "bg-[#0c1840]",
         isDark ? "fixed inset-x-0 top-0" : "sticky top-0",
       )}
     >
-      {/* Logo-colour stripe (sky → green → sun) along the bar's bottom edge. */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-x-0 bottom-0 h-[3px] bg-[linear-gradient(90deg,var(--color-logo-sky),var(--color-logo-green),var(--color-logo-sun))]"
-      />
       {atTop ? <AnnouncementBar /> : null}
-      <div className={cn("relative flex w-full items-center justify-between px-6 min-[1120px]:px-16", atTop ? "py-3 min-[1120px]:min-h-[98px] min-[1120px]:py-[9px]" : "py-1.5 min-[1120px]:min-h-[66px] min-[1120px]:py-[7px]")}>
-        <div className="min-[1120px]:absolute min-[1120px]:left-1/2 min-[1120px]:top-1/2 min-[1120px]:-translate-x-1/2 min-[1120px]:-translate-y-1/2">
+      <div className={cn("relative flex w-full items-center justify-between px-6 min-[1120px]:px-16", atTop ? "py-3 min-[1120px]:min-h-[66px] min-[1120px]:py-[7px]" : "py-1.5 min-[1120px]:min-h-[66px] min-[1120px]:py-[7px]")}>
+        <div>
           <Link
             href="/"
             aria-label={`${siteName} — Home`}
-            className={cn(
-              "nav_link block shrink-0 rounded-full ring-[3px] ring-brand-neutral-000 focus-visible:outline-2 focus-visible:outline-offset-4",
-              outlineClass,
-            )}
+            className={cn("nav_link flex w-fit shrink-0 items-center gap-3 focus-visible:outline-2 focus-visible:outline-offset-4", outlineClass)}
           >
-            <Logo compact={!atTop} />
+            <span className="rounded-full ring-[3px] ring-brand-neutral-000">
+              <Logo compact />
+            </span>
+            <span className="hidden leading-tight min-[480px]:block">
+              <span className="font-playfair-display block text-[18px] font-bold text-brand-neutral-000">
+                {brandFirst} <span className="text-logo-sun">{brandRest.join(" ")}</span>
+              </span>
+              <span className="block text-[10px] font-medium tracking-[0.14em] text-white/70 uppercase">
+                Nepal · Since 2011
+              </span>
+            </span>
           </Link>
         </div>
 
@@ -408,11 +422,11 @@ export function Header({
         <nav
           aria-label="Primary"
           className={cn(
-            "hidden shrink-0 items-center gap-6 min-[1120px]:flex",
+            "hidden shrink-0 items-center gap-10 min-[1120px]:flex",
             searchOpen && "min-w-0 flex-1",
           )}
         >
-          <div className={cn("flex items-center gap-6", searchOpen && "hidden")}>
+          <div className={cn("flex items-center gap-10", searchOpen && "hidden")}>
             {headerNavigation.filter((item) => item.label !== "Contact").map((item) => {
               // First two items (Destination, About) show a chevron in
               // Figma and both now open real, Figma-accurate mega-menu
@@ -547,7 +561,7 @@ export function Header({
           panelTopClassName="top-[95px]"
         />
 
-        <div className="hidden shrink-0 items-center gap-5 min-[1120px]:flex">
+        <div className="hidden shrink-0 items-center gap-7 min-[1120px]:flex">
           {/* The number opens WhatsApp chat (wa.me), not the dialer. */}
           <a
             href={`https://wa.me/${phoneHref.replace(/[^\d]/g, "")}`}
@@ -565,7 +579,7 @@ export function Header({
           <Link
             href={headerCta.href}
             className={cn(
-              "nav_link rounded-pill border-2 border-logo-sun px-5 py-[9px] text-body-m font-semibold whitespace-nowrap text-brand-neutral-000 transition-colors hover:bg-logo-sun hover:text-logo-navy-dark focus-visible:outline-2 focus-visible:outline-offset-2",
+              "nav_link rounded-pill bg-logo-sun px-5 py-[9px] text-body-m font-semibold whitespace-nowrap text-logo-navy-dark shadow-[0_6px_18px_rgba(248,192,40,0.35)] transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2",
               outlineClass,
             )}
           >

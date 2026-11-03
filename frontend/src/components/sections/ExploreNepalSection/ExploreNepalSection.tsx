@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { ArrowRight, Mountain, Plus } from "lucide-react";
+import { FillImage } from "@/components/ui/FillImage";
 
 /**
  * "Explore Nepal with …" — intro copy with a Know More button and a
- * "Why Choose Us?" accordion card, over a pale-sky mountain scene in the
- * logo's colors. The accordion is native `<details name="why-choose-us">`
+ * "Why Choose Us?" accordion card, over a dimmed background photo. The accordion is native `<details name="why-choose-us">`
  * (exclusive: opening one closes the others) so this stays a Server
  * Component with no client JS.
  *
@@ -34,7 +34,7 @@ export function ExploreNepalSection() {
     <section className="relative overflow-hidden bg-[#e6f3fa] px-4 pt-12 pb-16 min-[768px]:px-10 min-[1120px]:px-[72px]">
       <Scenery />
 
-      <div className="relative mx-auto w-full max-w-[1280px]">
+      <div className="relative mx-auto grid w-full max-w-[1280px] items-center gap-8 min-[1120px]:grid-cols-[minmax(0,1fr)_390px] min-[1120px]:gap-16">
         <div data-reveal="left" className="max-w-[720px]">
           <p className="mb-1 flex items-center gap-2 text-body-s font-medium text-logo-navy-dark">
             <Mountain aria-hidden="true" className="size-4" />
@@ -73,7 +73,7 @@ export function ExploreNepalSection() {
           </Link>
         </div>
 
-        <div data-reveal="up" className="mt-8 max-w-[390px] rounded-[6px] bg-brand-neutral-000 px-6 py-6 shadow-[0_6px_24px_rgba(6,74,112,0.15)]">
+        <div data-reveal="up" className="w-full max-w-[390px] justify-self-start rounded-[6px] min-[1120px]:justify-self-end bg-brand-neutral-000 px-6 py-6 shadow-[0_6px_24px_rgba(6,74,112,0.15)]">
           <h3 className="text-[22px] font-bold text-brand-neutral-900">Why Choose Us?</h3>
           <div className="mt-4 border-t border-brand-neutral-300">
             {WHY_ITEMS.map((item) => (
@@ -95,22 +95,18 @@ export function ExploreNepalSection() {
   );
 }
 
-/** Layered mountains, sun and snow-line in the logo's sky / green / sun colors. */
+/** Dimmed photo behind the section, washed toward the pale-sky tint so the text stays readable. */
 function Scenery() {
   return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 800 420"
-      preserveAspectRatio="xMaxYMax slice"
-      className="pointer-events-none absolute right-0 bottom-0 h-[80%] w-[min(900px,100%)] min-[1120px]:h-[92%]"
-    >
-      <circle cx="470" cy="150" r="62" fill="#f8c028" opacity="0.55" />
-      <path d="M120 420 L330 120 L420 220 L520 70 L760 420Z" fill="#b9dcef" />
-      <path d="M520 70 L440 210 L480 190 L520 250 L560 180 L600 220Z" fill="#ffffff" opacity="0.85" />
-      <path d="M330 120 L290 185 L330 170 L370 200Z" fill="#ffffff" opacity="0.85" />
-      <path d="M0 420 L170 250 L300 340 L420 270 L620 420Z" fill="#8cc9e6" opacity="0.8" />
-      <path d="M0 420 L0 360 C120 330 220 380 340 360 C480 335 600 390 800 350 L800 420Z" fill="#38b050" opacity="0.28" />
-      <path d="M0 420 L0 392 C140 372 260 408 400 390 C560 370 680 408 800 388 L800 420Z" fill="#ffffff" opacity="0.9" />
-    </svg>
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+      <FillImage
+        src="/images/why-choose-us/choose-us.jpg"
+        alt=""
+        aria-hidden="true"
+        className="object-cover opacity-30"
+        sizes="100vw"
+      />
+      <div className="absolute inset-0 bg-[#e6f3fa]/55" />
+    </div>
   );
 }
