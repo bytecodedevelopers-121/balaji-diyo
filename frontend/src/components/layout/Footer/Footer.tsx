@@ -84,6 +84,21 @@ export function Footer({
 
   return (
     <footer className="relative overflow-hidden bg-[#faf5ee] text-brand-neutral-900">
+      {/* Panoramic trail photo (sun, peaks, pines, river, meadow, trekkers) pinned to the bottom of the footer at full width and faded into the page colour above. */}
+      {/* eslint-disable-next-line @next/next/no-img-element -- static decorative photo */}
+      <img
+        src="/images/site/footer-panorama.jpg"
+        alt=""
+        aria-hidden="true"
+        loading="lazy"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-auto w-full [mask-image:linear-gradient(to_bottom,transparent,black_45%)]"
+      />
+
+      {/* Logo-colour stripe (sky → green → sun) along the footer's top edge. */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-[3px] bg-[linear-gradient(90deg,var(--color-logo-sky),var(--color-logo-green),var(--color-logo-sun))]"
+      />
       <div className="relative z-10 mx-auto w-full max-w-[1100px] px-4 pt-14 sm:px-6 min-[1120px]:px-0">
         <section className="flex flex-col gap-6 rounded-[28px] border border-[#efe6da] bg-white/60 px-6 py-8 sm:px-8 min-[900px]:flex-row min-[900px]:items-center min-[900px]:justify-between">
           <div className="max-w-[340px]">
@@ -144,20 +159,20 @@ export function Footer({
             <ul className="mt-6 flex flex-col gap-4 text-[13px] text-brand-neutral-900">
               {address ? (
                 <li className="flex items-start gap-3">
-                  <PinIcon className="mt-0.5 size-4 shrink-0 text-[#d64545]" />
+                  <PinIcon className="mt-0.5 size-4 shrink-0 text-logo-navy" />
                   <span>{address}</span>
                 </li>
               ) : null}
               <li>
                 <a href={`mailto:${email}`} className="flex items-center gap-3 hover:text-logo-navy">
-                  <MailIcon className="size-4 shrink-0 text-[#d64545]" />
+                  <MailIcon className="size-4 shrink-0 text-logo-navy" />
                   {email}
                 </a>
               </li>
               {officePhone ? (
                 <li>
                   <a href={officePhone.href} className="flex items-center gap-3 hover:text-logo-navy">
-                    <PhoneIcon className="size-4 shrink-0 text-[#d64545]" />
+                    <PhoneIcon className="size-4 shrink-0 text-logo-navy" />
                     {officePhone.label} (Office)
                   </a>
                 </li>
@@ -170,13 +185,13 @@ export function Footer({
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 hover:text-logo-navy"
                   >
-                    <WhatsAppGlyph className="size-4 shrink-0 text-[#d64545]" />
+                    <WhatsAppGlyph className="size-4 shrink-0 text-logo-navy" />
                     {mobile.label} (WhatsApp)
                   </a>
                 </li>
               ) : null}
               <li className="flex items-center gap-3">
-                <Clock aria-hidden="true" className="size-4 shrink-0 text-[#d64545]" />
+                <Clock aria-hidden="true" className="size-4 shrink-0 text-logo-navy" />
                 10:00 AM to 5:00 PM (Sunday to Friday)
               </li>
             </ul>
@@ -223,23 +238,23 @@ export function Footer({
 
         <div className="mt-6 flex flex-col gap-2 border-t border-[#e7dfd2] pt-5 text-[11px] text-logo-navy min-[768px]:flex-row min-[768px]:justify-between">
           <p>
-            &copy; {year} {siteName}. All rights reserved. Made with joy in Kathmandu.
+            &copy; {year} {siteName}. All rights reserved. Developed By{" "}
+            <a
+              href="https://bytecodedevelopers.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold underline-offset-2 hover:text-logo-navy-dark hover:underline focus-visible:outline-2 focus-visible:outline-logo-sun"
+            >
+              Bytecode Developers
+            </a>
           </p>
           <p>Nepal Govt. Regd. No: 88177/068/069 | Tourism Regd. No: 1509</p>
         </div>
       </div>
 
-      {/* Faded brand watermark over a soft pink → peach → yellow glow. */}
-      <div aria-hidden="true" className="relative mt-4 overflow-hidden pt-6 pb-4 text-[clamp(44px,9.5vw,136px)] select-none">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: "linear-gradient(90deg, rgba(247,168,184,0.9), rgba(250,205,160,0.85) 50%, rgba(250,214,110,0.9))",
-            maskImage: "linear-gradient(to bottom, transparent, black 55%)",
-            WebkitMaskImage: "linear-gradient(to bottom, transparent, black 55%)",
-          }}
-        />
-        <p className="font-display relative text-center text-[1em] leading-[1.15] font-extrabold whitespace-nowrap text-[#8a6f4d]/20">
+      {/* The brand name, faded, over the clearest part of the photo. */}
+      <div aria-hidden="true" className="relative z-10 mt-6 h-[clamp(160px,20vw,300px)] overflow-hidden select-none">
+        <p className="font-display absolute inset-x-0 top-[10%] text-center text-[clamp(44px,9.5vw,136px)] leading-[1.15] font-extrabold whitespace-nowrap text-white/80 drop-shadow-[0_2px_12px_rgba(6,74,112,0.35)]">
           {brandName}
         </p>
       </div>
