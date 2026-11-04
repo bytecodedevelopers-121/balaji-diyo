@@ -2,8 +2,8 @@
 
 Website for Joyful Trekking Pvt. Ltd., a Kathmandu-based trekking, tour and travel company.
 
-## Project structure
 
+## Project structure
 
 | Folder | What it is |
 | --- | --- |
