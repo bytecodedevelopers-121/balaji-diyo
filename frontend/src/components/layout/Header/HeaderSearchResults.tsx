@@ -8,8 +8,6 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { searchTrips } from "@/features/trips/api/search-trips";
 import type { Trip } from "@/features/trips/types/trip.types";
-import { searchBlogs, type BlogSearchResult } from "@/features/blogs/api/search-blogs";
-import { formatBlogDate } from "@/features/blogs/lib/format-blog-date";
 import { cn } from "@/lib/utils";
 import { FillImage } from "@/components/ui/FillImage";
 
@@ -71,7 +69,6 @@ export function HeaderSearchResults({
 
   const [status, setStatus] = useState<"idle" | "loading" | "error" | "success">("idle");
   const [results, setResults] = useState<Trip[]>([]);
-  const [blogResults, setBlogResults] = useState<BlogSearchResult[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [wasShown, setWasShown] = useState(shouldShow);
@@ -87,7 +84,6 @@ export function HeaderSearchResults({
       // what's really just "the query closed, so drop its results".
       setStatus("idle");
       setResults([]);
-      setBlogResults([]);
     }
   }
 
@@ -98,13 +94,8 @@ export function HeaderSearchResults({
     const timeout = setTimeout(async () => {
       setStatus("loading");
       try {
-        // Trips are required; a blog-search failure just hides that group.
-        const [trips, blogs] = await Promise.all([
-          searchTrips(trimmedQuery, { signal: controller.signal }),
-          searchBlogs(trimmedQuery, { signal: controller.signal }).catch(() => []),
-        ]);
+        const trips = await searchTrips(trimmedQuery, { signal: controller.signal });
         setResults(trips);
-        setBlogResults(blogs);
         setStatus("success");
       } catch (error) {
         if (controller.signal.aborted) return;
@@ -179,7 +170,7 @@ export function HeaderSearchResults({
   if (!mounted) return null;
 
   if (variant === "dropdown") {
-    const hasResults = results.length > 0 || blogResults.length > 0;
+    const hasResults = results.length > 0;
     return createPortal(
       <div
         id={panelId}
@@ -187,20 +178,20 @@ export function HeaderSearchResults({
         data-header-search-region
         role="region"
         aria-label="Search results"
-        className="destination-scroll fixed z-40 max-h-[min(400px,calc(100dvh-220px))] overflow-y-auto rounded-[10px] bg-brand-neutral-000 py-2 shadow-[0_12px_40px_rgba(6,74,112,0.3)]"
+        className="destination-scroll fixed z-40 max-h-[min(400px,calc(100dvh-220px))] overflow-y-auto overscroll-contain rounded-[10px] bg-brand-neutral-000 py-2 shadow-[0_12px_40px_rgba(6,74,112,0.3)]"
         style={{
           top: "var(--hero-search-bottom, 300px)",
           left: "var(--hero-search-left, 0px)",
           width: "var(--hero-search-width, 100%)",
         }}
       >
-        {status === "loading" ? (
+        {status === "loading" || status === "idle" ? (
           <p className="px-5 py-4 font-poppins text-body-m text-brand-neutral-800">Searching…</p>
         ) : status === "error" ? (
           <p className="px-5 py-4 font-poppins text-body-m text-error-700">{errorMessage}</p>
         ) : !hasResults ? (
           <p className="px-5 py-4 font-poppins text-body-m text-brand-neutral-800">
-            No trips or articles found for &ldquo;{trimmedQuery}&rdquo;.
+            No trips found for &ldquo;{trimmedQuery}&rdquo;.
           </p>
         ) : (
           <>
@@ -234,34 +225,6 @@ export function HeaderSearchResults({
                 ))}
               </ul>
             ) : null}
-            {blogResults.length > 0 ? (
-              <div>
-                <p className="px-5 pt-3 pb-1 text-[12px] font-semibold tracking-wide text-brand-neutral-700 uppercase">
-                  Blog Articles
-                </p>
-                <ul aria-label="Blog articles" className="flex flex-col">
-                  {blogResults.map((post) => (
-                    <li key={post.id}>
-                      <Link
-                        href={`/blog/${post.slug}`}
-                        onClick={onClose}
-                        className="flex items-center gap-4 px-3 py-2.5 transition-colors hover:bg-brand-neutral-100 focus-visible:bg-brand-neutral-100 focus-visible:outline-none"
-                      >
-                        <span className="relative h-[54px] w-[82px] shrink-0 overflow-hidden rounded-[4px] bg-brand-neutral-200">
-                          {post.imageUrl ? (
-                            <FillImage src={post.imageUrl} alt="" aria-hidden="true" className="object-cover" sizes="82px" />
-                          ) : null}
-                        </span>
-                        <span className="flex min-w-0 flex-1 flex-col">
-                          <span className="truncate text-[17px] font-semibold text-logo-navy">{post.title}</span>
-                          <span className="mt-0.5 text-[14px] text-brand-neutral-800">{formatBlogDate(post.blogDate)}</span>
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
           </>
         )}
       </div>,
@@ -281,13 +244,13 @@ export function HeaderSearchResults({
         panelTopClassName,
       )}
     >
-      {status === "loading" ? (
+      {status === "loading" || status === "idle" ? (
         <p className="font-poppins text-body-m text-brand-neutral-800">Searching…</p>
       ) : status === "error" ? (
         <p className="font-poppins text-body-m text-error-700">{errorMessage}</p>
-      ) : results.length === 0 && blogResults.length === 0 ? (
+      ) : results.length === 0 ? (
         <p className="font-poppins text-body-m text-brand-neutral-800">
-          No trips or articles found for &ldquo;{trimmedQuery}&rdquo;.
+          No trips found for &ldquo;{trimmedQuery}&rdquo;.
         </p>
       ) : (
         <div className="flex flex-col gap-6">
@@ -339,48 +302,6 @@ export function HeaderSearchResults({
               </li>
             ))}
           </ul>
-            </section>
-          ) : null}
-
-          {blogResults.length > 0 ? (
-            <section aria-label="Blog articles">
-              <h3 className="mb-1 font-poppins text-body-m font-semibold tracking-wide text-logo-navy uppercase">
-                Blog Articles
-              </h3>
-              <ul className="flex flex-col">
-                {blogResults.map((post, index) => (
-                  <li
-                    key={post.id}
-                    className={cn("border-brand-neutral-300 py-3", index < blogResults.length - 1 && "border-b")}
-                  >
-                    <Link
-                      href={`/blog/${post.slug}`}
-                      onClick={onClose}
-                      className="flex items-center gap-4 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-neutral-900"
-                    >
-                      <span className="relative size-[56px] shrink-0 overflow-hidden rounded-[10px] bg-brand-neutral-200 sm:h-[70px] sm:w-[100px]">
-                        {post.imageUrl ? (
-                          <FillImage
-                            src={post.imageUrl}
-                            alt=""
-                            aria-hidden="true"
-                            className="absolute inset-0 size-full object-cover"
-                            sizes="100px"
-                          />
-                        ) : null}
-                      </span>
-                      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                        <span className="truncate font-poppins text-body-l font-medium text-primary-800">
-                          {post.title}
-                        </span>
-                        <span className="font-poppins text-body-m text-brand-neutral-600">
-                          {formatBlogDate(post.blogDate)}
-                        </span>
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
             </section>
           ) : null}
         </div>

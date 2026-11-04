@@ -25,9 +25,9 @@ import { UsersIcon } from "./icons";
  */
 export function CostSection({ trip }: { trip: PackageDetail }) {
   return (
-    <section className="rounded-2xl border border-[#fbc99d] bg-white p-4 shadow-card-strong sm:p-8">
+    <section className="rounded-2xl border border-[#f4dd9a] bg-white p-4 shadow-card-strong sm:p-8">
       <h2 className="font-poppins text-raleway-3xl font-medium text-brand-neutral-1000">Cost</h2>
-      <p className="mt-4 flex items-center gap-3 font-poppins text-body-l font-medium text-secondary-500">
+      <p className="mt-4 flex items-center gap-3 font-poppins text-body-l font-medium text-logo-navy">
         <UsersIcon className="size-5" />
         Group Price Breakdown
       </p>

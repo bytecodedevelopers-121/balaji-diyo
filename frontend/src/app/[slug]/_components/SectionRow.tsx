@@ -15,8 +15,9 @@ export function EmptyNote({ children }: { children: ReactNode }) {
 
 /**
  * Package-page section layout: a label column on the left (orange bar +
- * title + small icon) and the section's content on the right. Collapses to
- * a stacked label above content below `md`.
+ * title + small icon) and the section's content on the right. The label is
+ * sticky under the tab bar for as long as its section is on screen. Collapses
+ * to a stacked label above content below `md`.
  */
 export function SectionRow({
   id,
@@ -31,8 +32,9 @@ export function SectionRow({
 }) {
   return (
     <section id={id} className="grid gap-4 py-6 md:grid-cols-[170px_minmax(0,1fr)] md:gap-10">
-      <div>
-        <h2 className="border-l-4 border-[#f7931e] pl-3 text-[22px] leading-tight font-medium text-brand-neutral-900">
+      {/* On desktop the label (title + icon) stays pinned under the tab bar while its section scrolls, then leaves with it. */}
+      <div className="md:sticky md:top-[var(--trip-sticky-top,150px)] md:self-start">
+        <h2 className="border-l-4 border-[#f8c028] pl-3 text-[22px] leading-tight font-medium text-brand-neutral-900">
           {label}
         </h2>
         {icon ? <div className="mt-4 hidden pl-3 text-brand-neutral-700 md:block">{icon}</div> : null}

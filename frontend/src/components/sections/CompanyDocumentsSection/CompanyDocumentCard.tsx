@@ -30,11 +30,11 @@ export function CompanyDocumentCard({ document }: CompanyDocumentCardProps) {
 
   if (!document.imageUrl) {
     return (
-      <div className="relative aspect-[4/5] overflow-hidden rounded-card border-2 border-[#F5C518]">
+      <div className="relative aspect-[3/4] overflow-hidden rounded-[6px] border border-brand-neutral-300 bg-white shadow-[0_2px_10px_rgba(6,74,112,0.1)]">
         <img
           src="/images/company-documents/document-placeholder.svg"
           alt={document.title}
-          className="absolute inset-0 size-full object-contain p-12"
+          className="absolute inset-0 size-full object-contain p-8"
         />
       </div>
     );
@@ -54,7 +54,7 @@ export function CompanyDocumentCard({ document }: CompanyDocumentCardProps) {
         type="button"
         onClick={() => setLightboxOpen(true)}
         aria-label={`View full document: ${document.title}`}
-        className="relative aspect-[4/5] w-full cursor-zoom-in overflow-hidden rounded-card border-2 border-[#F5C518] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+        className="relative aspect-[3/4] w-full cursor-zoom-in overflow-hidden rounded-[6px] border border-brand-neutral-300 bg-white shadow-[0_2px_10px_rgba(6,74,112,0.1)] transition-shadow hover:shadow-[0_6px_20px_rgba(6,74,112,0.25)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-logo-navy"
       >
         <FillImage
           src={document.imageUrl}

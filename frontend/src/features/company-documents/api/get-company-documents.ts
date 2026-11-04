@@ -1,4 +1,5 @@
 import { apiFetch } from "@/lib/api/api-client";
+import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
 import type { Paginated } from "@/types/api.types";
 import type { CompanyDocument } from "../types/company-document.types";
 
@@ -16,10 +17,33 @@ import type { CompanyDocument } from "../types/company-document.types";
  * CompanyDocumentService POSTs this tag to app/api/revalidate after any
  * create/update/delete (see lib/revalidate-frontend.ts on that side).
  */
+/** Placeholder titles shown with no scans (see `SHOW_SAMPLE_DATA`); the card draws a document icon for them. */
+const SAMPLE_DOCUMENTS: CompanyDocument[] = [
+  "Company Registration Certificate",
+  "Tourism Business Licence",
+  "Business Registration Certificate",
+  "VAT Registration Certificate",
+  "Trekking Agencies' Association Membership",
+  "Mountaineering Association Membership",
+  "Nepal Tourism Board Registration",
+].map((title, index) => ({
+  id: `sample-document-${index + 1}`,
+  title,
+  description: null,
+  imageUrl: null,
+  sortOrder: index + 1,
+}));
+
 export async function getCompanyDocuments(): Promise<CompanyDocument[]> {
-  const page = await apiFetch<Paginated<CompanyDocument>>(
-    "/company-documents?isActive=true&perPage=100",
-    { next: { revalidate: 900, tags: ["company-documents"] } },
-  );
-  return page.items;
+  try {
+    const page = await apiFetch<Paginated<CompanyDocument>>(
+      "/company-documents?isActive=true&perPage=100",
+      { next: { revalidate: 900, tags: ["company-documents"] } },
+    );
+    if (page.items.length > 0 || !SHOW_SAMPLE_DATA) return page.items;
+  } catch (error) {
+    // Backend unreachable: show the placeholders, same as an empty database would.
+    if (!SHOW_SAMPLE_DATA) throw error;
+  }
+  return SAMPLE_DOCUMENTS;
 }

@@ -76,7 +76,7 @@ export function DeparturesSection({ trip }: { trip: PackageDetail }) {
     <section>
       <h3 className="text-[32px] leading-tight font-bold text-brand-neutral-900">{trip.title} Departures</h3>
 
-      <ul className="mt-6 flex flex-col gap-3 rounded-md bg-[#fdeee1] p-6 text-[15px] leading-relaxed text-brand-neutral-800 sm:p-7">
+      <ul className="mt-6 flex flex-col gap-3 rounded-md bg-[#fdf3d6] p-6 text-[15px] leading-relaxed text-brand-neutral-800 sm:p-7">
         <li className={STAR_ITEM}>
           <strong className="text-brand-neutral-900">Group Trek:</strong> We have set the dates for the {trip.title}. Please
           select your preferred date and book.
@@ -108,9 +108,9 @@ export function DeparturesSection({ trip }: { trip: PackageDetail }) {
         ))}
       </div>
 
-      <div className="mt-3 overflow-x-auto">
-        <div className="min-w-[560px]">
-          <div className="grid grid-cols-[2fr_1fr_1fr_auto] items-center gap-3 rounded-sm bg-[#c9dcec] px-5 py-4 text-[14px] font-semibold tracking-wide text-brand-neutral-800 uppercase">
+      <div className="mt-3">
+        <div>
+          <div className="hidden grid-cols-[2fr_1fr_1fr_auto] items-center gap-3 rounded-sm bg-[#c9dcec] px-5 py-4 text-[14px] font-semibold tracking-wide text-brand-neutral-800 uppercase sm:grid">
             <span>Departure Date</span>
             <span>Status</span>
             <span>Price</span>
@@ -122,9 +122,9 @@ export function DeparturesSection({ trip }: { trip: PackageDetail }) {
               return (
                 <div
                   key={departure.startDate}
-                  className="grid grid-cols-[2fr_1fr_1fr_auto] items-center gap-3 rounded-sm bg-[#eaf3f9] px-5 py-3.5"
+                  className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-sm bg-[#eaf3f9] px-4 py-3.5 sm:grid sm:grid-cols-[2fr_1fr_1fr_auto] sm:gap-3 sm:px-5"
                 >
-                  <span className="text-[15px] text-brand-neutral-800">
+                  <span className="basis-full text-[15px] text-brand-neutral-800 sm:basis-auto">
                     {weekday(departure.startDate)} - {weekday(departure.endDate)}
                     <span className="block font-bold text-brand-neutral-900">
                       {formatDate(departure.startDate)} - {formatDate(departure.endDate)}
@@ -139,7 +139,7 @@ export function DeparturesSection({ trip }: { trip: PackageDetail }) {
                     disabled={soldOut}
                     onClick={() => openBooking({ departureDate: departure.startDate, adults: 1, addOnLabels: [] })}
                     className={`w-24 rounded-pill px-4 py-2 text-[13px] font-semibold ${
-                      soldOut ? "cursor-not-allowed bg-brand-neutral-200 text-brand-neutral-500" : "bg-[#f7931e] text-white"
+                      soldOut ? "cursor-not-allowed bg-brand-neutral-200 text-brand-neutral-500" : "bg-logo-sun text-logo-navy-dark"
                     }`}
                   >
                     Book Now

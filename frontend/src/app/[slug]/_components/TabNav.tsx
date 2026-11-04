@@ -105,12 +105,18 @@ export function TabNav() {
       if (bottom !== lastBottom) {
         lastBottom = bottom;
         setStickyTop(bottom);
+        // Where the page's pinned section labels (SectionRow) stick: just below the header + this bar.
+        const navHeight = navRef.current?.getBoundingClientRect().height ?? 54;
+        document.documentElement.style.setProperty("--trip-sticky-top", `${bottom + navHeight + 16}px`);
       }
       frame = requestAnimationFrame(syncStickyTop);
     }
 
     frame = requestAnimationFrame(syncStickyTop);
-    return () => cancelAnimationFrame(frame);
+    return () => {
+      cancelAnimationFrame(frame);
+      document.documentElement.style.removeProperty("--trip-sticky-top");
+    };
   }, []);
 
   // Plain `href="#id"` anchors let the browser do its native anchor jump,
@@ -250,7 +256,7 @@ export function TabNav() {
           data-tab-id={tab.id}
           href={`#${tab.id}`}
           onClick={(event) => handleTabClick(event, tab.id)}
-          className={`shrink-0 border-b-2 px-3 py-4 text-[15px] font-medium whitespace-nowrap text-white transition-opacity ${
+          className={`shrink-0 border-b-2 px-3 py-4 text-[15px] font-medium whitespace-nowrap text-white outline-none transition-opacity focus-visible:bg-white/10 ${
             active === tab.id ? "border-white" : "border-transparent opacity-80 hover:opacity-100"
           }`}
         >

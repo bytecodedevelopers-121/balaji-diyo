@@ -96,9 +96,9 @@ export async function ClientReviewsSection() {
   if (cards.length === 0) return null;
 
   return (
-    <section className="relative overflow-hidden bg-site-bg px-4 pt-16 pb-16 min-[768px]:px-10 min-[1120px]:px-[72px]">
+    <section className="relative overflow-hidden bg-site-bg px-4 pt-12 pb-14 min-[768px]:px-10 min-[1120px]:px-[72px]">
       <div className="relative mx-auto w-full max-w-[1100px]">
-        <div suppressHydrationWarning className="reveal flex flex-col items-center text-center">
+        <div className="flex flex-col items-center text-center">
           <p className="inline-flex items-center gap-2 rounded-pill border border-logo-sun/50 bg-logo-sun/10 px-4 py-1.5 text-[11px] font-semibold tracking-[0.14em] text-logo-navy uppercase">
             <Mountain aria-hidden="true" className="size-3.5" />
             Joyful Trekking Reviews
@@ -124,7 +124,7 @@ export async function ClientReviewsSection() {
           </ul>
         </div>
 
-        <ul className="mt-12 grid grid-cols-1 items-start gap-6 md:grid-cols-3">
+        <ul className="mt-8 grid grid-cols-1 items-start gap-6 md:grid-cols-3">
           {cards.map((card, i) => (
             <TiltCard key={card.id} angle={ANGLES[i % ANGLES.length]}>
               <Quote aria-hidden="true" className="size-5 fill-logo-sun text-logo-sun" />

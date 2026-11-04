@@ -17,6 +17,7 @@ import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
 import { sampleTripsForCountry, sampleTripsForRegion } from "@/lib/sample-trips";
 import { TRIP_CATEGORIES } from "@/config/trip-categories";
 import type { Trip } from "@/features/trips/types/trip.types";
+import { fallbackImage, toTitleCase, tripMeta } from "@/lib/menu-utils";
 import { cn } from "@/lib/utils";
 import { DestinationSearch } from "./DestinationSearch";
 import { useHeaderPanelTop } from "./useHeaderPanelTop";
@@ -205,7 +206,7 @@ export function DestinationDropdown({
       getRegionPackages(href.replace(/^\/+|\/+$/g, ""))
         // No such category on the API — fall back to a title search ("Everest Region" -> "Everest").
         .then((trips) =>
-          trips.length > 0 ? trips : searchTrips(title.replace(/\b(region|treks?|from|trekking)\b/gi, "").trim() || title),
+          trips.length > 0 ? trips : searchTrips(title.replace(/\b(region|treks?|from|trekking)\b/gi, "").trim() || title, { sampleFallback: false }),
         )
         // Empty database — show the sample trips for this region, like the rest of the site.
         .then((trips) => (trips.length === 0 && SHOW_SAMPLE_DATA ? sampleTripsForRegion(title) : trips))
@@ -287,6 +288,11 @@ export function DestinationDropdown({
   // The regions (Everest, Annapurna, ...) belong to the Trekking and Hiking category.
   const trekkingCategory = TRIP_CATEGORIES[0];
   const regionsVisible = browseRegions.length > 0 && categoryKey === trekkingCategory.key;
+  // Trekking and Hiking opens on its first region (Everest) instead of every package in the country.
+  // (Render-phase adjustment, same pattern as the reset-on-close above.)
+  if (regionsVisible && selectedRegionHref === null) {
+    setSelectedRegionHref(browseRegions[0].href);
+  }
 
   // How many packages a region really has (within the selected category), not the menu's static number.
   const regionCount = (region: { href: string; packages: unknown[] }) => {
@@ -466,7 +472,6 @@ export function DestinationDropdown({
       <div className="pointer-events-auto mx-auto w-full max-w-[1440px] overflow-hidden rounded-[6px] bg-[#064a70] text-white shadow-[0_18px_50px_rgba(0,0,0,0.45)]">
         <div className="destination-dropdown-group flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-7 py-4">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-            <span aria-hidden="true" className="h-px w-8 bg-logo-sun" />
             <span className="font-playfair-display text-[24px] font-bold">Explore {activeCategory.label}</span>
             <span className="text-[11px] font-bold tracking-[0.14em] text-logo-sun uppercase">
               · Ten handcrafted journeys, one joyful crew
@@ -578,7 +583,7 @@ export function DestinationDropdown({
                           <button
                             type="button"
                             onClick={() => {
-                              setSelectedRegionHref(isSelected ? null : region.href);
+                              setSelectedRegionHref(region.href);
                               setHovered(null);
                             }}
                             aria-pressed={isSelected}
@@ -731,37 +736,12 @@ export function DestinationDropdown({
   );
 }
 
-/** Photos used when a menu entry has none of its own — picked by name, so each package gets a different, stable one. */
-const FALLBACK_IMAGES = [
-  "/images/journey/trek.jpg",
-  "/images/trips/featured-annapurna-trek.jpg",
-  "/images/journey/climb.jpg",
-  "/images/hero/hero-3.jpeg",
-  "/images/hero/12.jpeg",
-  "/images/hero/hero-4.jpeg",
-  "/images/cta/gokyo-lake-yak-wide.jpg",
-  "/images/journey/tour.jpg",
-  "/images/hero/hero-2.jpeg",
-  "/images/journey/heli.jpg",
-];
-
-function fallbackImage(key: string): string {
-  let hash = 0;
-  for (const char of key) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
-  return FALLBACK_IMAGES[hash % FALLBACK_IMAGES.length];
-}
-
 /** A trip as one menu row: title, "14 DAYS · FROM US$1,450" caption and its own photo. */
 function toPackageItem(trip: Trip): PackageItem {
   return {
     title: trip.title,
     href: tripHref(trip.slug),
-    meta: [
-      trip.duration ? `${trip.duration} ${(trip.durationType ?? "Days").toUpperCase()}` : null,
-      trip.priceFrom ? `FROM US$${trip.priceFrom.toLocaleString()}` : null,
-    ]
-      .filter(Boolean)
-      .join(" · "),
+    meta: tripMeta(trip),
     image: trip.imageUrl ?? null,
     id: trip.id,
     categories: (trip as { categories?: string[] }).categories,
@@ -800,9 +780,4 @@ function categorySlugs(category: DestinationCategory): string[] {
         .filter((slug) => slug && !slug.startsWith("#") && !slug.includes("/") && !slug.includes(":")),
     ),
   ];
-}
-
-/** "EVEREST REGION" -> "Everest Region" (source data is all-caps). */
-function toTitleCase(text: string): string {
-  return text.toLowerCase().replace(/(^|\s)\S/g, (match) => match.toUpperCase());
 }

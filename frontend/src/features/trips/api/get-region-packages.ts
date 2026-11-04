@@ -1,17 +1,9 @@
-import { toNumber } from "@/lib/decimal";
 import { isApiEnvelope } from "@/lib/api/api-response";
 import type { Paginated } from "@/types/api.types";
+import { lowestPrice } from "../lib/lowest-price";
 import type { RawPackagePriceGroup, Trip } from "../types/trip.types";
 
 type RawRegionTrip = Trip & { priceGroups?: RawPackagePriceGroup[] };
-
-function lowestPrice(priceGroups: RawPackagePriceGroup[] | undefined): number | undefined {
-  if (!priceGroups || priceGroups.length === 0) return undefined;
-  const prices = priceGroups
-    .map((group) => toNumber(group.offerUnitPrice) ?? toNumber(group.unitPrice))
-    .filter((price): price is number => price !== undefined);
-  return prices.length > 0 ? Math.min(...prices) : undefined;
-}
 
 async function getJson<T>(path: string, signal?: AbortSignal): Promise<T | null> {
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${path}`, {

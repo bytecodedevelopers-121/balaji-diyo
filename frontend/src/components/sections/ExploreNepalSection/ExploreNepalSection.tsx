@@ -64,7 +64,7 @@ export function ExploreNepalSection() {
           </div>
 
           <Link
-            href="/about-us"
+            href="/company/about-us"
             data-magnetic
             className="mt-6 inline-flex items-center gap-2 rounded-pill bg-logo-sun px-5 py-2.5 text-[13px] font-bold text-logo-navy-dark transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-logo-navy"
           >

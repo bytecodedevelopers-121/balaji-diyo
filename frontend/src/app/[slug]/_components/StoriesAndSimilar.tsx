@@ -26,7 +26,7 @@ export function StoriesAndSimilar({ trip }: { trip: PackageDetail }) {
       */}
       {trip.stories.length > 0 ? (
       <div className="mx-auto w-full max-w-[1440px] px-6 pt-[26px] pb-[34px] md:px-16">
-        <section className="rounded-2xl border border-[#fbc99d] bg-white p-4 shadow-card-strong sm:p-8">
+        <section className="rounded-2xl border border-[#f4dd9a] bg-white p-4 shadow-card-strong sm:p-8">
           <h2 className="font-poppins text-raleway-3xl font-medium text-brand-neutral-1000">Traveler Stories</h2>
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
             {trip.stories.map((story) => (
@@ -79,7 +79,7 @@ export function StoriesAndSimilar({ trip }: { trip: PackageDetail }) {
                   <div className="flex flex-wrap items-center gap-3 font-poppins text-body-s font-medium">
                     <span className="rounded-pill bg-white px-3 py-1">{pkg.duration}</span>
                     <span className="flex items-center gap-1 rounded-pill bg-white px-3 py-1">
-                      <StarIcon className="size-3.5 text-secondary-500" />
+                      <StarIcon className="size-3.5 text-logo-navy" />
                       {pkg.rating}
                     </span>
                   </div>

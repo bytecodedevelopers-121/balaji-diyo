@@ -1,5 +1,6 @@
 "use client";
 
+import { useWishlist } from "@/features/wishlist/wishlist-store";
 import { WhatsAppGlyph } from "@/components/ui/WhatsAppButton";
 import { Fragment, useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
@@ -166,6 +167,7 @@ export function Header({
   // within the same route-group layout (Header persists across those
   // navigations rather than remounting).
   const pathname = usePathname();
+  const wishlistCount = useWishlist().length;
 
   const [atTop, setAtTop] = useState(true);
   const [hidden, setHidden] = useState(false);
@@ -403,6 +405,10 @@ export function Header({
               onSearch={() => setSearchOpen(true)}
               destinationDropdown={destinationDropdown}
               aboutDropdown={aboutDropdown}
+              phone={phone}
+              phoneHref={phoneHref}
+              ctaLabel={headerCta.label}
+              ctaHref={headerCta.href}
             />
           </div>
           <div className={cn("w-full", !searchOpen && "hidden")}>
@@ -486,11 +492,7 @@ export function Header({
                       aria-hidden="true"
                       width={16}
                       height={16}
-                      className={cn(
-                        "size-4 transition-transform",
-                        isDark && isSolid && "invert",
-                        isOpen && "rotate-180",
-                      )}
+                      className={cn("size-4 transition-transform", isOpen && "rotate-180")}
                     />
                   </button>
                   {isDestination ? (
@@ -518,7 +520,7 @@ export function Header({
                       aria-hidden="true"
                       width={16}
                       height={16}
-                      className={cn("size-4", isDark && isSolid && "invert")}
+                      className="size-4"
                     />
                   ) : null}
                 </Link>
@@ -587,10 +589,18 @@ export function Header({
           </Link>
           <Link
             href="/wishlist"
-            aria-label="Wishlist"
-            className={cn("nav_link rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4", textClass, outlineClass)}
+            aria-label={wishlistCount > 0 ? `Wishlist, ${wishlistCount} saved` : "Wishlist"}
+            className={cn("nav_link relative rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4", textClass, outlineClass)}
           >
             <Heart aria-hidden="true" className="size-6" strokeWidth={1.75} />
+            {wishlistCount > 0 ? (
+              <span
+                aria-hidden="true"
+                className="absolute -top-2.5 -right-2.5 grid min-w-[18px] place-items-center rounded-full bg-logo-sun px-1 text-[11px] leading-[18px] font-bold text-logo-navy-dark ring-2 ring-logo-navy-dark"
+              >
+                {wishlistCount > 9 ? "9+" : wishlistCount}
+              </span>
+            ) : null}
           </Link>
           <button
             type="button"

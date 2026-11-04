@@ -42,7 +42,7 @@ export function ChartsSection({ trip }: { trip: PackageDetail }) {
       <AltitudeChart trip={trip} />
 
       {hasTemperatureData ? (
-      <section className="rounded-2xl border border-[#fbc99d] bg-white p-4 shadow-card-strong sm:p-8">
+      <section className="rounded-2xl border border-[#f4dd9a] bg-white p-4 shadow-card-strong sm:p-8">
         <h2 className="font-poppins text-raleway-3xl font-medium text-brand-neutral-1000">Temperature Chart</h2>
 
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
@@ -62,7 +62,7 @@ export function ChartsSection({ trip }: { trip: PackageDetail }) {
 
         <div className="mt-4 flex items-center gap-4 font-poppins text-body-s font-medium text-brand-neutral-700">
           <span className="flex items-center gap-1.5">
-            <span className="size-2.5 rounded-full bg-secondary-500" aria-hidden="true" /> Max °C
+            <span className="size-2.5 rounded-full bg-logo-sun" aria-hidden="true" /> Max °C
           </span>
           <span className="flex items-center gap-1.5">
             <span className="size-2.5 rounded-full bg-primary-500" aria-hidden="true" /> Min °C
@@ -75,7 +75,7 @@ export function ChartsSection({ trip }: { trip: PackageDetail }) {
           role="img"
           aria-label="Daily max and min temperatures across the trek, in celsius, by day"
         >
-          <polyline points={maxTempPoints} fill="none" stroke="var(--color-secondary-500)" strokeWidth="1.2" vectorEffect="non-scaling-stroke" />
+          <polyline points={maxTempPoints} fill="none" stroke="var(--color-logo-sun)" strokeWidth="1.2" vectorEffect="non-scaling-stroke" />
           <polyline points={minTempPoints} fill="none" stroke="var(--color-primary-500)" strokeWidth="1.2" vectorEffect="non-scaling-stroke" />
         </svg>
         <div className="mt-2 flex justify-between font-poppins text-body-s font-medium text-brand-neutral-700">

@@ -12,8 +12,8 @@
  * Console, and existing internal links) and update this file to match
  * whatever the audit finds.
  *
- * CONFIRMED (2026-08-13, direct from the user): "/about-us" and
- * "/why-boundless-adventure" are the real legacy URLs
+ * CONFIRMED (2026-08-13, direct from the user): "/company/about-us" and
+ * "/company/why-guided-travel" are the real legacy URLs
  * (https://boundlessadventure.com/about-us and .../why-boundless-adventure)
  * — both now have real pages at src/app/about-us and
  * src/app/why-boundless-adventure. Every other href below is still
@@ -29,18 +29,17 @@ export const primaryNavigation: NavItem[] = [
   // "Trips" removed 2026-08-26 (explicit user direction): this app has
   // no `/trips` route at all (see this file's other notes on that).
   { label: "Destinations", href: "/destinations" },
-  { label: "About", href: "/about-us" },
-  { label: "Blog", href: "/blog" },
+  { label: "About", href: "/company/about-us" },
   { label: "Contact", href: "/contact" },
 ];
 
 export const footerNavigation: NavItem[] = [
-  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "Privacy Policy", href: "/company/privacy-policy" },
   // Was "/terms-and-conditions", a guessed slug with no page behind it.
   // Corrected 2026-08-19: the real migrated CMS page for this is
-  // "/booking-terms-and-conditions" (see url_infos, ownerType "page") —
+  // "/company/terms-and-conditions" (see url_infos, ownerType "page") —
   // there's no separate general-ToS page in the legacy content.
-  { label: "Terms & Conditions", href: "/booking-terms-and-conditions" },
+  { label: "Terms & Conditions", href: "/company/terms-and-conditions" },
 ];
 
 /**
@@ -61,7 +60,7 @@ export const footerNavigation: NavItem[] = [
  *
  * "Terms of Conditions" (this design's exact label) points at the same
  * route as `footerNavigation`'s "Terms & Conditions" (see that entry's
- * own comment on the corrected, real "/booking-terms-and-conditions"
+ * own comment on the corrected, real "/company/terms-and-conditions"
  * URL) — kept as each source's own text, same precedent as
  * headerNavigation vs. primaryNavigation above.
  */
@@ -74,19 +73,19 @@ export const footerColumns: FooterColumn[] = [
   {
     title: "Company",
     links: [
-      { label: "About Us", href: "/about-us" },
-      { label: "Joyful Trekking Team", href: "/team" },
-      { label: "Partner with Us", href: "/become-a-partner" },
+      { label: "About Us", href: "/company/about-us" },
+      { label: "Joyful Trekking Team", href: "/company/team" },
+      { label: "Partner with Us", href: "/company/partner-with-us" },
       // No separate affiliate page yet — shares the partner page.
-      { label: "Affiliate Program", href: "/become-a-partner" },
-      { label: "Terms and Conditions", href: "/booking-terms-and-conditions" },
-      { label: "Privacy Policy", href: "/privacy-policy" },
+      { label: "Affiliate Program", href: "/company/partner-with-us" },
+      { label: "Terms and Conditions", href: "/company/terms-and-conditions" },
+      { label: "Privacy Policy", href: "/company/privacy-policy" },
     ],
   },
   {
     title: "Useful Links",
     links: [
-      { label: "Resources Links", href: "/company-documents" },
+      { label: "Resources Links", href: "/company/legal-documents" },
       { label: "Travelers Video Reviews", href: "/reviews" },
       // No videos / photos pages yet — closest existing pages.
       { label: "Nepal Travel Videos", href: "/attractions" },
@@ -99,8 +98,7 @@ export const footerColumns: FooterColumn[] = [
     title: "More Links",
     links: [
       { label: "Customize Nepal Trip", href: "/customize-trip" },
-      { label: "Plan Your Nepal Trip", href: "/plan-with-us" },
-      { label: "Nepal Travel Blog", href: "/blog" },
+      { label: "Plan Your Nepal Trip", href: "/plan-your-trip" },
       // No FAQ / sitemap pages yet — closest existing pages.
       { label: "General FAQs", href: "/contact" },
       { label: "Site Map", href: "/map" },
@@ -226,7 +224,7 @@ export const footerOffices: FooterOffice[] = [
  */
 export const headerNavigation: NavItem[] = [
   { label: "Destination", href: "/destinations" },
-  { label: "About", href: "/about-us" },
+  { label: "About", href: "/company/about-us" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -243,7 +241,7 @@ export const headerNavigation: NavItem[] = [
  * Conditions", where the screenshot-sourced version had two separate
  * links ("Banking Details" and "Booking Terms and Conditions").
  * Transcribed as the Figma node's own single verbatim label, pointed at
- * `/booking-terms-and-conditions` as the closer of the two existing
+ * `/company/terms-and-conditions` as the closer of the two existing
  * real pages by name — genuinely ambiguous, unconfirmed which (or
  * whether both) the live site actually intends; flag for product
  * confirmation before treating this as final.
@@ -270,20 +268,20 @@ export const aboutDropdown: AboutDropdownData = {
     {
       heading: "Our Company",
       links: [
-        { label: "Why Boundless Adventure", href: "/why-boundless-adventure" },
-        { label: "About Us", href: "/about-us" },
-        { label: "Our Team", href: "/team" },
+        { label: "Why Guided Travel?", href: "/company/why-guided-travel" },
+        { label: "About Us", href: "/company/about-us" },
+        { label: "Our Team", href: "/company/team" },
       ],
     },
     {
       heading: "Useful Links",
       links: [
-        { label: "Company Documents", href: "/company-documents" },
-        { label: "Responsible Tourism", href: "/responsible-tourism" },
+        { label: "Company Documents", href: "/company/legal-documents" },
+        { label: "Responsible Travel", href: "/company/responsible-travel" },
         // See this const's own doc comment above on the ambiguity here.
         {
           label: "Banking Terms & Conditions",
-          href: "/booking-terms-and-conditions",
+          href: "/company/terms-and-conditions",
         },
         { label: "Last Minute Trip Deals", href: "/last-minute-trip-deals" },
       ],
@@ -539,7 +537,7 @@ export const destinationDropdown: DestinationDropdownData = {
  * legacy slug, etc.
  *
  * One label has no route anywhere in the app: "Become a partner" has
- * no page or prior mention anywhere in the codebase — `/become-a-partner`
+ * no page or prior mention anywhere in the codebase — `/company/partner-with-us`
  * is a new provisional placeholder slug, same "unconfirmed until
  * audited against the legacy site" status as this file's other
  * placeholders (see file-level PROVISIONAL note above).
@@ -548,10 +546,9 @@ export const menuNavigation: NavItem[] = [
   { label: "Compare itineraries", href: "/compare-itineraries" },
   { label: "Testimonials", href: "/reviews" },
   { label: "Trekking routes map", href: "/map" },
-  { label: "Travel blogs", href: "/blog" },
   { label: "Customize your trip", href: "/customize-trip" },
   { label: "Volunteering in Nepal", href: "/volunteering-in-nepal" },
-  { label: "Become a partner", href: "/become-a-partner" },
+  { label: "Become a partner", href: "/company/partner-with-us" },
 ];
 
 /**
@@ -565,5 +562,5 @@ export const menuNavigation: NavItem[] = [
  */
 export const headerCta: NavItem = {
   label: "Plan with us",
-  href: "/plan-with-us",
+  href: "/plan-your-trip",
 };

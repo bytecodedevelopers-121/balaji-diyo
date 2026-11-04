@@ -9,7 +9,7 @@ export function AddOnsSection({ trip }: { trip: PackageDetail }) {
   return (
     <section>
       <h3 className="text-[32px] leading-tight font-bold text-brand-neutral-900">Add-ons &amp; Options</h3>
-      <div className="mt-5 rounded-md bg-[#fdeee1] p-6 text-[16px] leading-[1.75] text-brand-neutral-800 sm:p-7">
+      <div className="mt-5 rounded-md bg-[#fdf3d6] p-6 text-[16px] leading-[1.75] text-brand-neutral-800 sm:p-7">
         <h4 className="text-[21px] leading-snug font-bold text-brand-neutral-900">
           {trip.title} Options: How would you like to experience the {trip.title}?
         </h4>
@@ -41,7 +41,7 @@ export function AddOnsSection({ trip }: { trip: PackageDetail }) {
         </p>
 
         {trip.addOns.length > 0 ? (
-          <div className="mt-6 border-t border-[#f2d2b8] pt-5">
+          <div className="mt-6 border-t border-[#f4e0a6] pt-5">
             <p className="font-bold text-brand-neutral-900">Optional add-ons</p>
             <ul className="mt-2 flex flex-col gap-1.5">
               {trip.addOns.map((addOn) => (

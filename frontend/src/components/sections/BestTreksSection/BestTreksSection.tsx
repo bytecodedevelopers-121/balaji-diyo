@@ -25,7 +25,7 @@ export async function BestTreksSection() {
   return (
     <section className="bg-site-bg px-4 pt-6 pb-14 min-[768px]:px-10 min-[1120px]:px-[72px]">
       <div className="mx-auto w-full max-w-[1280px]">
-        <div suppressHydrationWarning className="reveal mb-6 flex items-end justify-between gap-4">
+        <div className="mb-6 flex items-end justify-between gap-4">
           <div>
             <p className="mb-1 flex items-center gap-2 text-body-s font-medium text-logo-navy">
               <Mountain aria-hidden="true" className="size-4" />
@@ -37,7 +37,7 @@ export async function BestTreksSection() {
           </div>
           <Link
             href={TREKS_PAGE}
-            className="hidden shrink-0 items-center gap-2 rounded-pill border border-logo-sun px-5 py-2 text-body-s font-semibold text-logo-navy transition-colors hover:bg-logo-sun sm:inline-flex"
+           className="hidden shrink-0 items-center gap-2 rounded-pill border border-logo-sun px-5 py-2 text-body-s font-semibold text-logo-navy transition-colors hover:bg-logo-sun sm:inline-flex"
           >
             View All Treks
             <ArrowRight aria-hidden="true" className="size-4" />
@@ -54,7 +54,7 @@ export async function BestTreksSection() {
 
         <Link
           href={TREKS_PAGE}
-          className="mt-6 inline-flex items-center gap-2 rounded-pill border border-logo-sun px-5 py-2 text-body-s font-semibold text-logo-navy sm:hidden"
+         className="mt-6 inline-flex items-center gap-2 rounded-pill border border-logo-sun px-5 py-2 text-body-s font-semibold text-logo-navy sm:hidden"
         >
           View All Treks
           <ArrowRight aria-hidden="true" className="size-4" />

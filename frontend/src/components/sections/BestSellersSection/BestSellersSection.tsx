@@ -26,10 +26,10 @@ export async function BestSellersSection() {
       {/* Faint dotted "world map" texture behind the stage. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-30 [background-image:radial-gradient(rgba(6,74,112,0.3)_1px,transparent_1.4px)] [background-size:22px_22px] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]"
+       className="pointer-events-none absolute inset-0 opacity-30 [background-image:radial-gradient(rgba(6,74,112,0.3)_1px,transparent_1.4px)] [background-size:22px_22px] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]"
       />
       <div className="relative mx-auto w-full max-w-[1280px]">
-        <div suppressHydrationWarning className="reveal mb-4 flex items-end justify-between gap-4">
+        <div className="mb-4 flex items-end justify-between gap-4">
           <div>
             <p className="mb-1 flex items-center gap-2 text-body-s font-medium text-logo-navy-dark">
               <Mountain aria-hidden="true" className="size-4" />
@@ -41,7 +41,7 @@ export async function BestSellersSection() {
           </div>
           <Link
             href="/trekking-routes-in-nepal"
-            className="hidden shrink-0 items-center gap-2 rounded-pill border border-logo-sun px-5 py-2 text-body-s font-semibold text-logo-navy-dark transition-colors hover:bg-logo-sun sm:inline-flex"
+           className="hidden shrink-0 items-center gap-2 rounded-pill border border-logo-sun px-5 py-2 text-body-s font-semibold text-logo-navy-dark transition-colors hover:bg-logo-sun sm:inline-flex"
           >
             View All Treks
             <ArrowRight aria-hidden="true" className="size-4" />

@@ -24,7 +24,7 @@ function ReviewCard({ review }: { review: PackageDetail["reviews"][number] }) {
           <BadgeCheck aria-hidden="true" className="absolute -top-1 -right-1 size-4 fill-[#12805c] text-white" />
         </span>
         <div className="text-right text-[11px] text-brand-neutral-700">
-          <span className="flex justify-end gap-0.5 text-[#f7931e]" role="img" aria-label={`Rated ${review.rating} out of 5`}>
+          <span className="flex justify-end gap-0.5 text-[#f8c028]" role="img" aria-label={`Rated ${review.rating} out of 5`}>
             {Array.from({ length: review.rating }).map((_, index) => (
               <StarIcon key={index} className="size-3.5" />
             ))}
@@ -39,7 +39,7 @@ function ReviewCard({ review }: { review: PackageDetail["reviews"][number] }) {
         <button
           type="button"
           onClick={() => setExpanded((open) => !open)}
-          className="mt-2 text-[12px] font-semibold text-[#f7931e]"
+          className="mt-2 text-[12px] font-semibold text-logo-navy"
         >
           {expanded ? "read less −" : "read more +"}
         </button>
@@ -91,14 +91,14 @@ export function ReviewsSection({ trip }: { trip: PackageDetail }) {
           <button
             type="button"
             onClick={() => setVisible((count) => count + PAGE_SIZE)}
-            className="mt-6 rounded-pill border border-[#f7931e] bg-white px-5 py-2 text-[12px] font-medium text-brand-neutral-900 transition-colors hover:bg-[#fdeee1]"
+            className="mt-6 rounded-pill border border-[#f8c028] bg-white px-5 py-2 text-[12px] font-medium text-brand-neutral-900 transition-colors hover:bg-[#fdf3d6]"
           >
             Load More →
           </button>
         ) : null}
       </div>
 
-      <div className="mt-4 grid grid-cols-2 items-center justify-items-start gap-3 sm:flex sm:flex-wrap">
+      <div className="mt-4 flex flex-wrap items-center gap-3">
         {reviewPlatforms.map((platform) => (
           <ReviewPlatformBadge key={platform.title} platform={platform} />
         ))}

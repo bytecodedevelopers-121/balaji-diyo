@@ -87,7 +87,7 @@ export function BookingSidebar({ trip }: { trip: PackageDetail }) {
             <p className="text-[19px]">Price from</p>
             <p className="mt-1 text-[28px] leading-none font-semibold">US${trip.priceFrom.toLocaleString()}</p>
             <a href="#departures" className="mt-3 inline-flex items-center gap-2 text-[15px] underline underline-offset-4">
-              <span aria-hidden="true" className="grid size-5 place-items-center rounded-full bg-[#f7931e] text-[12px] font-bold italic">
+              <span aria-hidden="true" className="grid size-5 place-items-center rounded-full bg-[#f8c028] text-[12px] font-bold text-logo-navy-dark italic">
                 i
               </span>
               Join Upcoming Trips
@@ -116,7 +116,7 @@ export function BookingSidebar({ trip }: { trip: PackageDetail }) {
           <button
             type="button"
             onClick={() => openBooking({ departureDate, adults: 1, addOnLabels: [] })}
-            className="rounded-sm bg-[#f7931e] px-6 py-4 text-[19px] font-medium text-white transition-opacity hover:opacity-90"
+            className="rounded-sm bg-[#f8c028] px-6 py-4 text-[19px] font-medium text-logo-navy-dark transition-opacity hover:opacity-90"
           >
             Join Upcoming Departure
           </button>
@@ -188,7 +188,7 @@ function MobileBookingBar({ onEnquiry, onBookNow }: { onEnquiry: () => void; onB
       <button
         type="button"
         onClick={onBookNow}
-        className="flex-1 rounded-pill bg-secondary-500 px-5 py-3 font-poppins text-body-m font-medium text-white"
+        className="flex-1 rounded-pill bg-logo-sun px-5 py-3 font-poppins text-body-m font-medium text-logo-navy-dark"
       >
         Book Now
       </button>

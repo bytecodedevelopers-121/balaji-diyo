@@ -15,7 +15,7 @@ export async function loadRegionTrips(href: string, title: string): Promise<Trip
   try {
     let trips = await getRegionPackages(href.replace(/^\/+|\/+$/g, ""));
     if (trips.length === 0) {
-      trips = await searchTrips(title.replace(/\b(region|treks?|from|trekking)\b/gi, "").trim() || title);
+      trips = await searchTrips(title.replace(/\b(region|treks?|from|trekking)\b/gi, "").trim() || title, { sampleFallback: false });
     }
     if (trips.length === 0 && SHOW_SAMPLE_DATA) trips = sampleTripsForRegion(title);
     return trips;

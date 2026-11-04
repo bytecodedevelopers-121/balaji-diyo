@@ -1,9 +1,7 @@
 import { TextToSpeechPlayer } from "@/components/ui/TextToSpeechPlayer";
 import { publicEnv } from "@/lib/env";
 import { buildNarrationScript, type PackageDetail } from "../data";
-import { DownloadPdfButton } from "./DownloadPdfButton";
-import { CompareButton } from "./CompareButton";
-import { SharePopover } from "./SharePopover";
+import { TripActions } from "./TripActions";
 import { StarIcon } from "./icons";
 
 /**
@@ -32,23 +30,32 @@ export function TripTitleBar({ trip }: { trip: PackageDetail }) {
           <h1 className="text-[clamp(30px,5vw,46px)] leading-tight font-bold text-brand-neutral-1000">{trip.title}</h1>
           <div className="flex flex-wrap items-center gap-4">
             <span className="flex items-center gap-2 text-body-m">
-              <StarIcon className="size-5 text-[#ffa11d]" />
+              <span aria-label={`${trip.rating.toFixed(1)} out of 5`} className="flex">
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <StarIcon key={n} className={`size-5 ${n <= Math.round(trip.rating) ? "text-[#f8c028]" : "text-brand-neutral-300"}`} />
+                ))}
+              </span>
               <span className="font-medium text-brand-neutral-1000">{trip.rating.toFixed(1)}</span>
-              <span className="font-medium text-[#006eff]">{trip.reviewCount} reviews</span>
+              <span className="font-medium text-logo-navy">{trip.reviewCount} reviews</span>
             </span>
             <TextToSpeechPlayer text={buildNarrationScript(trip)} label={trip.title} />
           </div>
         </div>
 
-        {/*
-          Figma's mobile frame packs these three into one row at a
-          much tighter pill size than the desktop version.
-        */}
-        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-          <CompareButton slug={trip.slug} title={trip.title} />
-          <DownloadPdfButton slug={trip.slug} />
-          <SharePopover url={`${publicEnv.NEXT_PUBLIC_SITE_URL}/${trip.slug}`} title={trip.title} />
-        </div>
+        <TripActions
+          item={{
+            id: trip.id,
+            slug: trip.slug,
+            title: trip.title,
+            imageUrl: trip.heroImages[0],
+            duration: trip.shortItinerary.length || undefined,
+            durationType: "Days",
+            priceFrom: trip.priceFrom,
+            rating: trip.rating,
+            reviewCount: trip.reviewCount,
+          }}
+          url={`${publicEnv.NEXT_PUBLIC_SITE_URL}/trip/${trip.slug}`}
+        />
       </div>
 
       <p className="mt-5 max-w-[860px] text-[17px] leading-[1.8] text-brand-neutral-900">{trip.intro}</p>

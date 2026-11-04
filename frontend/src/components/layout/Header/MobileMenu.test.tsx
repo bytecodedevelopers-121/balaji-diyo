@@ -84,7 +84,7 @@ describe("MobileMenu", () => {
     );
     expect(
       screen.getByRole("link", { name: /become a partner/i }),
-    ).toHaveAttribute("href", "/become-a-partner");
+    ).toHaveAttribute("href", "/company/partner-with-us");
   });
 
   it("closes on Escape, restores focus to the trigger, and unlocks scroll", async () => {
@@ -121,8 +121,8 @@ describe("MobileMenu", () => {
     // by index rather than `name` since name-computation on a hidden
     // node isn't reliable (see the "opens the panel" test's own
     // comment on this same quirk) — "Volunteering in Nepal" is
-    // `menuNavigation`'s 6th (index 5) entry.
-    const navLink = screen.getAllByRole("link", { hidden: true })[5];
+    // `menuNavigation`'s 5th (index 4) entry.
+    const navLink = screen.getAllByRole("link", { hidden: true })[4];
     expect(navLink).toHaveAttribute("href", "/volunteering-in-nepal");
     fireEvent.click(navLink);
 

@@ -98,7 +98,7 @@ export async function TestimonialsSection() {
             single-row-next-to-the-heading layout at `md` and up,
             where there's room for all 4 in a row.
           */}
-          <div className="grid grid-cols-2 items-center justify-items-start gap-3 md:flex md:flex-wrap" aria-hidden="true">
+          <div className="grid grid-cols-1 min-[360px]:grid-cols-2 items-center justify-items-start gap-3 md:flex md:flex-wrap" aria-hidden="true">
             {reviewPlatforms.map((platform) => (
               <ReviewPlatformBadge key={platform.title} platform={platform} />
             ))}

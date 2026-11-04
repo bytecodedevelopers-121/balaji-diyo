@@ -23,14 +23,14 @@ export const TREKKING_LINKS: MenuLink[] = [
 
 /** "Company" dropdown links — existing pages (Legal Documents = company documents). */
 export const COMPANY_LINKS: MenuLink[] = [
-  { label: "About Us", href: "/about-us" },
-  { label: "Joyful Trekking Team", href: "/team" },
-  { label: "Legal Documents", href: "/company-documents" },
-  { label: "Why Guided Travel?", href: "/why-boundless-adventure" },
-  { label: "Responsible Travel", href: "/responsible-tourism" },
-  { label: "Partner with Us", href: "/become-a-partner" },
-  { label: "Terms and Conditions", href: "/booking-terms-and-conditions" },
-  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "About Us", href: "/company/about-us" },
+  { label: "Joyful Trekking Team", href: "/company/team" },
+  { label: "Legal Documents", href: "/company/legal-documents" },
+  { label: "Why Guided Travel?", href: "/company/why-guided-travel" },
+  { label: "Responsible Travel", href: "/company/responsible-travel" },
+  { label: "Partner with Us", href: "/company/partner-with-us" },
+  { label: "Terms and Conditions", href: "/company/terms-and-conditions" },
+  { label: "Privacy Policy", href: "/company/privacy-policy" },
 ];
 
 /** Links in the "•••" dropdown. Travel Guides, Affiliate Program and Web
@@ -38,10 +38,9 @@ export const COMPANY_LINKS: MenuLink[] = [
  *  existing ones — repoint them when those pages exist. */
 export const MORE_LINKS: MenuLink[] = [
   { label: "Travel Guides", href: "/trekking-routes-in-nepal" },
-  { label: "Partner with Us", href: "/become-a-partner" },
-  { label: "Affiliate Program", href: "/become-a-partner" },
+  { label: "Partner with Us", href: "/company/partner-with-us" },
+  { label: "Affiliate Program", href: "/company/partner-with-us" },
   { label: "Nepal Travel Web Stories", href: "/attractions" },
-  { label: "Nepal Travel Blog", href: "/blog" },
   { label: "Contact Us", href: "/contact" },
 ];
 

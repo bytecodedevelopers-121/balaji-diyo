@@ -75,7 +75,7 @@ export function PackageDetailView({ trip }: { trip: PackageDetail }) {
           `bg-[#FFFAF0]` is the whole package section's background — sits
           behind TripHeader's own opaque photo/gallery and every card's
           own `bg-white`, so it only actually shows through the page's
-          own margins/gutters, matching the warm cream (`#fef7f0`-family)
+          own margins/gutters, matching the warm cream (`#fffaeb`-family)
           palette the individual cards on this page already use.
 
           `pb-24` reserves room for BookingSidebar's mobile-only fixed

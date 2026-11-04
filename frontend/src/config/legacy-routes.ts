@@ -88,3 +88,27 @@ export const legacyRedirects: LegacyRedirect[] = [
     permanent: true,
   },
 ];
+
+/** Company pages moved under "/company/" (2026-11, direct request: "/company/about-us"); the old top-level URLs keep working. */
+const COMPANY_PAGES = [
+  "about-us",
+  "team",
+];
+
+legacyRedirects.push(
+  { source: "/privacy-policy", destination: "/company/privacy-policy", permanent: true },
+  { source: "/booking-terms-and-conditions", destination: "/company/terms-and-conditions", permanent: true },
+  { source: "/company/booking-terms-and-conditions", destination: "/company/terms-and-conditions", permanent: true },
+  { source: "/become-a-partner", destination: "/company/partner-with-us", permanent: true },
+  { source: "/company/become-a-partner", destination: "/company/partner-with-us", permanent: true },
+  { source: "/responsible-tourism", destination: "/company/responsible-travel", permanent: true },
+  { source: "/company/responsible-tourism", destination: "/company/responsible-travel", permanent: true },
+  { source: "/why-boundless-adventure", destination: "/company/why-guided-travel", permanent: true },
+  { source: "/company/why-boundless-adventure", destination: "/company/why-guided-travel", permanent: true },
+  { source: "/company-documents", destination: "/company/legal-documents", permanent: true },
+  { source: "/company/company-documents", destination: "/company/legal-documents", permanent: true },
+  ...COMPANY_PAGES.flatMap((page) => [
+    { source: `/${page}`, destination: `/company/${page}`, permanent: true },
+    ...(page === "team" ? [{ source: "/team/:slug", destination: "/company/team/:slug", permanent: true }] : []),
+  ]),
+);

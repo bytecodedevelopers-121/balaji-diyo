@@ -8,6 +8,7 @@ import { ChevronDown } from "lucide-react";
 import { destinationDropdown as staticDestinationDropdown, type DestinationDropdownData } from "@/config/navigation";
 import { loadRegionTrips } from "@/features/trips/api/load-region-trips";
 import type { Trip } from "@/features/trips/types/trip.types";
+import { fallbackImage, toTitleCase, tripMeta } from "@/lib/menu-utils";
 import { cn } from "@/lib/utils";
 import { useHeaderPanelTop } from "./useHeaderPanelTop";
 
@@ -16,41 +17,10 @@ interface Region {
   href: string;
 }
 
-/** Photos used when a package has none of its own — picked by name so each gets a stable, different one. */
-const FALLBACK_IMAGES = [
-  "/images/journey/trek.jpg",
-  "/images/trips/featured-annapurna-trek.jpg",
-  "/images/journey/climb.jpg",
-  "/images/hero/hero-3.jpeg",
-  "/images/hero/12.jpeg",
-  "/images/hero/hero-4.jpeg",
-  "/images/cta/gokyo-lake-yak-wide.jpg",
-];
-
-function fallbackImage(key: string): string {
-  let hash = 0;
-  for (const char of key) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
-  return FALLBACK_IMAGES[hash % FALLBACK_IMAGES.length];
-}
-
-/** "EVEREST REGION" -> "Everest Region" (the menu data is sometimes all-caps). */
-function toTitleCase(text: string): string {
-  return text.toLowerCase().replace(/(^|\s)\S/g, (match) => match.toUpperCase());
-}
-
 /** Sample trips carry activity categories; API trips don't, so only samples are filtered to trekking here. */
 function isTrek(trip: Trip): boolean {
   const categories = (trip as { categories?: string[] }).categories;
   return !categories || categories.includes("trekking");
-}
-
-function tripMeta(trip: Trip): string {
-  return [
-    trip.duration ? `${trip.duration} ${(trip.durationType ?? "Days").toUpperCase()}` : null,
-    trip.priceFrom ? `FROM US$${trip.priceFrom.toLocaleString()}` : null,
-  ]
-    .filter(Boolean)
-    .join(" · ");
 }
 
 /**
@@ -156,7 +126,6 @@ export function TrekkingMenu({
               <div className="pointer-events-auto mx-auto w-full max-w-[1440px] overflow-hidden rounded-[6px] bg-[#064a70] text-white shadow-[0_18px_50px_rgba(0,0,0,0.45)]">
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-7 py-4">
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-                    <span aria-hidden="true" className="h-px w-8 bg-logo-sun" />
                     <span className="font-playfair-display text-[24px] font-bold">Trekking and Hiking</span>
                     <span className="text-[11px] font-bold tracking-[0.14em] text-logo-sun uppercase">
                       · Himalayan treks, region by region

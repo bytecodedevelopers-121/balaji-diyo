@@ -60,7 +60,7 @@ export function AboutSection() {
           many travelers come back to us and bring their friends along.
         </p>
         <a
-          href="/about-us"
+          href="/company/about-us"
           className="flex items-center gap-2 text-body-l font-medium text-primary-500 hover:opacity-80"
         >
           Know More

@@ -5,7 +5,8 @@ export interface ReviewPlatform {
   title: string;
   rating: string;
   iconSrc: string;
-  href: string;
+  /** Link to Joyful Trekking's own profile on that platform; leave out until the real URL is known. */
+  href?: string;
   starClassName: string;
 }
 
@@ -14,28 +15,24 @@ export const reviewPlatforms: ReviewPlatform[] = [
     title: "Tripadvisor",
     rating: "5.0",
     iconSrc: "/images/testimonials/badge-tripadvisor.png",
-    href: "https://www.tripadvisor.com/Attraction_Review-g293890-d4815891-Reviews-Boundless_Adventure-Kathmandu_Kathmandu_Valley_Bagmati_Zone_Central_Region.html",
     starClassName: "text-[#00aa6c]",
   },
   {
     title: "Facebook",
     rating: "4.9",
     iconSrc: "/images/testimonials/badge-facebook.png",
-    href: "https://www.facebook.com/Boundlessadventure",
     starClassName: "text-[#1877f2]",
   },
   {
     title: "Google",
     rating: "5.0",
     iconSrc: "/images/testimonials/badge-google.png",
-    href: "https://share.google/U5TfZqHFd0tryN9fm",
     starClassName: "text-[#fbbc04]",
   },
   {
     title: "Trustpilot",
     rating: "5.0",
     iconSrc: "/images/testimonials/badge-trustpilot.png",
-    href: "https://www.trustpilot.com/review/www.boundlessadventure.com",
     starClassName: "text-[#00b67a]",
   },
 ];
@@ -53,14 +50,13 @@ interface ReviewPlatformBadgeProps {
  * standalone third-party logo assets are provided.
  */
 export function ReviewPlatformBadge({ platform, className }: ReviewPlatformBadgeProps) {
+  const Tag = platform.href ? "a" : "div";
   return (
-    <a
-      href={platform.href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={`Read Joyful Trekking Pvt. Ltd. reviews on ${platform.title}`}
+    <Tag
+      {...(platform.href ? { href: platform.href, target: "_blank", rel: "noopener noreferrer" } : null)}
+      aria-label={`Joyful Trekking Pvt. Ltd. reviews on ${platform.title}`}
       className={cn(
-        "inline-flex h-14 items-center gap-2 rounded-full border border-brand-neutral-300 bg-brand-neutral-100 py-1 pr-4 pl-1 transition-colors hover:border-brand-neutral-500 hover:bg-brand-neutral-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-neutral-900",
+        "inline-flex h-14 items-center gap-2 rounded-full border border-brand-neutral-300 bg-brand-neutral-100 py-1 pr-4 pl-1 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-neutral-900",
         className,
       )}
     >
@@ -86,6 +82,6 @@ export function ReviewPlatformBadge({ platform, className }: ReviewPlatformBadge
           </span>
         </span>
       </span>
-    </a>
+    </Tag>
   );
 }

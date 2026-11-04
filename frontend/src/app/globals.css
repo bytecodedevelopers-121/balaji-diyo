@@ -161,3 +161,12 @@
     animation: none;
   }
 }
+
+/* Never scroll sideways: scroll-reveal animations start some sections a few
+   dozen pixels off-screen, which would otherwise widen the page on phones.
+   `clip` (unlike `hidden`) doesn't create a scroll container, so sticky
+   headers and in-page nav keep working. */
+html,
+body {
+  overflow-x: clip;
+}

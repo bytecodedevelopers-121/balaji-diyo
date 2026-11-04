@@ -18,7 +18,7 @@ import { ShareIcon } from "./icons";
  * production doesn't have but every share-popover pattern elsewhere
  * expects.
  */
-export function SharePopover({ url, title }: { url: string; title: string }) {
+export function SharePopover({ url, title, iconOnly = false }: { url: string; title: string; iconOnly?: boolean }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -71,10 +71,15 @@ export function SharePopover({ url, title }: { url: string; title: string }) {
         onClick={toggleOpen}
         aria-haspopup="true"
         aria-expanded={open}
-        className="flex items-center gap-1.5 rounded-pill border border-secondary-500 px-3 py-2 font-poppins text-body-s font-medium text-secondary-500 sm:gap-3 sm:px-5 sm:py-2.5 sm:text-body-m"
+        aria-label={iconOnly ? "Share this trip" : undefined}
+        className={
+          iconOnly
+            ? "grid size-9 place-items-center rounded-full bg-logo-navy text-white transition-opacity hover:opacity-90"
+            : "flex items-center gap-1.5 rounded-pill border border-logo-navy px-3 py-2 font-poppins text-body-s font-medium text-logo-navy sm:gap-3 sm:px-5 sm:py-2.5 sm:text-body-m"
+        }
       >
-        <ShareIcon className="size-3.5 sm:size-4.5" />
-        Share
+        <ShareIcon className={iconOnly ? "size-4" : "size-3.5 sm:size-4.5"} />
+        {iconOnly ? null : "Share"}
       </button>
 
       {open ? (

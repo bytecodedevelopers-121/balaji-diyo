@@ -14,7 +14,7 @@ const PARTNERS = [
 export function AssociatedWithSection() {
   return (
     <section className="bg-site-bg px-4 pt-6 pb-4 text-center min-[768px]:px-10">
-      <h2 suppressHydrationWarning className="reveal text-[24px] font-bold tracking-wide min-[768px]:text-[30px] text-brand-neutral-900 uppercase">
+      <h2 className="text-[24px] font-bold tracking-wide min-[768px]:text-[30px] text-brand-neutral-900 uppercase">
         We&apos;re Associated With
       </h2>
       <ul className="mx-auto mt-6 flex max-w-[1100px] flex-wrap items-center justify-center gap-x-10 gap-y-6 min-[768px]:gap-x-14">
@@ -25,7 +25,7 @@ export function AssociatedWithSection() {
               src={partner.src}
               alt={partner.name}
               loading="lazy"
-              className="h-14 w-auto max-w-[170px] object-contain min-[768px]:h-[72px]"
+             className="h-14 w-auto max-w-[170px] object-contain min-[768px]:h-[72px]"
             />
           </li>
         ))}

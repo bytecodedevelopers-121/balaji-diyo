@@ -1,7 +1,9 @@
 import Link from "next/link";
-import { Tag } from "lucide-react";
+import { Tag, type LucideIcon } from "lucide-react";
 import { FillImage } from "@/components/ui/FillImage";
+import { TRIP_CATEGORIES } from "@/config/trip-categories";
 import { getCategoryPackageCount } from "@/features/trips/api/get-category-by-slug";
+import { HeroHeadline } from "./HeroHeadline";
 import { HeroSearchButton } from "./HeroSearchButton";
 import { HeroVideo } from "./HeroVideo";
 
@@ -15,15 +17,28 @@ import { HeroVideo } from "./HeroVideo";
  * hidden prefix so screen readers and search engines still get
  * "Nepal's Local Trekking Agency".
  */
-const CATEGORIES = [
-  { label: "Trekking and Hiking", sub: "Himalayan treks", href: "/trekking-routes-in-nepal", image: "/images/nav/trekking-and-hiking.jpg" },
-  { label: "Climbing and Expedition", sub: "Summit expeditions", countSlug: "nepal-peak-climbing", href: "/nepal-peak-climbing", image: "/images/nav/climbing-and-expedition.jpg" },
+// Label and link come from the shared category list (also the Destinations menu's filters);
+// each card only adds its subtitle and artwork here.
+const [TREKKING, CLIMBING, SAFARI, TOURS, DAY, DEALS] = TRIP_CATEGORIES;
+interface HeroCategory {
+  key: string;
+  label: string;
+  href: string;
+  sub: string;
+  countSlug?: string;
+  image?: string;
+  Icon?: LucideIcon;
+}
+
+const CATEGORIES: HeroCategory[] = [
+  { ...TREKKING, sub: "Himalayan treks", image: "/images/nav/trekking-and-hiking.jpg" },
+  { ...CLIMBING, sub: "Summit expeditions", countSlug: "nepal-peak-climbing", image: "/images/nav/climbing-and-expedition.jpg" },
   // No dedicated jungle-safari / day-tour pages exist yet — both point at
   // the general tour packages listing.
-  { label: "Jungle and Wildlife Safari", sub: "Chitwan and Bardia", href: "/nepal-tour-packages", image: "/images/nav/jungle-safari.jpg" },
-  { label: "Nepal Tours and Holidays", sub: "Culture and sightseeing", countSlug: "nepal-tour-packages", href: "/nepal-tour-packages", image: "/images/nav/nepal-tours.webp" },
-  { label: "Day Tours and Activities", sub: "Short getaways", href: "/nepal-tour-packages", image: "/images/nav/day-tours.webp" },
-  { label: "Deals and Discounts", sub: "Last minute offers", href: "/last-minute-trip-deals", Icon: Tag },
+  { ...SAFARI, sub: "Chitwan and Bardia", image: "/images/nav/jungle-safari.jpg" },
+  { ...TOURS, sub: "Culture and sightseeing", countSlug: "nepal-tour-packages", image: "/images/nav/nepal-tours.webp" },
+  { ...DAY, sub: "Short getaways", image: "/images/nav/day-tours.webp" },
+  { ...DEALS, sub: "Last minute offers", Icon: Tag },
 ];
 
 const PLACES = [
@@ -68,11 +83,7 @@ export async function HeroSection() {
           Namaste &amp; welcome to Nepal
         </p>
 
-        <h1 className="font-playfair-display mt-8 text-[clamp(44px,8.5vw,92px)] leading-[1.08] font-bold">
-          <span className="sr-only">Nepal&apos;s Local Trekking Agency — </span>
-          Live the Nepal
-          <span className="block text-logo-sun italic">you&rsquo;ve only dreamed of.</span>
-        </h1>
+        <HeroHeadline />
 
         <p className="mt-8 max-w-[560px] text-[15px] leading-[1.85] text-white/90 min-[768px]:text-[16px]">
           Created for travellers who don&rsquo;t just visit the Himalayas, they feel them. Prayer flags at 5,000 m,

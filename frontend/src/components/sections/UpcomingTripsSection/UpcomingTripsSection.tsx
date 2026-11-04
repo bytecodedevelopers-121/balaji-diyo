@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowRight, Info, Mountain } from "lucide-react";
-import { siteConfig } from "@/config/site";
 import { getUpcomingDepartures } from "@/features/departures/api/get-upcoming-departures";
 import type { Departure } from "@/features/departures/types/departure.types";
 import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
@@ -8,7 +7,7 @@ import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
 /**
  * "Join Upcoming Trips" — a departures table right after the Best Sellers
  * grid: trip, date range, status, price, and a "Join This Date" button
- * that opens a WhatsApp enquiry. Real rows come from `GET /departures`;
+ * that opens the Last Minute Booking page. Real rows come from `GET /departures`;
  * `oldPrice` / `spaces` aren't in that API yet, so they only show on the
  * sample rows used when the database has no departures.
  */
@@ -62,9 +61,13 @@ function toRow(departure: Departure): Row {
 const dateFormat = new Intl.DateTimeFormat("en-US", { month: "short", day: "2-digit", year: "numeric", timeZone: "UTC" });
 
 function joinHref(row: Row): string {
-  const digits = siteConfig.phoneHref.replace(/[^\d]/g, "");
-  const text = `Hello, I would like to join ${row.title} departing ${dateFormat.format(row.start)}.`;
-  return `https://wa.me/${digits}?text=${encodeURIComponent(text)}`;
+  const params = new URLSearchParams({
+    title: row.title,
+    date: row.start.toISOString().slice(0, 10),
+    days: String(row.days),
+    price: String(row.price),
+  });
+  return `/last-minute-booking?${params.toString()}`;
 }
 
 export async function UpcomingTripsSection() {
@@ -80,7 +83,7 @@ export async function UpcomingTripsSection() {
   return (
     <section className="relative overflow-hidden bg-site-bg px-4 pt-14 pb-12 min-[768px]:px-10 min-[1120px]:px-[72px]">
       <div className="relative mx-auto w-full max-w-[1280px]">
-        <div suppressHydrationWarning className="reveal mb-5 flex items-end justify-between gap-4 text-brand-neutral-1000">
+        <div className="mb-5 flex items-end justify-between gap-4 text-brand-neutral-1000">
           <div>
             <p className="mb-1 flex items-center gap-2 text-body-s font-medium">
               <Mountain aria-hidden="true" className="size-4" />
@@ -90,7 +93,7 @@ export async function UpcomingTripsSection() {
           </div>
           <Link
             href="/last-minute-trip-deals"
-            className="hidden shrink-0 items-center gap-2 rounded-pill border border-logo-sun bg-brand-neutral-000 px-5 py-2 text-body-s font-semibold text-logo-navy-dark transition-colors hover:bg-logo-sun sm:inline-flex"
+           className="hidden shrink-0 items-center gap-2 rounded-pill border border-logo-sun bg-brand-neutral-000 px-5 py-2 text-body-s font-semibold text-logo-navy-dark transition-colors hover:bg-logo-sun sm:inline-flex"
           >
             View All Departures
             <ArrowRight aria-hidden="true" className="size-4" />
@@ -98,7 +101,38 @@ export async function UpcomingTripsSection() {
         </div>
 
         <div className="overflow-hidden rounded-[6px] bg-brand-neutral-000 shadow-[0_8px_30px_rgba(6,74,112,0.25)]">
-          <div className="overflow-x-auto">
+          {/* Phones: one card per departure instead of a wide table. */}
+          <ul className="divide-y divide-brand-neutral-200 md:hidden">
+            {rows.map((row) => (
+              <li key={row.id} className="px-4 py-5">
+                <p className="text-[18px] leading-snug font-semibold text-logo-navy-dark">{row.title}</p>
+                <p className="mt-2 text-[14px] text-brand-neutral-800">
+                  {dateFormat.format(row.start)} - {dateFormat.format(row.end)}
+                  <span className="ml-2 font-medium">· {row.days} Days</span>
+                </p>
+                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+                  <span className="text-[19px] font-semibold text-logo-navy-dark">
+                    {row.price > 0 ? `US${row.price}` : "Contact us"}
+                  </span>
+                  {row.oldPrice ? (
+                    <span className="text-[14px] text-brand-neutral-700 line-through">US${row.oldPrice}</span>
+                  ) : null}
+                  <span className="text-[13px] text-brand-neutral-800">{row.status}</span>
+                  {row.spaces ? (
+                    <span className="rounded-pill bg-[#dce6f0] px-2.5 py-1 text-[12px] text-brand-neutral-800">{row.spaces}</span>
+                  ) : null}
+                </div>
+                <Link
+                  href={joinHref(row)}
+                 className="mt-4 flex w-full justify-center rounded-pill bg-logo-sun px-4 py-2.5 text-[14px] font-bold text-logo-navy-dark transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-logo-navy"
+                >
+                  Join This Date
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          <div className="hidden overflow-x-auto md:block">
             <table className="w-full min-w-[720px] border-collapse text-left">
               <thead>
                 <tr className="bg-[#cfe0ee] text-[13px] font-semibold tracking-wide text-brand-neutral-800 uppercase">
@@ -139,14 +173,12 @@ export async function UpcomingTripsSection() {
                       ) : null}
                     </td>
                     <td className="px-5 py-4 text-right">
-                      <a
+                      <Link
                         href={joinHref(row)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex whitespace-nowrap rounded-pill bg-logo-sun px-4 py-2 text-[13px] font-bold text-logo-navy-dark transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-logo-navy"
+                       className="inline-flex whitespace-nowrap rounded-pill bg-logo-sun px-4 py-2 text-[13px] font-bold text-logo-navy-dark transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-logo-navy"
                       >
                         Join This Date
-                      </a>
+                      </Link>
                     </td>
                   </tr>
                 ))}

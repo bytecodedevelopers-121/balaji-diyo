@@ -7,24 +7,8 @@ import Link from "next/link";
 import { Search } from "lucide-react";
 import { searchTrips } from "@/features/trips/api/search-trips";
 import type { Trip } from "@/features/trips/types/trip.types";
-import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
-import { ALL_SAMPLE_TRIPS } from "@/lib/sample-trips";
 
 const DEBOUNCE_MS = 300;
-
-/** Live trips from the API; when it has none (empty database) the sample trips that match the words typed. */
-async function findTrips(query: string, signal?: AbortSignal): Promise<Trip[]> {
-  const trips = await searchTrips(query, { signal }).catch((error: unknown) => {
-    if (signal?.aborted) throw error;
-    return [] as Trip[];
-  });
-  if (trips.length > 0 || !SHOW_SAMPLE_DATA) return trips;
-  const words = query.toLowerCase().split(/\s+/).filter(Boolean);
-  return ALL_SAMPLE_TRIPS.filter((trip) => {
-    const haystack = `${trip.title} ${trip.slug} ${trip.badge ?? ""}`.toLowerCase();
-    return words.every((word) => haystack.includes(word));
-  }).slice(0, 6);
-}
 
 /**
  * The destination menu's search pill — type to see live trip matches in a
@@ -41,7 +25,7 @@ export function DestinationSearch({ onNavigate }: { onNavigate: () => void }) {
     if (!trimmed) return;
     const controller = new AbortController();
     const timer = window.setTimeout(() => {
-      findTrips(trimmed, controller.signal)
+      searchTrips(trimmed, { signal: controller.signal })
         .then((trips) => {
           setResults(trips);
           setSearched(true);
@@ -62,7 +46,7 @@ export function DestinationSearch({ onNavigate }: { onNavigate: () => void }) {
     event.preventDefault();
     if (!hasQuery) return;
     // Don't wait on the debounce: search right now if the list isn't ready, then open the best match.
-    const matches = searched && results.length > 0 ? results : await findTrips(query.trim()).catch(() => []);
+    const matches = searched && results.length > 0 ? results : await searchTrips(query.trim()).catch(() => []);
     setResults(matches);
     setSearched(true);
     const first = matches[0];

@@ -1,3 +1,4 @@
+import type { ComponentType } from "react";
 import Link from "next/link";
 import { Clock } from "lucide-react";
 import { siteConfig } from "@/config/site";
@@ -37,6 +38,16 @@ interface FooterProps {
   /** Admin-managed Nepal office details from Global Settings. */
   siteSettings?: SiteSettings;
 }
+
+interface ContactItem {
+  key: string;
+  Icon: ComponentType<{ className?: string }>;
+  text: string;
+  href?: string;
+  external?: boolean;
+}
+
+const CONTACT_ICON_CLASS = "size-4 shrink-0 text-logo-navy";
 
 const LINK_CLASS =
   "text-[13px] text-brand-neutral-800 transition-colors hover:text-logo-navy focus-visible:outline-2 focus-visible:outline-logo-sun";
@@ -78,6 +89,24 @@ export function Footer({
   const officePhone = siteSettings
     ? { label: siteSettings.phone, href: toTelHref(siteSettings.phone) }
     : office.phoneGroups?.[0]?.phones[0];
+
+  // One row per contact detail, in display order; rows without data are left out.
+  const contactEntries: Array<ContactItem | null> = [
+    address ? { key: "address", Icon: PinIcon, text: address } : null,
+    { key: "email", Icon: MailIcon, text: email, href: `mailto:${email}` },
+    officePhone ? { key: "office", Icon: PhoneIcon, text: `${officePhone.label} (Office)`, href: officePhone.href } : null,
+    mobile
+      ? {
+          key: "whatsapp",
+          Icon: WhatsAppGlyph,
+          text: `${mobile.label} (WhatsApp)`,
+          href: `https://wa.me/${mobile.href.replace(/[^\d]/g, "")}`,
+          external: true,
+        }
+      : null,
+    { key: "hours", Icon: Clock, text: "10:00 AM to 5:00 PM (Sunday to Friday)" },
+  ];
+  const contactItems = contactEntries.filter((item): item is ContactItem => item !== null);
 
   const [companyColumn, ...otherColumns] = footerColumns;
   const usefulColumns = otherColumns.slice(0, 2);
@@ -157,43 +186,25 @@ export function Footer({
               </span>
             </Link>
             <ul className="mt-6 flex flex-col gap-4 text-[13px] text-brand-neutral-900">
-              {address ? (
-                <li className="flex items-start gap-3">
-                  <PinIcon className="mt-0.5 size-4 shrink-0 text-logo-navy" />
-                  <span>{address}</span>
+              {contactItems.map(({ key, Icon, text, href, external }) => (
+                <li key={key} className={href ? undefined : "flex items-center gap-3"}>
+                  {href ? (
+                    <a
+                      href={href}
+                      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : null)}
+                      className="flex items-center gap-3 hover:text-logo-navy"
+                    >
+                      <Icon className={CONTACT_ICON_CLASS} />
+                      {text}
+                    </a>
+                  ) : (
+                    <>
+                      <Icon className={CONTACT_ICON_CLASS} />
+                      <span>{text}</span>
+                    </>
+                  )}
                 </li>
-              ) : null}
-              <li>
-                <a href={`mailto:${email}`} className="flex items-center gap-3 hover:text-logo-navy">
-                  <MailIcon className="size-4 shrink-0 text-logo-navy" />
-                  {email}
-                </a>
-              </li>
-              {officePhone ? (
-                <li>
-                  <a href={officePhone.href} className="flex items-center gap-3 hover:text-logo-navy">
-                    <PhoneIcon className="size-4 shrink-0 text-logo-navy" />
-                    {officePhone.label} (Office)
-                  </a>
-                </li>
-              ) : null}
-              {mobile ? (
-                <li>
-                  <a
-                    href={`https://wa.me/${mobile.href.replace(/[^\d]/g, "")}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 hover:text-logo-navy"
-                  >
-                    <WhatsAppGlyph className="size-4 shrink-0 text-logo-navy" />
-                    {mobile.label} (WhatsApp)
-                  </a>
-                </li>
-              ) : null}
-              <li className="flex items-center gap-3">
-                <Clock aria-hidden="true" className="size-4 shrink-0 text-logo-navy" />
-                10:00 AM to 5:00 PM (Sunday to Friday)
-              </li>
+              ))}
             </ul>
           </div>
         </div>

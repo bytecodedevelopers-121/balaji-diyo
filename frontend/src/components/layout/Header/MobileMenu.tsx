@@ -386,14 +386,6 @@ export function MobileMenu({
                     key={item.href}
                     ref={index === 0 ? firstLinkRef : undefined}
                     href={item.href}
-                    // "Travel blogs" opens in a new tab (2026-09-09,
-                    // explicit user direction, same as every real link in
-                    // `DestinationDropdown.tsx` — see that component's own
-                    // doc comment) — every other item here still navigates
-                    // the current tab as before.
-                    {...(item.href === "/blog"
-                      ? { target: "_blank", rel: "noopener noreferrer" }
-                      : null)}
                     onClick={close}
                     // `menu-overlay-link`: GSAP's own hook into these
                     // (the entrance/exit stagger — see this component's

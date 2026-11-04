@@ -256,6 +256,22 @@ async function seedHomepageServices() {
   });
 }
 
+// The two menus the public site reads by key (`GET /menu-items/tree/by-key/:key`). Without these rows
+// that endpoint answers 404 "Menu type not found"; the site then falls back to its built-in menus.
+async function seedMenuTypes() {
+  for (const menuType of [
+    { key: 'main_menu', name: 'Main Menu' },
+    { key: 'footer_menu', name: 'Footer Menu' },
+  ]) {
+    await prisma.menuType.upsert({
+      where: { key: menuType.key },
+      update: {},
+      create: menuType,
+    });
+  }
+  console.log('✅ Menu types: main_menu, footer_menu');
+}
+
 // ══════════════════════════════════════════════════════════════════════════════
 // MAIN
 // ══════════════════════════════════════════════════════════════════════════════
@@ -265,10 +281,17 @@ async function main() {
 
   await prisma.$connect();
 
+  // `--menu-types-only` creates just the two menu types, leaving every other table (users included) alone.
+  if (process.argv.includes('--menu-types-only')) {
+    await seedMenuTypes();
+    return;
+  }
+
   const permissions = await seedPermissions();
   const superAdminRole = await seedSuperAdminRole(permissions);
   await seedSuperAdminUser(superAdminRole.id);
   await seedHomepageServices();
+  await seedMenuTypes();
 
   console.log('\n--- Login Credentials ---');
   console.log('SuperAdmin → superadmin@boundless.local / SuperAdmin@1234');

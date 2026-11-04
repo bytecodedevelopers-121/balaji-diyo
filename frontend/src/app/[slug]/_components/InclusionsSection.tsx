@@ -40,7 +40,7 @@ const ICONS_BY_NAME: Record<string, string> = {
 function CategoryCard({ category, icon, html, variant }: { category: string; icon?: string | null; html: string; variant: "include" | "exclude" }) {
   const CategoryIcon = ICONS_BY_KEY[icon ?? ICONS_BY_NAME[category] ?? ""] ?? InfoIcon;
   return (
-    <div className="rounded-2xl border border-[#fbc99d] bg-white p-5">
+    <div className="rounded-2xl border border-[#f4dd9a] bg-white p-5">
       <h3 className="flex items-center gap-2.5 border-b border-primary-300 pb-3 font-poppins text-heading-xl font-medium text-brand-neutral-900">
         <CategoryIcon className="size-5 text-primary-500" />
         {category}
@@ -57,8 +57,8 @@ function CategoryCard({ category, icon, html, variant }: { category: string; ico
 export function InclusionsSection({ trip }: { trip: PackageDetail }) {
   return (
     <div className="flex flex-col gap-8">
-      <section id="includes" className="rounded-2xl border border-[#fbc99d] bg-[#e5f0ff] p-4">
-        <h2 className="text-center font-poppins text-raleway-3xl font-medium text-[#006eff]">What is included in this trek package?</h2>
+      <section id="includes" className="rounded-2xl border border-[#f4dd9a] bg-[#e5f0ff] p-4">
+        <h2 className="text-center font-poppins text-raleway-3xl font-medium text-logo-navy">What is included in this trek package?</h2>
         <div className="mt-4 flex flex-col gap-4">
           {trip.includes.map((group) => (
             <CategoryCard key={group.category} category={group.category} icon={group.icon} html={group.html} variant="include" />
@@ -66,8 +66,8 @@ export function InclusionsSection({ trip }: { trip: PackageDetail }) {
         </div>
       </section>
 
-      <section id="excludes" className="rounded-2xl border border-[#fbc99d] bg-[#e5f0ff] p-4">
-        <h2 className="text-center font-poppins text-raleway-3xl font-medium text-[#006eff]">What is excluded in this trek package?</h2>
+      <section id="excludes" className="rounded-2xl border border-[#f4dd9a] bg-[#e5f0ff] p-4">
+        <h2 className="text-center font-poppins text-raleway-3xl font-medium text-logo-navy">What is excluded in this trek package?</h2>
         <div className="mt-4 flex flex-col gap-4">
           {trip.excludes.map((group) => (
             <CategoryCard key={group.category} category={group.category} icon={group.icon} html={group.html} variant="exclude" />

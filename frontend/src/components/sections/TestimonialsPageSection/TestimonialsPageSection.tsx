@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronDown, Quote, Star } from "lucide-react";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import {
@@ -40,7 +41,6 @@ export function TestimonialsPageSection({ testimonials }: TestimonialsPageSectio
   const [ratings, setRatings] = useState<number[]>([]);
   const [countries, setCountries] = useState<string[]>([]);
   const [visibleCount, setVisibleCount] = useState(5);
-  const [reviewMenuOpen, setReviewMenuOpen] = useState(false);
 
   const packages = useMemo(() => {
     const entries = new Map<string, string>();
@@ -144,42 +144,17 @@ export function TestimonialsPageSection({ testimonials }: TestimonialsPageSectio
             `md:flex md:flex-wrap` restores one row once this card's
             own layout switches to `md:flex-row`.
           */}
-          <div className="grid grid-cols-2 items-center justify-items-start gap-3 md:flex md:flex-wrap">
+          <div className="grid grid-cols-1 min-[360px]:grid-cols-2 items-center justify-items-start gap-3 md:flex md:flex-wrap">
             {reviewPlatforms.map((platform) => (
               <ReviewPlatformBadge key={platform.title} platform={platform} />
             ))}
           </div>
-          <button
-            type="button"
-            onClick={() => setReviewMenuOpen((open) => !open)}
-            aria-expanded={reviewMenuOpen}
-            className="rounded-full bg-secondary-500 px-8 py-4 font-poppins text-[16px] font-bold text-white hover:bg-secondary-500/90"
+          <Link
+            href="/contact"
+            className="rounded-full bg-logo-sun px-8 py-4 text-center font-poppins text-[16px] font-bold text-logo-navy-dark hover:opacity-90"
           >
             Write A Review
-          </button>
-          {reviewMenuOpen ? (
-            <div className="absolute right-3 top-[calc(100%-2px)] z-20 w-56 overflow-hidden rounded-2xl bg-white py-2 shadow-xl">
-              {reviewPlatforms.map((platform) => (
-                <a
-                  key={platform.title}
-                  href={platform.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-3 border-b border-brand-neutral-300 px-5 py-4 font-poppins text-brand-neutral-800 last:border-b-0 hover:bg-brand-neutral-100"
-                >
-                  <span className="relative size-8 shrink-0 overflow-hidden rounded-full" aria-hidden="true">
-                    {/* eslint-disable-next-line @next/next/no-img-element -- same cropped logo source ReviewPlatformBadge uses */}
-                    <img
-                      src={platform.iconSrc}
-                      alt=""
-                      className="absolute top-1/2 left-0 h-10 w-auto max-w-none -translate-y-1/2"
-                    />
-                  </span>
-                  {platform.title}
-                </a>
-              ))}
-            </div>
-          ) : null}
+          </Link>
         </div>
 
         <div className="mt-5 grid items-start gap-5 lg:grid-cols-[400px_1fr]">

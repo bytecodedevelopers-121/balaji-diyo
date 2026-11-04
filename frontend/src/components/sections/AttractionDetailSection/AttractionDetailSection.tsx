@@ -131,15 +131,6 @@ export function AttractionDetailSection({ attraction }: { attraction: Attraction
               </div>
             </section>
           ) : null}
-
-          {attraction.blogs.length ? (
-            <section className="mt-14 border-t border-brand-neutral-300 pt-10">
-              <h2 className="font-playfair-display text-[34px] font-medium text-brand-neutral-1000">Stories and advice</h2>
-              <div className="mt-5 flex flex-col divide-y divide-brand-neutral-300">
-                {attraction.blogs.map((blog) => blog.slug ? <Link key={blog.id} href={`/blog/${blog.slug}`} className="py-4 font-poppins text-body-l font-semibold text-primary-700 hover:text-primary-900">{blog.title} →</Link> : null)}
-              </div>
-            </section>
-          ) : null}
         </Container>
       </section>
     </>

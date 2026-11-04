@@ -10,6 +10,8 @@ interface PageHeroProps {
   subtitle: string;
   image: string;
   imageAlt: string;
+  /** A shorter hero with a smaller title, for pages that want the content higher up. */
+  compact?: boolean;
 }
 
 /**
@@ -28,9 +30,12 @@ export function PageHero({
   subtitle,
   image,
   imageAlt,
+  compact = false,
 }: PageHeroProps) {
   return (
-    <section className="relative isolate flex min-h-[420px] w-full items-center overflow-hidden px-6 py-16 sm:min-h-[560px] md:px-16">
+    <section className={`relative isolate flex w-full items-center overflow-hidden px-6 md:px-16 ${
+        compact ? "min-h-[240px] py-10 sm:min-h-[300px]" : "min-h-[420px] py-16 sm:min-h-[560px]"
+      }`}>
       <FillImage
         src={image}
         alt={imageAlt}
@@ -44,7 +49,9 @@ export function PageHero({
       <div className="mx-auto flex w-full max-w-[1440px] flex-col items-center text-center">
         <Breadcrumbs items={breadcrumbs} />
 
-        <h1 className="mt-4 max-w-5xl text-center font-playfair-display text-[48px] leading-[1.2] font-medium tracking-[0] text-brand-neutral-000 not-italic sm:text-[84px] sm:leading-[115.2px]">
+        <h1 className={`mt-4 max-w-5xl text-center font-playfair-display font-medium tracking-[0] text-brand-neutral-000 not-italic ${
+          compact ? "text-[36px] leading-[1.2] sm:text-[56px]" : "text-[48px] leading-[1.2] sm:text-[84px] sm:leading-[115.2px]"
+        }`}>
           {title}
         </h1>
         <p className="mt-4 max-w-4xl text-center font-poppins text-[18px] leading-[28.8px] font-medium tracking-[0] text-brand-neutral-000 not-italic">

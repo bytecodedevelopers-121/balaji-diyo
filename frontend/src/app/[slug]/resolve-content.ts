@@ -8,6 +8,8 @@ import { getTripsByCategory } from "@/features/trips/api/get-trips";
 import type { Category } from "@/features/trips/types/category.types";
 import type { Trip } from "@/features/trips/types/trip.types";
 import type { PaginationMeta } from "@/types/api.types";
+import { TRIP_CATEGORIES } from "@/config/trip-categories";
+import { ALL_SAMPLE_TRIPS } from "@/lib/sample-trips";
 
 /**
  * Flat-URL content resolver for this route.
@@ -73,7 +75,10 @@ export async function resolveContentBySlug(slug: string, page = 1): Promise<Reso
     return { type: "trekking-region", data: trekkingRegion };
   }
 
-  const pkg = await getPackageDetail(slug);
+  const pkg = await getPackageDetail(slug).catch((error) => {
+    if (!SHOW_SAMPLE_DATA) throw error;
+    return null;
+  });
   if (pkg) {
     return { type: "package", data: pkg };
   }
@@ -83,18 +88,47 @@ export async function resolveContentBySlug(slug: string, page = 1): Promise<Reso
     return { type: "package", data: sample };
   }
 
-  const category = await getCategoryBySlug(slug);
+  // A category page with the API unreachable (or empty) falls back to the sample trips for that category.
+  const category = await getCategoryBySlug(slug).catch((error) => {
+    if (!SHOW_SAMPLE_DATA) throw error;
+    return null;
+  });
   if (category) {
     const { items: trips, meta } = await getTripsByCategory(category.id, page);
     return { type: "category", data: { category, trips, meta } };
   }
 
+  const sampleCategory = SHOW_SAMPLE_DATA ? sampleCategoryDetail(slug) : null;
+  if (sampleCategory) {
+    return { type: "category", data: sampleCategory };
+  }
+
   return null;
+}
+
+/** Sample browse page for one of the homepage activity categories (matched by its link), listing the sample trips tagged with it. */
+function sampleCategoryDetail(slug: string): CategoryDetail | null {
+  const matching = TRIP_CATEGORIES.filter((entry) => entry.href === `/${slug}`);
+  if (matching.length === 0) return null;
+
+  const keys: string[] = matching.map((entry) => entry.key);
+  const trips: Trip[] = ALL_SAMPLE_TRIPS.filter((trip) => trip.categories?.some((key) => keys.includes(key)));
+  const title = matching.length === 1 ? matching[0].label : slug.split("-").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+
+  return {
+    category: { id: `sample-category-${slug}`, title, slug, description: null, imageUrl: null },
+    trips,
+    meta: { currentPage: 1, perPage: trips.length || 1, total: trips.length, totalPages: 1, hasNextPage: false, hasPreviousPage: false },
+  };
 }
 
 /** A package by slug — the real one, else (empty database) its sample — for the `/trip/<slug>` route. */
 export async function resolvePackageBySlug(slug: string): Promise<PackageDetail | null> {
-  const pkg = await getPackageDetail(slug);
+  // An unreachable API (backend not running) falls back to the sample the same as an empty database.
+  const pkg = await getPackageDetail(slug).catch((error) => {
+    if (!SHOW_SAMPLE_DATA) throw error;
+    return null;
+  });
   if (pkg) return pkg;
   return SHOW_SAMPLE_DATA ? getSamplePackageDetail(slug) : null;
 }

@@ -15,7 +15,7 @@ const FALLBACK_SERVICES: HomepageService[] = [
       "Spectacular trekking experiences to iconic destinations like Everest Base Camp and Annapurna Circuit, as well as off-the-beaten-path adventures. Expert guides, top-notch equipment, and meticulous planning ensure unforgettable and safe hiking experiences in the Himalayas.",
     imageUrl: "/images/services/adventure-tourism.jpg",
     ctaLabel: "Know More",
-    ctaUrl: "/about-us",
+    ctaUrl: "/company/about-us",
     sortOrder: 1,
   },
 ];

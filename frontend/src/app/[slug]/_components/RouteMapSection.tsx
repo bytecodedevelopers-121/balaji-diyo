@@ -70,7 +70,7 @@ export function RouteMapSection({ trip }: { trip: PackageDetail }) {
           <div className="mt-4 flex flex-wrap gap-3">
             <Link
               href="/customize-trip"
-              className="inline-flex items-center gap-2 rounded-pill bg-[#f7931e] px-5 py-2.5 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-2 rounded-pill bg-[#f8c028] px-5 py-2.5 text-[14px] font-medium text-logo-navy-dark transition-opacity hover:opacity-90"
             >
               <FilePenLine aria-hidden="true" className="size-4" />
               Customize My Trip

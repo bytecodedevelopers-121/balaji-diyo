@@ -40,9 +40,9 @@ export async function WeatherForecast({ packageId }: { packageId: string }) {
   if (!forecast || forecast.daily.length === 0) return null;
 
   return (
-    <div className="mt-7 border-t border-[#fbc99d] pt-6">
+    <div className="mt-7 border-t border-[#f4dd9a] pt-6">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-center">
-        <div className="flex min-w-52 items-center gap-4 lg:border-r lg:border-[#fbc99d] lg:pr-6">
+        <div className="flex min-w-52 items-center gap-4 lg:border-r lg:border-[#f4dd9a] lg:pr-6">
           <span className="flex size-14 shrink-0 items-center justify-center rounded-full bg-primary-100">
             <WeatherGlyph symbolCode={forecast.current.symbolCode} className="size-7 text-primary-500" />
           </span>
@@ -62,14 +62,14 @@ export async function WeatherForecast({ packageId }: { packageId: string }) {
             return (
               <div
                 key={day.date}
-                className="flex min-w-25 flex-1 flex-col items-center rounded-xl bg-[#fef7f0] px-3 py-3 text-center"
+                className="flex min-w-25 flex-1 flex-col items-center rounded-xl bg-[#fffaeb] px-3 py-3 text-center"
               >
                 <p className="font-poppins text-body-s font-medium text-brand-neutral-700">{dayLabel(day.date, index)}</p>
                 <WeatherGlyph symbolCode={day.symbolCode} className="my-2 size-6 text-primary-500" />
                 <p className="font-poppins text-body-m font-medium text-brand-neutral-1000">
                   {day.maxC}° <span className="text-brand-neutral-600">{day.minC}°</span>
                 </p>
-                <span className="mt-1 flex items-center gap-1 font-poppins text-xs text-[#006eff]">
+                <span className="mt-1 flex items-center gap-1 font-poppins text-xs text-logo-navy">
                   <Droplets className="size-3" aria-hidden />
                   {day.precipitationProbability != null ? `${day.precipitationProbability}%` : `${day.precipitationMm} mm`}
                 </span>

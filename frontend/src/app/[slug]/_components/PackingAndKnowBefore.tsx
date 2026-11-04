@@ -69,7 +69,7 @@ export function PracticalInfoSection({ trip }: { trip: PackageDetail }) {
             {trip.knowBeforeYouGo.map((entry) => {
               const isOpen = openHeadings.includes(entry.heading);
               return (
-                <div key={entry.heading} className="rounded-xl border border-[#fbdec1] bg-[#fef7f0] p-4">
+                <div key={entry.heading} className="rounded-xl border border-[#f9ecc4] bg-[#fffaeb] p-4">
                   <button
                     type="button"
                     onClick={() => toggleHeading(entry.heading)}

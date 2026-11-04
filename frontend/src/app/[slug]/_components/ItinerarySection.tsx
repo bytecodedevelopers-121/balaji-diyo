@@ -131,7 +131,7 @@ export function ItinerarySection({ trip }: { trip: PackageDetail }) {
         </div>
       ) : null}
 
-      <div className="mt-4 rounded-md bg-[#fdeee1] p-6">
+      <div className="mt-4 rounded-md bg-[#fdf3d6] p-6">
         <h4 className="text-[20px] font-medium text-brand-neutral-900">Note</h4>
         <p className="mt-3 text-[15px] leading-relaxed text-brand-neutral-800">
           We recommend you arrive at Kathmandu by three pm at least one day before the trek departure date for

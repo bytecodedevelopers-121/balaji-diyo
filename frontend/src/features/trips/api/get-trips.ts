@@ -1,6 +1,6 @@
 import { apiFetch } from "@/lib/api/api-client";
 import type { Paginated } from "@/types/api.types";
-import { toNumber } from "@/lib/decimal";
+import { lowestPrice } from "../lib/lowest-price";
 import type { RawPackagePriceGroup, Trip } from "../types/trip.types";
 
 /**
@@ -21,14 +21,8 @@ export async function getTrips(): Promise<Trip[]> {
 /** Raw list-item shape from `GET /packages` — just the fields `getFeaturedTrips` reads, not the full `packageInclude` payload. */
 type RawFeaturedTrip = Trip & { priceGroups?: RawPackagePriceGroup[] };
 
-/** Exported for map-package-detail.ts's own `priceFrom` — same "lowest real PriceGroup price, offer preferred" rule, one package's worth instead of a list. */
-export function lowestPrice(priceGroups: RawPackagePriceGroup[] | undefined): number | undefined {
-  if (!priceGroups || priceGroups.length === 0) return undefined;
-  const prices = priceGroups
-    .map((group) => toNumber(group.offerUnitPrice) ?? toNumber(group.unitPrice))
-    .filter((price): price is number => price !== undefined);
-  return prices.length > 0 ? Math.min(...prices) : undefined;
-}
+/** Re-exported for map-package-detail.ts's own `priceFrom` — same "lowest real PriceGroup price, offer preferred" rule. */
+export { lowestPrice };
 
 /**
  * Fetches the homepage's featured trips (`GET /packages?isFeatured=true`)

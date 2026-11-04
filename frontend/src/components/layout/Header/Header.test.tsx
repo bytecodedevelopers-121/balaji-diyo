@@ -49,7 +49,7 @@ describe("Header", () => {
 
     expect(screen.getByRole("link", { name: "Plan with us" })).toHaveAttribute(
       "href",
-      "/plan-with-us",
+      "/plan-your-trip",
     );
   });
 

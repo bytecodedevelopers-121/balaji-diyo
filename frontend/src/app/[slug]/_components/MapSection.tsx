@@ -40,7 +40,7 @@ export function MapSection({ trip }: { trip: PackageDetail }) {
       : undefined;
 
   return (
-    <section className="rounded-2xl border border-[#fbc99c] bg-white">
+    <section className="rounded-2xl border border-[#f4dd9a] bg-white">
       {/*
         `isolate` matters here, not just `relative` — Leaflet's own panes
         and controls carry internal z-indexes up to 1000 (its zoom

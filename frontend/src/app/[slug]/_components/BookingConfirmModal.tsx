@@ -88,7 +88,7 @@ export function BookingConfirmModal({ trip, selection, onChangeSelection, onClos
       aria-label={`Confirm booking for ${trip.title}`}
       className="m-auto max-h-[90vh] w-[min(560px,calc(100vw-2rem))] overflow-y-auto rounded-2xl border-0 bg-white p-0 outline-none backdrop:bg-brand-neutral-1000/60"
     >
-      <div className="flex items-start justify-between gap-4 border-b border-[#fbc99d] p-6">
+      <div className="flex items-start justify-between gap-4 border-b border-[#f4dd9a] p-6">
         <div>
           <h2 className="font-poppins text-heading-2xl font-medium text-brand-neutral-1000">{trip.title}</h2>
           <p className="mt-1 font-poppins text-body-m font-medium text-brand-neutral-700">{durationDays} days</p>
@@ -117,7 +117,7 @@ export function BookingConfirmModal({ trip, selection, onChangeSelection, onClos
           </div>
           <span
             aria-hidden="true"
-            className="font-poppins text-2xl font-semibold text-secondary-500"
+            className="font-poppins text-2xl font-semibold text-logo-navy"
           >
             →
           </span>
@@ -127,7 +127,7 @@ export function BookingConfirmModal({ trip, selection, onChangeSelection, onClos
           </div>
         </div>
 
-        <div className="flex items-center justify-between border-b border-[#fbc99d] pb-4">
+        <div className="flex items-center justify-between border-b border-[#f4dd9a] pb-4">
           <span className="font-poppins text-body-m font-medium text-brand-neutral-800">Number of Persons</span>
           <div className="flex items-center gap-1.5">
             <button
@@ -167,7 +167,7 @@ export function BookingConfirmModal({ trip, selection, onChangeSelection, onClos
           Free cancellation
         </p>
 
-        <div className="flex flex-col gap-1 border-t border-[#fbc99d] pt-4">
+        <div className="flex flex-col gap-1 border-t border-[#f4dd9a] pt-4">
           <div className="flex items-center justify-between">
             <span className="font-poppins text-body-m font-medium text-brand-neutral-700">
               Persons × {selection.adults}
@@ -185,7 +185,7 @@ export function BookingConfirmModal({ trip, selection, onChangeSelection, onClos
         <button
           type="button"
           onClick={handleBookNow}
-          className="mt-1 flex items-center justify-center rounded-pill bg-secondary-500 px-6 py-3.5 font-poppins text-body-m font-medium text-white transition-opacity hover:opacity-90"
+          className="mt-1 flex items-center justify-center rounded-pill bg-logo-sun px-6 py-3.5 font-poppins text-body-m font-medium text-logo-navy-dark transition-opacity hover:opacity-90"
         >
           Book Now
         </button>

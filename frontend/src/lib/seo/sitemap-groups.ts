@@ -5,7 +5,6 @@ import { tripHref } from "@/lib/trip-href";
 import { getAllPackageSlugs } from "@/features/trips/api/get-package-slugs";
 import { getAllCategorySlugsWithPackages } from "@/features/trips/api/get-category-by-slug";
 import { getTrekkingRegions } from "@/features/trekking-regions/api/get-trekking-regions";
-import { getBlogs } from "@/features/blogs/api/get-blogs";
 import { getTeamMembers } from "@/features/team/api/get-team-members";
 import { getAttractions } from "@/features/attractions/api/get-attractions";
 import { getTrekkingRoutes } from "@/features/trekking-routes/api/get-trekking-routes";
@@ -25,7 +24,6 @@ export type SitemapGroupName =
   | "page"
   | "package"
   | "category"
-  | "blog"
   | "team"
   | "attraction"
   | "map";
@@ -42,42 +40,24 @@ interface SitemapGroup {
  */
 const STATIC_PAGES: Array<{ path: string; priority: number }> = [
   { path: "/", priority: 1 },
-  { path: "/about-us", priority: 0.7 },
-  { path: "/why-boundless-adventure", priority: 0.7 },
-  { path: "/team", priority: 0.7 },
-  { path: "/company-documents", priority: 0.6 },
-  { path: "/responsible-tourism", priority: 0.6 },
-  { path: "/booking-terms-and-conditions", priority: 0.6 },
+  { path: "/company/about-us", priority: 0.7 },
+  { path: "/company/why-guided-travel", priority: 0.7 },
+  { path: "/company/team", priority: 0.7 },
+  { path: "/company/legal-documents", priority: 0.6 },
+  { path: "/company/responsible-travel", priority: 0.6 },
+  { path: "/company/terms-and-conditions", priority: 0.6 },
+  { path: "/company/privacy-policy", priority: 0.4 },
   { path: "/last-minute-trip-deals", priority: 0.7 },
   { path: "/customize-trip", priority: 0.8 },
   { path: "/volunteering-in-nepal", priority: 0.7 },
-  { path: "/become-a-partner", priority: 0.6 },
+  { path: "/company/partner-with-us", priority: 0.6 },
   { path: "/compare-itineraries", priority: 0.7 },
   { path: "/reviews", priority: 0.7 },
   { path: "/contact", priority: 0.6 },
   { path: "/map", priority: 0.7 },
   { path: "/trekking-routes-in-nepal", priority: 0.8 },
-  { path: "/blog", priority: 0.7 },
   { path: "/attractions", priority: 0.7 },
 ];
-
-/**
- * Blog is fetched a page at a time: a single perPage=100 fetch of full
- * post bodies exceeds Next's 2MB per-entry data-cache limit (confirmed
- * via a real build), and the sitemap needs every post, not just the
- * first page of them.
- */
-const BLOG_PAGE_SIZE = 30;
-
-async function getAllBlogPosts() {
-  const first = await getBlogs({ page: 1, perPage: BLOG_PAGE_SIZE });
-  const rest = await Promise.all(
-    Array.from({ length: Math.max(0, first.meta.totalPages - 1) }, (_, i) =>
-      getBlogs({ page: i + 2, perPage: BLOG_PAGE_SIZE }),
-    ),
-  );
-  return [first, ...rest].flatMap((page) => page.items);
-}
 
 const withSlug = <T extends { slug: string | null }>(item: T): item is T & { slug: string } => Boolean(item.slug);
 
@@ -107,19 +87,10 @@ const GROUPS: SitemapGroup[] = [
     },
   },
   {
-    name: "blog",
-    entries: async () =>
-      (await getAllBlogPosts()).filter(withSlug).map((post) => ({
-        path: `/blog/${post.slug}`,
-        priority: 0.5,
-        changeFrequency: "monthly" as const,
-      })),
-  },
-  {
     name: "team",
     entries: async () =>
       (await getTeamMembers()).filter(withSlug).map((member) => ({
-        path: `/team/${member.slug}`,
+        path: `/company/team/${member.slug}`,
         priority: 0.5,
         changeFrequency: "monthly" as const,
       })),

@@ -32,7 +32,7 @@ interface CmsProseProps {
  * content comes from the authenticated admin CMS (backend's Page
  * module), the same trust level as the rest of the site's copy — it is
  * not user-submitted input. Same call already made for team member bios
- * (`/team/[slug]`). If a page body ever becomes reader-submitted, this
+ * (`/company/team/[slug]`). If a page body ever becomes reader-submitted, this
  * needs a sanitizer first.
  */
 export function CmsProse({ html, className, numberedHeadings = false }: CmsProseProps) {

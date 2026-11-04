@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
 import { HeaderSearchResults } from "@/components/layout/Header/HeaderSearchResults";
 
@@ -31,6 +31,33 @@ export function HeroSearchButton() {
     setOpen(false);
     setQuery("");
   }
+
+  // While the results list is open the page behind it stays put, so scrolling only moves the list.
+  // (The motion layer pauses its smooth scrolling whenever the body is `overflow: hidden`.)
+  useEffect(() => {
+    if (!open) return;
+
+    // Bring the pill up first when the list would otherwise open below the fold, since the page can't scroll once locked.
+    const pill = pillRef.current?.getBoundingClientRect();
+    if (pill && pill.bottom + 320 > window.innerHeight) {
+      window.scrollBy({ top: pill.top - 140, behavior: "instant" });
+      placePanel();
+    }
+
+    const body = document.body;
+    const previousOverflow = body.style.overflow;
+    const previousPadding = body.style.paddingRight;
+    const scrollbar = window.innerWidth - document.documentElement.clientWidth;
+    body.style.overflow = "hidden";
+    if (scrollbar > 0) body.style.paddingRight = `${scrollbar}px`;
+
+    window.addEventListener("resize", placePanel);
+    return () => {
+      body.style.overflow = previousOverflow;
+      body.style.paddingRight = previousPadding;
+      window.removeEventListener("resize", placePanel);
+    };
+  }, [open]);
 
   return (
     <>
