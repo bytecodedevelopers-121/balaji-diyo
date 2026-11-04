@@ -4,6 +4,7 @@ Website for Joyful Trekking Pvt. Ltd., a Kathmandu-based trekking, tour and trav
 
 ## Project structure
 
+
 | Folder | What it is |
 | --- | --- |
 | `frontend/` | Public website (Next.js, React, Tailwind CSS) |
