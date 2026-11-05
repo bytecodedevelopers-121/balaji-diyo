@@ -1,6 +1,15 @@
-import { Inter, Playfair_Display, Poppins } from "next/font/google";
+import { Merriweather } from "next/font/google";
 
 /**
+ * SITE FONT (2026-11): every family below now loads Merriweather, a sturdy
+ * serif matching the "Joyful Trekking" logo lettering (direct request: "make
+ * all my fonts style like this"). The three exports keep their old names
+ * (`raleway`, `poppins`, `playfairDisplay`) and CSS variables so the
+ * `font-raleway` / `font-poppins` / `font-playfair-display` classes used
+ * across the site keep working unchanged; to try another family, swap the
+ * loader in these three places. The older notes below describe the previous
+ * Inter / Poppins / Playfair setup.
+ *
  * Font loaders for the Boundless Adventure design-token foundation.
  *
  * The site-wide default family is Inter (Regular, Medium, SemiBold, Bold)
@@ -29,9 +38,9 @@ import { Inter, Playfair_Display, Poppins } from "next/font/google";
  */
 
 /** Global family for headings, body copy, inputs, buttons, and helper text. */
-export const raleway = Inter({
+export const raleway = Merriweather({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "700", "900"],
   variable: "--font-raleway",
   display: "swap",
 });
@@ -47,9 +56,9 @@ export const raleway = Inter({
  * foundation this file's own top comment originally scoped them under —
  * both now carry `font-poppins` explicitly.
  */
-export const poppins = Poppins({
+export const poppins = Merriweather({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "700", "900"],
   variable: "--font-poppins",
   display: "swap",
   // `preload: false` — all three fonts here are called in the *root*
@@ -73,9 +82,9 @@ export const poppins = Poppins({
  * "Let's Plan Your Trip Together" CTA / "Similar Packages" headings on
  * the itinerary/package-detail page.
  */
-export const playfairDisplay = Playfair_Display({
+export const playfairDisplay = Merriweather({
   subsets: ["latin"],
-  weight: ["500"],
+  weight: ["300", "400", "700", "900"],
   variable: "--font-playfair-display",
   display: "swap",
   // `preload: false` — same reasoning as `poppins` above: not every page

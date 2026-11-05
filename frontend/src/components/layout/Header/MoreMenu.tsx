@@ -37,10 +37,10 @@ export const COMPANY_LINKS: MenuLink[] = [
  *  Stories have no dedicated pages yet, so they point at the closest
  *  existing ones — repoint them when those pages exist. */
 export const MORE_LINKS: MenuLink[] = [
-  { label: "Travel Guides", href: "/trekking-routes-in-nepal" },
-  { label: "Partner with Us", href: "/company/partner-with-us" },
-  { label: "Affiliate Program", href: "/company/partner-with-us" },
-  { label: "Nepal Travel Web Stories", href: "/attractions" },
+  { label: "Travel Guides", href: "/travel-guides" },
+  { label: "Affiliate Program", href: "/affiliate-program" },
+  { label: "Nepal Travel Web Stories", href: "/travel-web-stories" },
+  { label: "Nepal Travel Blog", href: "/blog" },
   { label: "Contact Us", href: "/contact" },
 ];
 

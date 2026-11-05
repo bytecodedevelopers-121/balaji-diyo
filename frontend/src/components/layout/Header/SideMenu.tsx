@@ -163,7 +163,7 @@ export function SideMenu({ triggerSizeClassName = "size-5", onOpenChange }: Side
                 </ul>
 
                 <Link
-                  href="/nepal-tour-packages"
+                  href="/destination/nepal"
                   onClick={close}
                   className="mt-8 block rounded-[4px] bg-logo-sun py-4 text-center text-[17px] font-bold tracking-wide text-logo-navy-dark uppercase transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-logo-navy"
                 >

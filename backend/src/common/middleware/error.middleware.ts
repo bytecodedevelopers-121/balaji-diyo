@@ -45,7 +45,11 @@ export const errorHandler = (
     message = err.message || message;
   }
 
-  if (process.env.NODE_ENV === 'development') {
+  // Expected client errors (e.g. a 404 for a category slug the site probes and
+  // handles itself) are already reported by the request log line, so only
+  // unexpected errors print a stack trace.
+  const isExpectedClientError = err instanceof ApiError && err.isOperational && statusCode < 500;
+  if (process.env.NODE_ENV === 'development' && !isExpectedClientError) {
     console.error('Error:', err);
   }
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { setTawkVisible } from "@/components/analytics/TawkChat";
 import type { PackageDetail } from "../data";
 import { useBookingFlow } from "./booking-flow-context";
@@ -10,8 +11,8 @@ import { DownloadPdfButton } from "./DownloadPdfButton";
 /**
  * Sticky price sidebar: a navy "Price from" card with the group-discount tiers,
  * then Join Upcoming Departure / Check Availability / Send Inquiry actions, the
- * group-cost note and quick links. Check Availability opens the booking flow
- * (first departure, 1 traveler) and Send Inquiry opens the enquiry form.
+ * group-cost note and quick links. Check Availability opens the /book-now
+ * booking page (first departure, 1 traveler) and Send Inquiry opens the enquiry form.
  *
  * Below `md` the card scrolls away inline with the page, so `<MobileBookingBar>`
  * renders a second, viewport-fixed Trip Enquiry / Book Now bar that stays
@@ -24,6 +25,12 @@ export function BookingSidebar({ trip }: { trip: PackageDetail }) {
   );
   const [stickyTop, setStickyTop] = useState(60); // ~ old `md:top-15` fallback before the first measurement
   const { openBooking, openEnquiry } = useBookingFlow();
+  const router = useRouter();
+
+  function goToBookingPage() {
+    const params = new URLSearchParams({ date: departureDate, adults: "1" });
+    router.push(`/book-now/${trip.slug}?${params.toString()}`);
+  }
 
   // Same overlap problem as TabNav (see its own comment): a fixed
   // `top` offset here was tuned for the header alone, so once the tab
@@ -122,7 +129,7 @@ export function BookingSidebar({ trip }: { trip: PackageDetail }) {
           </button>
           <button
             type="button"
-            onClick={() => openBooking({ departureDate, adults: 1, addOnLabels: [] })}
+            onClick={goToBookingPage}
             className="rounded-sm bg-[#064a70] px-6 py-4 text-[19px] font-medium text-white transition-opacity hover:opacity-90"
           >
             Check Availability

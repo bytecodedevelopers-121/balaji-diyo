@@ -5,7 +5,9 @@ import { UpcomingTripsSection } from "@/components/sections/UpcomingTripsSection
 import { FeaturedToursSection } from "@/components/sections/FeaturedToursSection";
 import { ExploreNepalSection } from "@/components/sections/ExploreNepalSection";
 import { ClientReviewsSection } from "@/components/sections/ClientReviewsSection";
+import { WebStoriesSection } from "@/components/sections/WebStoriesSection";
 import { FaqGuidedSection } from "@/components/sections/FaqGuidedSection";
+import { TravelNewsSection } from "@/components/sections/TravelNewsSection";
 import { AssociatedWithSection } from "@/components/sections/AssociatedWithSection";
 import { CtaSection } from "@/components/sections/CtaSection";
 
@@ -43,8 +45,14 @@ export default function HomePage() {
       <Reveal variant="stagger-up" targets="ul > li">
         <ClientReviewsSection />
       </Reveal>
+      <Reveal variant="stagger-up" targets="ul > li">
+        <WebStoriesSection />
+      </Reveal>
       <Reveal variant="auto">
         <FaqGuidedSection />
+      </Reveal>
+      <Reveal variant="stagger-left" targets="ul > li">
+        <TravelNewsSection />
       </Reveal>
       <Reveal variant="zoom">
         <AssociatedWithSection />

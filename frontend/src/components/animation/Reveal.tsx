@@ -129,14 +129,21 @@ export function Reveal({ children, variant = "fade-up", targets, className }: Re
           });
           break;
         case "stagger-clip":
-          gsap.from(items, {
-            clipPath: "inset(100% 0 0 0)",
-            y: 30,
-            duration: 1,
-            ease: "power4.out",
-            stagger: 0.14,
-            scrollTrigger: trigger(root),
-          });
+          // Explicit end state + clearProps: tweening clip-path *from* a value
+          // to the browser default ("none") can leave the items clipped away.
+          gsap.fromTo(
+            items,
+            { clipPath: "inset(100% 0% 0% 0%)", y: 30 },
+            {
+              clipPath: "inset(0% 0% 0% 0%)",
+              y: 0,
+              duration: 1,
+              ease: "power4.out",
+              stagger: 0.14,
+              clearProps: "clipPath",
+              scrollTrigger: trigger(root),
+            },
+          );
           break;
         case "stagger-circle":
           // Each card opens from a small circle at its centre, with a soft

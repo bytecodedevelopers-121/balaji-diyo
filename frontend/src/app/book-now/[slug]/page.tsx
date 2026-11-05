@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { siteConfig } from "@/config/site";
-import { getAllPackageSlugs, getPackageDetail } from "../../[slug]/data";
+import { getAllPackageSlugs } from "../../[slug]/data";
+import { resolvePackageBySlug } from "../../[slug]/resolve-content";
 import { CheckoutView } from "./_components/CheckoutView";
 
 interface PageProps {
@@ -23,7 +24,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const trip = await getPackageDetail(slug);
+  const trip = await resolvePackageBySlug(slug);
   if (!trip) {
     return buildMetadata({ title: "Page Not Found", path: `/book-now/${slug}`, noIndex: true });
   }
@@ -37,7 +38,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function BookNowPage({ params, searchParams }: PageProps) {
   const { slug } = await params;
-  const trip = await getPackageDetail(slug);
+  const trip = await resolvePackageBySlug(slug);
   if (!trip) {
     notFound();
   }

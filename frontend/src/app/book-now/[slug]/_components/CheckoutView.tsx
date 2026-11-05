@@ -7,7 +7,7 @@ import { isApiEnvelope } from "@/lib/api/api-response";
 import { countries } from "@/config/contact-form-options";
 import { Captcha, type CaptchaHandle } from "@/components/ui/Captcha/Captcha";
 import { DatePicker } from "@/components/ui/DatePicker";
-import type { AddOn, PackageDetail } from "../../../[slug]/data";
+import type { PackageDetail } from "../../../[slug]/data";
 import {
   computeEndDate,
   depositAmount,
@@ -18,14 +18,14 @@ import {
   tripDurationDays,
   type PaymentOption,
 } from "../../../[slug]/_components/booking-helpers";
-import { CalendarIcon, CheckIcon, UsersIcon } from "../../../[slug]/_components/icons";
+import { CheckIcon } from "../../../[slug]/_components/icons";
 import type {
   AddTravellerPayload,
   CreateBookingPayload,
   CreateBookingResult,
 } from "@/features/bookings/types/booking.types";
 import type { InitiatePacoCheckoutPayload, InitiatePacoCheckoutResult } from "@/features/bookings/types/payment.types";
-import { ArrowLeftIcon, LockIcon, WhatsAppIcon } from "./icons";
+import { WhatsAppIcon } from "./icons";
 
 interface CheckoutViewProps {
   trip: PackageDetail;
@@ -36,12 +36,22 @@ interface CheckoutViewProps {
 }
 
 const inputClassName =
-  "w-full rounded-xl border border-primary-200 bg-white px-4 py-3 font-poppins text-body-m text-brand-neutral-1000 outline-none placeholder:text-brand-neutral-600 focus:border-primary-500";
-// Still a real visible label — "remove label, placeholder only" (see
-// this file's own doc comment) was about the per-traveler *input*
-// fields specifically, not the "Adults"/"Add ons" group headings above
-// them, which aren't form fields with a placeholder-able value at all.
-const labelClassName = "mb-1.5 block font-poppins text-body-m font-medium text-brand-neutral-800";
+  "w-full rounded-md border border-brand-neutral-300 bg-white px-4 py-4 font-poppins text-body-m text-brand-neutral-1000 outline-none placeholder:text-brand-neutral-900 focus:border-primary-500";
+const cardClassName = "rounded-md bg-white p-6 shadow-card-strong md:p-10";
+const sectionHeadingClassName = "font-poppins text-heading-2xl font-semibold text-primary-500";
+
+const tripTypeOptions = ["Trekking", "Tour", "Peak Climbing", "Expedition", "Helicopter Tour", "Other"];
+const sourceOptions = ["Google", "Facebook", "Instagram", "TripAdvisor", "Friend or Family", "Travel Agent", "Other"];
+
+interface LeadFormValues {
+  firstName: string;
+  lastName: string;
+  country: string;
+  whatsapp: string;
+  dateOfBirth: string;
+  tripType: string;
+  source: string;
+}
 
 type UploadStatus = "idle" | "uploading" | "uploaded" | "error";
 
@@ -145,18 +155,6 @@ function isPaymentOption(value: string | undefined): value is PaymentOption {
  * `POST /bookings/:id/travellers` reuses that same contact info, since
  * the per-traveler DTO still requires `email`/`countryCode` on each row.
  */
-function addOnQuantity(addOn: AddOn, adults: number): number {
-  const people = Math.max(1, adults);
-  if (addOn.chargeBy === "FLAT") return 1;
-  if (addOn.chargeBy === "ROOM") return Math.ceil(people / Math.max(1, addOn.peoplePerRoom));
-  return people;
-}
-
-function addOnQuantityLabel(addOn: AddOn, qty: number): string {
-  if (addOn.chargeBy === "FLAT") return "";
-  return ` × ${qty} ${addOn.chargeBy === "ROOM" ? "room(s)" : "person(s)"}`;
-}
-
 export function CheckoutView({ trip, query, phone, phoneHref }: CheckoutViewProps) {
   const idPrefix = useId();
   const durationDays = tripDurationDays(trip);
@@ -165,10 +163,21 @@ export function CheckoutView({ trip, query, phone, phoneHref }: CheckoutViewProp
     const parsed = Number(query.adults);
     return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
   });
-  const [departureDate] = useState(query.date ?? trip.departures[0]?.startDate ?? new Date().toISOString().slice(0, 10));
-  const [selectedAddOns, setSelectedAddOns] = useState<Set<string>>(
-    () => new Set(query.addOns ? query.addOns.split("|") : []),
+  const [tripDate, setTripDate] = useState(query.date ?? trip.departures[0]?.startDate ?? "");
+  const [addOnQty, setAddOnQty] = useState<Record<string, number>>(() =>
+    Object.fromEntries((query.addOns ? query.addOns.split("|") : []).map((label) => [label, 1])),
   );
+  const [lead, setLead] = useState<LeadFormValues>({
+    firstName: "",
+    lastName: "",
+    country: "",
+    whatsapp: "",
+    dateOfBirth: "",
+    tripType: "",
+    source: "",
+  });
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [tiersOpen, setTiersOpen] = useState(false);
   const [paymentOption, setPaymentOption] = useState<PaymentOption>(
     isPaymentOption(query.payment) ? query.payment : "full",
   );
@@ -238,13 +247,12 @@ export function CheckoutView({ trip, query, phone, phoneHref }: CheckoutViewProp
     setTravellers((prev) => prev.map((traveller, i) => (i === index ? { ...traveller, [key]: value } : traveller)));
   }
 
-  function toggleAddOn(label: string) {
-    setSelectedAddOns((current) => {
-      const next = new Set(current);
-      if (next.has(label)) next.delete(label);
-      else next.add(label);
-      return next;
-    });
+  function updateLead<K extends keyof LeadFormValues>(key: K, value: LeadFormValues[K]) {
+    setLead((prev) => ({ ...prev, [key]: value }));
+  }
+
+  function setAddOnQuantity(label: string, qty: number) {
+    setAddOnQty((prev) => ({ ...prev, [label]: Math.max(0, qty) }));
   }
 
   // Uploads immediately on file selection (rather than holding the raw File
@@ -294,14 +302,15 @@ export function CheckoutView({ trip, query, phone, phoneHref }: CheckoutViewProp
     };
   }
 
+  const departureDate = tripDate || new Date().toISOString().slice(0, 10);
   const endDate = computeEndDate(departureDate, durationDays);
   const start = formatDayLabel(departureDate);
   const pricePerPax = pricePerPersonForAdults(trip, adults);
   const addOnsList = trip.addOns
-    .filter((addOn) => selectedAddOns.has(addOn.label))
+    .filter((addOn) => (addOnQty[addOn.label] ?? 0) > 0)
     .map((addOn) => {
-      const qty = addOnQuantity(addOn, adults);
-      return { ...addOn, qty, lineTotal: addOn.price * qty, qtyLabel: addOnQuantityLabel(addOn, qty) };
+      const qty = addOnQty[addOn.label];
+      return { ...addOn, qty, lineTotal: addOn.price * qty };
     });
   const addOnsTotal = addOnsList.reduce((sum, addOn) => sum + addOn.lineTotal, 0);
   const total = pricePerPax * adults + addOnsTotal;
@@ -314,15 +323,32 @@ export function CheckoutView({ trip, query, phone, phoneHref }: CheckoutViewProp
     setStatus("submitting");
     setErrorMessage(null);
 
-    const lead = travellers[0];
+    if (!tripDate) {
+      setStatus("error");
+      setErrorMessage("Please choose a trip date.");
+      return;
+    }
+    const leadFullName = `${lead.firstName.trim()} ${lead.lastName.trim()}`.trim();
+    // The lead card is split into first/last name + country + DOB in the
+    // form, so fold those back into traveler 1 for the payloads below.
+    const allTravellers = travellers.map((traveller, i) =>
+      i === 0
+        ? { ...traveller, fullName: leadFullName, nationality: lead.country, dateOfBirth: lead.dateOfBirth }
+        : traveller,
+    );
     if (!lead.dateOfBirth) {
       setStatus("error");
       setErrorMessage("Please enter the lead traveler's date of birth.");
       return;
     }
     const pickupDetailsParts: string[] = [];
+    pickupDetailsParts.push(`Trip type: ${lead.tripType}`, `Found us via: ${lead.source}`);
+    if (lead.whatsapp.trim()) pickupDetailsParts.push(`WhatsApp: ${lead.whatsapp.trim()}`);
+    if (addOnsList.length > 0) {
+      pickupDetailsParts.push(`Add-ons: ${addOnsList.map((a) => `${a.label} x ${a.qty}`).join(", ")}`);
+    }
     if (contact.specialRequests.trim()) {
-      pickupDetailsParts.push(`Special requests: ${contact.specialRequests.trim()}`);
+      pickupDetailsParts.push(`Pickup/extra requirements: ${contact.specialRequests.trim()}`);
     }
 
     const { countryCode, mobileNumber } = splitContactNumber(contact.contactNumber);
@@ -332,10 +358,10 @@ export function CheckoutView({ trip, query, phone, phoneHref }: CheckoutViewProp
       startDate: departureDate,
       endDate,
       numberOfTraveller: adults,
-      fullName: lead.fullName.trim(),
+      fullName: leadFullName,
       email: contact.email.trim(),
       dateOfBirth: lead.dateOfBirth,
-      nationality: lead.nationality,
+      nationality: lead.country,
       countryCode,
       mobileNumber: mobileNumber || undefined,
       pickupDetails: pickupDetailsParts.length > 0 ? pickupDetailsParts.join("\n") : undefined,
@@ -380,7 +406,7 @@ export function CheckoutView({ trip, query, phone, phoneHref }: CheckoutViewProp
     // below.
     if (newBookingId) {
       try {
-        const travellerPayloads: AddTravellerPayload[] = travellers.map((traveller, i) => ({
+        const travellerPayloads: AddTravellerPayload[] = allTravellers.map((traveller, i) => ({
           fullName: traveller.fullName.trim(),
           gender: traveller.gender || undefined,
           email: contact.email.trim(),
@@ -412,7 +438,7 @@ export function CheckoutView({ trip, query, phone, phoneHref }: CheckoutViewProp
       const pacoPayload: InitiatePacoCheckoutPayload = {
         packageId: trip.id,
         bookingId: newBookingId ?? undefined,
-        customerName: lead.fullName.trim(),
+        customerName: leadFullName,
         customerEmail: contact.email.trim(),
         amount: dueNow,
         percentage: paymentOption === "deposit" ? DEPOSIT_PERCENTAGE : 100,
@@ -477,7 +503,7 @@ export function CheckoutView({ trip, query, phone, phoneHref }: CheckoutViewProp
         </span>
         <h1 className="font-poppins text-heading-2xl font-medium text-brand-neutral-1000">Booking received</h1>
         <p className="font-poppins text-body-l text-brand-neutral-700">
-          Thanks, {travellers[0]?.fullName.split(" ")[0] || "traveler"} — we&apos;ve received your booking for{" "}
+          Thanks, {lead.firstName.trim() || "traveler"} — we&apos;ve received your booking for{" "}
           <strong>{trip.title}</strong>
           {bookingCode ? (
             <>
@@ -511,159 +537,204 @@ export function CheckoutView({ trip, query, phone, phoneHref }: CheckoutViewProp
 
   return (
     <div className="mx-auto w-full max-w-320 px-6 pb-16 md:px-16">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-brand-neutral-300 py-5">
-        <div className="flex items-center gap-2 font-poppins text-body-s font-medium text-brand-neutral-700">
-          <LockIcon className="size-4 text-success-900" />
-          Secure checkout
-          <span className="text-brand-neutral-500">·</span>
-          SSL encrypted
-        </div>
-        <a
-          href={`https://wa.me/${phoneHref.replace(/[^\d]/g, "")}`}
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center gap-2 font-poppins text-body-s font-medium text-success-900"
-        >
-          <WhatsAppIcon className="size-4" />
-          WhatsApp: {phone}
-        </a>
-      </div>
-
-      <Link
-        href={tripHref(trip.slug)}
-        className="mt-4 flex w-fit items-center gap-2 font-poppins text-body-m font-medium text-brand-neutral-700 hover:text-brand-neutral-1000"
+      <nav
+        aria-label="Breadcrumb"
+        className="flex flex-wrap items-center gap-2 pt-5 font-poppins text-body-s text-brand-neutral-700"
       >
-        <ArrowLeftIcon className="size-4" />
-        Back to tour page
-      </Link>
+        <Link href="/" className="hover:text-brand-neutral-1000">
+          Home
+        </Link>
+        <span aria-hidden="true">→</span>
+        <Link href={tripHref(trip.slug)} className="hover:text-brand-neutral-1000">
+          {trip.title}
+        </Link>
+        <span aria-hidden="true">→</span>
+        <span className="text-brand-neutral-1000">Booking</span>
+      </nav>
 
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#fbc99d] bg-primary-100 px-6 py-4">
-        <h1 className="font-poppins text-heading-2xl font-medium text-brand-neutral-1000">{trip.title}</h1>
-        <div className="flex flex-wrap items-center gap-4 font-poppins text-body-m font-medium text-brand-neutral-800">
-          <span className="flex items-center gap-1.5">
-            <CalendarIcon className="size-4" />
-            {start.date}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <UsersIcon className="size-4" />
-            {adults} {adults === 1 ? "Person" : "Persons"}
-          </span>
-        </div>
-      </div>
+      <h1 className="mt-6 font-poppins text-heading-4xl font-semibold text-brand-neutral-1000">Booking</h1>
 
       <form
         onSubmit={handleSubmit}
-        className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[2fr_1fr]"
+        className="mt-8 grid grid-cols-1 items-start gap-8 lg:grid-cols-[2fr_1fr]"
       >
         <div className="flex flex-col gap-8">
-          <section className="rounded-2xl border border-[#fbc99d] bg-white p-6">
-            <h2 className="font-poppins text-raleway-2xl font-medium text-brand-neutral-1000">Your booking</h2>
-
-            <div className="mt-4 flex items-center justify-between border-b border-primary-200 pb-4">
-              <span className={labelClassName + " mb-0"}>Number of Persons *</span>
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => updateAdults(adults - 1)}
-                  disabled={adults <= 1}
-                  aria-label="Decrease travelers"
-                  className="flex size-9 items-center justify-center rounded-full bg-primary-100 font-poppins text-body-l text-brand-neutral-700 disabled:opacity-40"
-                >
-                  −
-                </button>
-                <span className="flex size-9 items-center justify-center rounded-full border border-[#ebebeb] font-poppins text-body-l font-medium text-brand-neutral-700">
-                  {adults}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => updateAdults(adults + 1)}
-                  aria-label="Increase travelers"
-                  className="flex size-9 items-center justify-center rounded-full bg-primary-100 font-poppins text-body-l text-brand-neutral-700"
-                >
-                  +
-                </button>
+          <section className={cardClassName}>
+            <h2 className={sectionHeadingClassName}>Date and Travelers</h2>
+            <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <DatePicker
+                  label="Trip Date *"
+                  value={tripDate}
+                  onChange={setTripDate}
+                  placeholder="YYYY-MM-DD"
+                  id={`${idPrefix}-trip-date`}
+                />
+              </div>
+              <div className="flex items-center justify-between rounded-md border border-brand-neutral-300 px-4 py-3">
+                <span className="font-poppins text-body-m text-brand-neutral-900">Number of Travelers</span>
+                <Stepper
+                  value={adults}
+                  min={1}
+                  onChange={updateAdults}
+                  decreaseLabel="Decrease travelers"
+                  increaseLabel="Increase travelers"
+                />
               </div>
             </div>
-
-            {trip.addOns.length > 0 ? (
-              <div className="mt-4">
-                <span className={labelClassName}>Add ons</span>
-                <p className="-mt-1 mb-2 font-poppins text-body-s text-brand-neutral-700">
-                  If you want the add-ons, extra cost would be charged.
-                </p>
-                <div className="flex flex-col gap-1.5">
-                  {trip.addOns.map((addOn) => {
-                    const checked = selectedAddOns.has(addOn.label);
-                    return (
-                      <label
-                        key={addOn.label}
-                        className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-primary-200 px-4 py-2.5"
-                      >
-                        <span className="flex items-center gap-3">
-                          <span
-                            className={`flex size-5 shrink-0 items-center justify-center rounded-full border ${
-                              checked ? "border-[#006eff] bg-[#006eff] text-white" : "border-brand-neutral-500"
-                            }`}
-                          >
-                            {checked ? <CheckIcon className="size-3" /> : null}
-                            <input
-                              type="checkbox"
-                              checked={checked}
-                              onChange={() => toggleAddOn(addOn.label)}
-                              className="sr-only"
-                            />
-                          </span>
-                          <span className="font-poppins text-body-m font-medium text-brand-neutral-900">
-                            {addOn.label}
-                          </span>
-                        </span>
-                        <span className="font-poppins text-body-m font-medium text-brand-neutral-1000">
-                          +${addOn.price}
-                          <span className="text-body-s text-brand-neutral-700">
-                            {" "}
-                            {addOnQuantityLabel(addOn, addOnQuantity(addOn, adults))}
-                          </span>
-                        </span>
-                      </label>
-                    );
-                  })}
-                </div>
-              </div>
-            ) : null}
           </section>
 
-          {/*
-            2026-09-03, direct request: one traveler card per adult
-            ("multiple persons section") instead of a single "Lead
-            traveler" form — each card carries exactly the fields asked
-            for (Full Name, Passport No, Country, Gender, Date of Birth,
-            Photo, Passport Photo). Full Name/Passport No/Country/Gender
-            use a placeholder (or, for the two selects, a disabled first
-            option standing in as one) instead of a visible `<label>`,
-            with an `aria-label` alongside so the field still has a real
-            accessible name for screen readers even without visible text.
-            Date of Birth and the two file inputs can't take that same
-            approach (see this component's own doc comment above) so they
-            get a visible caption/placeholder of their own instead.
-          */}
-          <section className="rounded-2xl border border-[#fbc99d] bg-white p-6">
-            <h2 className="font-poppins text-raleway-2xl font-medium text-brand-neutral-1000">Traveler Details</h2>
+          {trip.addOns.length > 0 ? (
+            <section className={cardClassName}>
+              <h2 className={sectionHeadingClassName}>Add-Ons and Extra Options</h2>
+              <ul className="mt-6 border-t border-brand-neutral-300">
+                {trip.addOns.map((addOn) => (
+                  <li
+                    key={addOn.label}
+                    className="flex flex-wrap items-center justify-between gap-3 border-b border-dashed border-brand-neutral-300 py-4 last:border-b-0"
+                  >
+                    <span className="font-poppins text-body-l font-medium text-brand-neutral-1000">{addOn.label}</span>
+                    <span className="flex items-center gap-4">
+                      <span className="font-poppins text-body-m text-brand-neutral-900">
+                        <strong className="text-body-l font-semibold">+ US${addOn.price.toLocaleString()}</strong>{" "}
+                        <span className="text-body-s font-medium text-brand-neutral-700">
+                          {addOn.chargeBy === "ROOM" ? "per room" : addOn.chargeBy === "FLAT" ? "flat" : "per person"}
+                        </span>
+                      </span>
+                      <Stepper
+                        boxed
+                        value={addOnQty[addOn.label] ?? 0}
+                        min={0}
+                        onChange={(next) => setAddOnQuantity(addOn.label, next)}
+                        decreaseLabel={`Decrease ${addOn.label}`}
+                        increaseLabel={`Increase ${addOn.label}`}
+                      />
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
 
-            <div className="mt-4 flex flex-col gap-4">
-              {travellers.map((traveller, index) => (
-                <div
-                  key={index}
-                  className="rounded-xl border border-primary-200 p-4"
-                >
+          <section className={cardClassName}>
+            <h2 className={sectionHeadingClassName}>Lead Traveler Details</h2>
+            <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+              <input
+                type="text"
+                required
+                autoComplete="given-name"
+                placeholder="First Name *"
+                aria-label="First name"
+                value={lead.firstName}
+                onChange={(event) => updateLead("firstName", event.target.value)}
+                className={inputClassName}
+              />
+              <input
+                type="text"
+                required
+                autoComplete="family-name"
+                placeholder="Last Name *"
+                aria-label="Last name"
+                value={lead.lastName}
+                onChange={(event) => updateLead("lastName", event.target.value)}
+                className={inputClassName}
+              />
+              <input
+                type="email"
+                required
+                autoComplete="email"
+                placeholder="Email Address *"
+                aria-label="Email address"
+                value={contact.email}
+                onChange={(event) => updateContact("email", event.target.value)}
+                className={inputClassName}
+              />
+              <select
+                required
+                aria-label="Choose your country"
+                value={lead.country}
+                onChange={(event) => updateLead("country", event.target.value)}
+                className={`${inputClassName} appearance-none`}
+              >
+                <option value="" disabled>
+                  Choose Your Country *
+                </option>
+                {countries.map((country) => (
+                  <option key={country} value={country}>
+                    {country}
+                  </option>
+                ))}
+              </select>
+              <input
+                type="tel"
+                required
+                autoComplete="tel"
+                placeholder="Country Code + Phone Number *"
+                aria-label="Country code and phone number"
+                value={contact.contactNumber}
+                onChange={(event) => updateContact("contactNumber", event.target.value)}
+                className={inputClassName}
+              />
+              <input
+                type="tel"
+                placeholder="WhatsApp Number"
+                aria-label="WhatsApp number"
+                value={lead.whatsapp}
+                onChange={(event) => updateLead("whatsapp", event.target.value)}
+                className={inputClassName}
+              />
+              <DatePicker
+                value={lead.dateOfBirth || null}
+                onChange={(value) => updateLead("dateOfBirth", value)}
+                minDate={null}
+                placeholder="Date of Birth *"
+                id={`${idPrefix}-lead-dob`}
+              />
+              <select
+                required
+                aria-label="Trip type"
+                value={lead.tripType}
+                onChange={(event) => updateLead("tripType", event.target.value)}
+                className={`${inputClassName} appearance-none`}
+              >
+                <option value="" disabled>
+                  Trip Type * — Choose One Option
+                </option>
+                {tripTypeOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+              <select
+                required
+                aria-label="Where did you find us"
+                value={lead.source}
+                onChange={(event) => updateLead("source", event.target.value)}
+                className={`${inputClassName} appearance-none md:col-span-2`}
+              >
+                <option value="" disabled>
+                  Where Did You Find Us? * — Choose One Option
+                </option>
+                {sourceOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {travellers.slice(1).map((traveller, offset) => {
+              const index = offset + 1;
+              return (
+                <div key={index} className="mt-6 rounded-md border border-brand-neutral-300 p-4">
                   <p className="mb-3 font-poppins text-body-m font-semibold text-brand-neutral-900">
                     Traveler {index + 1}
-                    {index === 0 ? " (Lead)" : ""}
                   </p>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <input
                       type="text"
                       required
-                      autoComplete="name"
                       placeholder="Full Name *"
                       aria-label={`Traveler ${index + 1} full name`}
                       value={traveller.fullName}
@@ -685,17 +756,11 @@ export function CheckoutView({ trip, query, phone, phoneHref }: CheckoutViewProp
                       onChange={(event) => updateTraveller(index, "nationality", event.target.value)}
                       className={`${inputClassName} appearance-none`}
                     >
-                      <option
-                        value=""
-                        disabled
-                      >
+                      <option value="" disabled>
                         Country *
                       </option>
                       {countries.map((country) => (
-                        <option
-                          key={country}
-                          value={country}
-                        >
+                        <option key={country} value={country}>
                           {country}
                         </option>
                       ))}
@@ -714,189 +779,259 @@ export function CheckoutView({ trip, query, phone, phoneHref }: CheckoutViewProp
                       value={traveller.dateOfBirth || null}
                       onChange={(value) => updateTraveller(index, "dateOfBirth", value)}
                       minDate={null}
-                      placeholder={index === 0 ? "Date of Birth *" : "Date of Birth"}
+                      placeholder="Date of Birth"
                       id={`${idPrefix}-traveller-${index}-dob`}
                     />
-
-                    <div>
-                      <FileUploadField
-                        id={`${idPrefix}-traveller-${index}-passport`}
-                        placeholder="Attach Your Passport"
-                        ariaLabel={`Traveler ${index + 1} — attach your passport`}
-                        fileName={traveller.passportFileName}
-                        onChange={handleFileChange(index, "passport")}
-                      />
-                      {traveller.passportStatus === "uploading" ? (
-                        <p className="mt-1.5 font-poppins text-body-s text-brand-neutral-700">Uploading…</p>
-                      ) : null}
-                      {traveller.passportStatus === "uploaded" ? (
-                        <p className="mt-1.5 flex items-center gap-1.5 font-poppins text-body-s text-success-900">
-                          <CheckIcon className="size-3.5" />
-                          Passport uploaded.
-                        </p>
-                      ) : null}
-                      {traveller.passportStatus === "error" ? (
-                        <p className="mt-1.5 font-poppins text-body-s text-error-700">
-                          Upload failed — please try again.
-                        </p>
-                      ) : null}
-                    </div>
                   </div>
+                </div>
+              );
+            })}
+
+            <textarea
+              rows={6}
+              placeholder="Pickup Details and Extra Requirements (If Any)"
+              aria-label="Pickup details and extra requirements"
+              value={contact.specialRequests}
+              onChange={(event) => updateContact("specialRequests", event.target.value)}
+              className={`${inputClassName} mt-4 resize-y`}
+            />
+
+            <div className="mt-4">
+              <FileUploadField
+                id={`${idPrefix}-lead-passport`}
+                placeholder="Attach Your Passport (optional)"
+                ariaLabel="Lead traveler — attach your passport"
+                fileName={travellers[0]?.passportFileName ?? null}
+                onChange={handleFileChange(0, "passport")}
+              />
+              {travellers[0]?.passportStatus === "uploading" ? (
+                <p className="mt-1.5 font-poppins text-body-s text-brand-neutral-700">Uploading…</p>
+              ) : null}
+              {travellers[0]?.passportStatus === "uploaded" ? (
+                <p className="mt-1.5 flex items-center gap-1.5 font-poppins text-body-s text-success-900">
+                  <CheckIcon className="size-3.5" />
+                  Passport uploaded.
+                </p>
+              ) : null}
+              {travellers[0]?.passportStatus === "error" ? (
+                <p className="mt-1.5 font-poppins text-body-s text-error-700">Upload failed — please try again.</p>
+              ) : null}
+            </div>
+
+            <fieldset className="mt-6">
+              <legend className="font-poppins text-body-l font-medium text-brand-neutral-1000">
+                How would you like to pay?
+              </legend>
+              <div role="radiogroup" aria-label="Payment option" className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={paymentOption === "deposit"}
+                  onClick={() => setPaymentOption("deposit")}
+                  className={`rounded-md border px-4 py-3 text-left font-poppins transition-colors ${
+                    paymentOption === "deposit" ? "border-primary-500 bg-primary-100" : "border-brand-neutral-300 bg-white"
+                  }`}
+                >
+                  <span className="block text-body-m font-medium text-brand-neutral-1000">
+                    Reserve with {DEPOSIT_PERCENTAGE}% advance
+                  </span>
+                  <span className="block text-heading-xl font-medium text-brand-neutral-1000">
+                    ${deposit.toLocaleString()}{" "}
+                    <span className="text-body-s font-medium text-brand-neutral-700">now</span>
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={paymentOption === "full"}
+                  onClick={() => setPaymentOption("full")}
+                  className={`rounded-md border px-4 py-3 text-left font-poppins transition-colors ${
+                    paymentOption === "full" ? "border-primary-500 bg-primary-100" : "border-brand-neutral-300 bg-white"
+                  }`}
+                >
+                  <span className="block text-body-m font-medium text-brand-neutral-1000">Pay in full</span>
+                  <span className="block text-heading-xl font-medium text-brand-neutral-1000">
+                    ${total.toLocaleString()}{" "}
+                    <span className="text-body-s font-medium text-brand-neutral-700">now</span>
+                  </span>
+                </button>
+              </div>
+            </fieldset>
+
+            <label className="mt-6 flex cursor-pointer items-center gap-3 font-poppins text-body-m text-brand-neutral-900">
+              <input
+                type="checkbox"
+                required
+                checked={acceptedTerms}
+                onChange={(event) => setAcceptedTerms(event.target.checked)}
+                className="size-5 accent-primary-500"
+              />
+              <span>
+                I accept{" "}
+                <Link
+                  href="/company/terms-and-conditions"
+                  target="_blank"
+                  className="text-primary-500 hover:underline"
+                >
+                  terms and conditions
+                </Link>
+              </span>
+            </label>
+
+            <div className="mt-4">
+              <Captcha ref={captchaRef} onVerify={setCaptchaToken} />
+            </div>
+
+            <button
+              type="submit"
+              disabled={status === "submitting" || anyUploadInProgress || (captchaRequired && !captchaToken)}
+              className="mt-4 rounded-md bg-primary-500 px-8 py-3.5 font-poppins text-body-l font-semibold tracking-wide text-white uppercase transition-opacity hover:opacity-90 disabled:opacity-60"
+            >
+              {status === "submitting" ? "Submitting…" : "Submit"}
+            </button>
+            {status === "error" ? (
+              <p className="mt-2 font-poppins text-body-s font-medium text-error-700">{errorMessage}</p>
+            ) : null}
+          </section>
+        </div>
+
+        <aside style={{ top: stickyTop }} className="h-fit overflow-hidden rounded-md bg-white shadow-card-strong lg:sticky">
+          <h2 className="bg-[#064a70] px-5 py-4 font-poppins text-heading-xl font-semibold text-white">
+            Your Trip Details
+          </h2>
+          <div className="p-5">
+            <div className="flex gap-4">
+              {trip.heroImages[0] ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={trip.heroImages[0]} alt="" className="size-25 shrink-0 rounded-sm object-cover" />
+              ) : null}
+              <div>
+                <p className="font-poppins text-heading-xl font-semibold text-brand-neutral-1000">{trip.title}</p>
+                <p className="mt-2 font-poppins text-body-m text-brand-neutral-800">Duration: {durationDays} Days</p>
+              </div>
+            </div>
+
+            {trip.costTiers.length > 0 ? (
+              <div className="mt-4 rounded-md bg-[#eef1f6]">
+                <button
+                  type="button"
+                  onClick={() => setTiersOpen((open) => !open)}
+                  aria-expanded={tiersOpen}
+                  className="flex w-full items-center justify-between px-5 py-4 font-poppins text-body-l font-medium text-brand-neutral-900"
+                >
+                  Group Discount Price
+                  <span aria-hidden="true" className="text-2xl leading-none">
+                    {tiersOpen ? "−" : "+"}
+                  </span>
+                </button>
+                {tiersOpen ? (
+                  <ul className="border-t border-brand-neutral-300 px-5 pb-3">
+                    {trip.costTiers.map((tier) => (
+                      <li
+                        key={tier.groupSize}
+                        className="flex justify-between py-2 font-poppins text-body-m text-brand-neutral-900"
+                      >
+                        <span>{tier.groupSize}</span>
+                        <span>US${tier.pricePerPerson.toLocaleString()}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
+            ) : null}
+
+            <dl className="mt-6 flex flex-col gap-3 font-poppins text-body-m text-brand-neutral-900">
+              <div className="flex justify-between gap-4">
+                <dt>Trip Date:</dt>
+                <dd>{tripDate ? start.date : ""}</dd>
+              </div>
+              <div className="flex justify-between gap-4">
+                <dt>Number of Traveler:</dt>
+                <dd>{adults} traveler(s)</dd>
+              </div>
+            </dl>
+
+            <div className="mt-4 flex flex-col gap-3 border-t border-brand-neutral-300 pt-4">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="font-poppins text-body-l text-brand-neutral-900">Package Price</p>
+                  <p className="font-poppins text-body-s text-brand-neutral-700">
+                    US${pricePerPax.toLocaleString()} x {adults} traveler(s)
+                  </p>
+                </div>
+                <span className="font-poppins text-heading-xl font-semibold text-brand-neutral-1000">
+                  US${(pricePerPax * adults).toLocaleString()}
+                </span>
+              </div>
+              {addOnsList.map((addOn) => (
+                <div key={addOn.label} className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="font-poppins text-body-m text-brand-neutral-900">{addOn.label}</p>
+                    <p className="font-poppins text-body-s text-brand-neutral-700">
+                      US${addOn.price.toLocaleString()} x {addOn.qty}
+                    </p>
+                  </div>
+                  <span className="font-poppins text-body-l font-semibold text-brand-neutral-1000">
+                    US${addOn.lineTotal.toLocaleString()}
+                  </span>
                 </div>
               ))}
             </div>
 
-            {/*
-              Contact info stays a single, once-only block — every
-              traveler above shares this same email/number, there's no
-              per-traveler contact field (see this component's own doc
-              comment).
-            */}
-            <div className="mt-4 grid grid-cols-1 gap-4 -mx-6 border-t border-secondary-500 px-6 pt-4 sm:grid-cols-2">
-              <input
-                id={`${idPrefix}-email`}
-                type="email"
-                required
-                autoComplete="email"
-                placeholder="Email *"
-                aria-label="Email"
-                value={contact.email}
-                onChange={(event) => updateContact("email", event.target.value)}
-                className={inputClassName}
-              />
-              <input
-                id={`${idPrefix}-contact`}
-                type="tel"
-                required
-                autoComplete="tel"
-                placeholder="Contact Number *"
-                aria-label="Contact number"
-                value={contact.contactNumber}
-                onChange={(event) => updateContact("contactNumber", event.target.value)}
-                className={inputClassName}
-              />
-            </div>
-
-            <div className="mt-4">
-              <textarea
-                id={`${idPrefix}-requests`}
-                rows={3}
-                placeholder="Special Requests — dietary requirements, medical notes, or any other requests..."
-                aria-label="Special requests"
-                value={contact.specialRequests}
-                onChange={(event) => updateContact("specialRequests", event.target.value)}
-                className={`${inputClassName} resize-none`}
-              />
-            </div>
-          </section>
-
-          <section className="rounded-2xl border border-[#fbc99d] bg-white p-6">
-            <h2 className="font-poppins text-raleway-2xl font-medium text-brand-neutral-1000">
-              How would you like to pay?
-            </h2>
-            <div
-              role="radiogroup"
-              aria-label="Payment option"
-              className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2"
-            >
-              <button
-                type="button"
-                role="radio"
-                aria-checked={paymentOption === "deposit"}
-                onClick={() => setPaymentOption("deposit")}
-                className={`rounded-xl border px-4 py-3 text-left font-poppins transition-colors ${
-                  paymentOption === "deposit"
-                    ? "border-secondary-500 bg-primary-100"
-                    : "border-primary-200 bg-white"
-                }`}
-              >
-                <span className="block text-body-m font-medium text-brand-neutral-1000">
-                  Reserve with {DEPOSIT_PERCENTAGE}% advance
-                </span>
-                <span className="block text-heading-xl font-medium text-brand-neutral-1000">
-                  ${deposit.toLocaleString()} <span className="text-body-s font-medium text-brand-neutral-700">now</span>
-                </span>
-              </button>
-              <button
-                type="button"
-                role="radio"
-                aria-checked={paymentOption === "full"}
-                onClick={() => setPaymentOption("full")}
-                className={`rounded-xl border px-4 py-3 text-left font-poppins transition-colors ${
-                  paymentOption === "full" ? "border-secondary-500 bg-primary-100" : "border-primary-200 bg-white"
-                }`}
-              >
-                <span className="block text-body-m font-medium text-brand-neutral-1000">Pay in full</span>
-                <span className="block text-heading-xl font-medium text-brand-neutral-1000">
-                  ${total.toLocaleString()} <span className="text-body-s font-medium text-brand-neutral-700">now</span>
-                </span>
-              </button>
-            </div>
-          </section>
-        </div>
-
-        <aside
-          style={{ top: stickyTop }}
-          className="h-fit rounded-2xl border border-[#fbc99d] bg-primary-100 p-6 lg:sticky"
-        >
-          <p className="font-poppins text-body-l font-medium text-brand-neutral-1000">
-            {trip.title} — {durationDays} Days
-          </p>
-
-          <div className="mt-4 flex flex-col gap-2 border-b border-[#fbc99d] pb-4">
-            <div className="flex items-center justify-between">
-              <span className="font-poppins text-body-m font-medium text-brand-neutral-700">Persons × {adults}</span>
-              <span className="font-poppins text-body-l font-medium text-brand-neutral-1000">
-                ${(pricePerPax * adults).toLocaleString()}
+            <div className="mt-4 flex items-center justify-between border-t border-brand-neutral-300 pt-4">
+              <span className="font-poppins text-body-l text-brand-neutral-900">Total Price</span>
+              <span className="font-poppins text-heading-xl font-semibold text-brand-neutral-1000">
+                US${total.toLocaleString()}
               </span>
             </div>
-            {addOnsList.map((addOn) => (
-              <div
-                key={addOn.label}
-                className="flex items-center justify-between"
-              >
-                <span className="font-poppins text-body-m font-medium text-brand-neutral-700">
-                  {addOn.label}
-                  {addOn.qtyLabel}
-                </span>
-                <span className="font-poppins text-body-l font-medium text-brand-neutral-1000">
-                  +${addOn.lineTotal.toLocaleString()}
-                </span>
-              </div>
-            ))}
+            {paymentOption === "deposit" ? (
+              <p className="mt-1 font-poppins text-body-s text-brand-neutral-700">
+                US${deposit.toLocaleString()} due now, US${(total - deposit).toLocaleString()} due before departure.
+              </p>
+            ) : null}
           </div>
-
-          <div className="mt-4 flex items-center justify-between">
-            <span className="font-poppins text-body-l font-medium text-brand-neutral-700">Total</span>
-            <span className="font-poppins text-2xl font-medium text-primary-500">${total.toLocaleString()}</span>
-          </div>
-          {paymentOption === "deposit" ? (
-            <p className="mt-1 font-poppins text-body-s font-medium text-brand-neutral-700">
-              ${deposit.toLocaleString()} due now, ${(total - deposit).toLocaleString()} due before departure.
-            </p>
-          ) : null}
-
-          <div className="mt-4">
-            <Captcha ref={captchaRef} onVerify={setCaptchaToken} />
-          </div>
-
-          <button
-            type="submit"
-            disabled={status === "submitting" || anyUploadInProgress || (captchaRequired && !captchaToken)}
-            className="mt-4 flex w-full items-center justify-center rounded-pill bg-secondary-500 px-6 py-3.5 font-poppins text-body-m font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60"
-          >
-            {status === "submitting" ? "Submitting…" : `Confirm Booking — $${dueNow.toLocaleString()}`}
-          </button>
-          {status === "error" ? (
-            <p className="mt-2 font-poppins text-body-s font-medium text-error-700">{errorMessage}</p>
-          ) : null}
-          <p className="mt-3 font-poppins text-body-s font-medium text-brand-neutral-700">
-            Free cancellation — see booking terms for the deadline. You&apos;ll receive a confirmation email once
-            we&apos;ve reviewed your booking.
-          </p>
         </aside>
       </form>
     </div>
+  );
+}
+
+function Stepper({
+  value,
+  min,
+  onChange,
+  decreaseLabel,
+  increaseLabel,
+  boxed = false,
+}: {
+  value: number;
+  min: number;
+  onChange: (next: number) => void;
+  decreaseLabel: string;
+  increaseLabel: string;
+  boxed?: boolean;
+}) {
+  const buttonClassName = boxed
+    ? "flex size-9 items-center justify-center text-xl text-brand-neutral-900 disabled:opacity-40"
+    : "flex size-9 items-center justify-center rounded-sm bg-primary-100 text-xl text-brand-neutral-900 disabled:opacity-40";
+  return (
+    <span
+      className={`flex items-center font-poppins ${boxed ? "w-40 justify-between rounded-md border border-brand-neutral-300 px-3 py-2" : "gap-3"}`}
+    >
+      <button
+        type="button"
+        onClick={() => onChange(Math.max(min, value - 1))}
+        disabled={value <= min}
+        aria-label={decreaseLabel}
+        className={buttonClassName}
+      >
+        −
+      </button>
+      <span className="min-w-6 text-center text-body-l text-brand-neutral-1000">{value}</span>
+      <button type="button" onClick={() => onChange(value + 1)} aria-label={increaseLabel} className={buttonClassName}>
+        +
+      </button>
+    </span>
   );
 }
 
