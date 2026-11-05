@@ -93,19 +93,20 @@ export function Reveal({ children, variant = "fade-up", targets, className }: Re
               opacity: kind === "clip" ? 1 : 0,
               duration: 1,
               ease: EASE,
+              clearProps: kind === "clip" ? "clipPath" : "opacity,transform",
               scrollTrigger: trigger(el),
             });
           });
           break;
         }
         case "slide-left":
-          gsap.from(items, { x: -100, opacity: 0, duration: 1.1, ease: EASE, scrollTrigger: trigger(root) });
+          gsap.from(items, { x: -100, opacity: 0, duration: 1.1, ease: EASE, clearProps: "opacity,transform", scrollTrigger: trigger(root) });
           break;
         case "slide-right":
-          gsap.from(items, { x: 100, opacity: 0, duration: 1.1, ease: EASE, scrollTrigger: trigger(root) });
+          gsap.from(items, { x: 100, opacity: 0, duration: 1.1, ease: EASE, clearProps: "opacity,transform", scrollTrigger: trigger(root) });
           break;
         case "zoom":
-          gsap.from(items, { scale: 0.9, opacity: 0, duration: 1, ease: "power2.out", scrollTrigger: trigger(root) });
+          gsap.from(items, { scale: 0.9, opacity: 0, duration: 1, ease: "power2.out", clearProps: "opacity,transform", scrollTrigger: trigger(root) });
           break;
         case "stagger-up":
           gsap.from(items, {
@@ -114,6 +115,7 @@ export function Reveal({ children, variant = "fade-up", targets, className }: Re
             duration: 0.85,
             ease: EASE,
             stagger: 0.12,
+            clearProps: "opacity,transform",
             scrollTrigger: trigger(root),
           });
           break;
@@ -209,6 +211,7 @@ export function Reveal({ children, variant = "fade-up", targets, className }: Re
             duration: 0.8,
             ease: EASE,
             stagger: 0.1,
+            clearProps: "opacity,transform",
             scrollTrigger: trigger(root),
           });
           break;
@@ -219,12 +222,13 @@ export function Reveal({ children, variant = "fade-up", targets, className }: Re
             duration: 0.7,
             ease: EASE,
             stagger: 0.12,
+            clearProps: "opacity,transform",
             scrollTrigger: trigger(root),
           });
           break;
         case "fade-up":
         default:
-          gsap.from(items, { y: 48, opacity: 0, duration: 1, ease: EASE, scrollTrigger: trigger(root) });
+          gsap.from(items, { y: 48, opacity: 0, duration: 1, ease: EASE, clearProps: "opacity,transform", scrollTrigger: trigger(root) });
       }
     },
     { scope: ref, dependencies: [variant, targets] },

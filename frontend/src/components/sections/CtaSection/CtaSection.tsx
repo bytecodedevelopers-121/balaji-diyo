@@ -32,14 +32,16 @@ export function CtaSection() {
             </p>
           </div>
         </div>
-        <Link
-          data-reveal="right"
-          data-magnetic
-          href={headerCta.href}
-          className="inline-flex h-14 shrink-0 items-center justify-center whitespace-nowrap rounded-pill bg-brand-neutral-000 px-9 text-[18px] font-medium text-logo-navy-dark transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-logo-navy-dark"
-        >
-          Plan Your Trip Now
-        </Link>
+        {/* The slide-in (data-reveal) and the magnetic pull (data-magnetic) both move the element, so they sit on separate nodes. */}
+        <div data-reveal="right" className="shrink-0">
+          <Link
+            data-magnetic
+            href={headerCta.href}
+            className="inline-flex h-14 shrink-0 items-center justify-center whitespace-nowrap rounded-pill bg-brand-neutral-000 px-9 text-[18px] font-medium text-logo-navy-dark transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-logo-navy-dark"
+          >
+            Plan Your Trip Now
+          </Link>
+        </div>
       </div>
     </section>
   );
