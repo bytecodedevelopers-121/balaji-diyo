@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type MouseEvent } from "react";
+import { useEffect, useRef } from "react";
 import { ContactForm } from "@/components/sections/ContactSection/ContactForm";
 import type { PackageDetail } from "../data";
 import { CrossIcon } from "./icons";
@@ -26,6 +26,10 @@ interface TripEnquiryModalProps {
  * still-open modal, easy to miss/dismiss by accident, and gives no next
  * step. The dedicated page also gets an "Explore More Trips" section
  * ContactForm's own success state has no room for.
+ *
+ * Clicking outside the form does NOT close it (direct request: a stray click
+ * lost whatever the visitor had typed); only the X button, Escape or a
+ * successful submit close it.
  */
 export function TripEnquiryModal({ trip, onClose }: TripEnquiryModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -34,15 +38,10 @@ export function TripEnquiryModal({ trip, onClose }: TripEnquiryModalProps) {
     dialogRef.current?.showModal();
   }, []);
 
-  function handleBackdropClick(event: MouseEvent<HTMLDialogElement>) {
-    if (event.target === dialogRef.current) onClose();
-  }
-
   return (
     <dialog
       ref={dialogRef}
       onClose={onClose}
-      onClick={handleBackdropClick}
       aria-label={`Enquire about ${trip.title}`}
       className="m-auto max-h-[90vh] w-[min(720px,calc(100vw-2rem))] overflow-y-auto rounded-2xl border-0 bg-transparent p-0 outline-none backdrop:bg-brand-neutral-1000/60"
     >

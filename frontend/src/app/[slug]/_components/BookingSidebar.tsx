@@ -10,7 +10,7 @@ import { DownloadPdfButton } from "./DownloadPdfButton";
 
 /**
  * Sticky price sidebar: a navy "Price from" card with the group-discount tiers,
- * then Join Upcoming Departure / Check Availability / Send Inquiry actions, the
+ * then Join Upcoming Departure (scrolls to the Trip Booking section) / Check Availability / Send Inquiry actions, the
  * group-cost note and quick links. Check Availability opens the /book-now
  * booking page (first departure, 1 traveler) and Send Inquiry opens the enquiry form.
  *
@@ -120,13 +120,12 @@ export function BookingSidebar({ trip }: { trip: PackageDetail }) {
         </div>
 
         <div className="mt-6 flex flex-col gap-3">
-          <button
-            type="button"
-            onClick={() => openBooking({ departureDate, adults: 1, addOnLabels: [] })}
-            className="rounded-sm bg-[#f8c028] px-6 py-4 text-[19px] font-medium text-logo-navy-dark transition-opacity hover:opacity-90"
+          <a
+            href="#departures"
+            className="rounded-sm bg-[#f8c028] px-6 py-4 text-center text-[19px] font-medium text-logo-navy-dark transition-opacity hover:opacity-90"
           >
             Join Upcoming Departure
-          </button>
+          </a>
           <button
             type="button"
             onClick={goToBookingPage}

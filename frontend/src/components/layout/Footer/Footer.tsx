@@ -116,7 +116,7 @@ export function Footer({
       {/* Panoramic trail photo (sun, peaks, pines, river, meadow, trekkers) pinned to the bottom of the footer at full width and faded into the page colour above. */}
       {/* eslint-disable-next-line @next/next/no-img-element -- static decorative photo */}
       <img
-        src="/images/site/footer-panorama.jpg"
+        src="/images/footer/footer.svg"
         alt=""
         aria-hidden="true"
         loading="lazy"
