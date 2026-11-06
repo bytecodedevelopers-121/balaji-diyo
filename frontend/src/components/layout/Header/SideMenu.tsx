@@ -127,7 +127,7 @@ export function SideMenu({ triggerSizeClassName = "size-5", onOpenChange }: Side
                   if (event.target === event.currentTarget && !isOpen) setMounted(false);
                 }}
                 className={cn(
-                  "absolute inset-y-0 right-0 flex w-[min(380px,100%)] flex-col overflow-y-auto bg-brand-neutral-000 px-12 pt-16 pb-10 shadow-[-8px_0_30px_rgba(6,74,112,0.25)] transition-transform duration-300 ease-out",
+                  "absolute inset-y-0 right-0 flex w-[min(380px,100%)] flex-col overflow-y-auto bg-[#064a70] text-white px-12 pt-16 pb-10 shadow-[-8px_0_30px_rgba(0,0,0,0.35)] transition-transform duration-300 ease-out",
                   shown ? "translate-x-0" : "translate-x-full",
                 )}
               >
@@ -136,13 +136,13 @@ export function SideMenu({ triggerSizeClassName = "size-5", onOpenChange }: Side
                   type="button"
                   onClick={close}
                   aria-label="Close menu"
-                  className="absolute top-5 right-5 rounded-sm p-1 text-brand-neutral-1000 focus-visible:outline-2 focus-visible:outline-logo-navy"
+                  className="absolute top-5 right-5 rounded-sm p-1 text-white focus-visible:outline-2 focus-visible:outline-logo-sun"
                 >
                   <X aria-hidden="true" className="size-8" strokeWidth={1.5} />
                 </button>
 
-                <h2 className="text-[22px] font-semibold text-logo-navy-dark">Travel Styles</h2>
-                <p className="mt-3 text-[17px] leading-snug text-brand-neutral-800">
+                <h2 className="text-[22px] font-semibold text-white">Travel Styles</h2>
+                <p className="mt-3 text-[17px] leading-snug text-white/90">
                   Choose from more than 100 travel experiences, carefully designed by local experts, led by locals, and
                   crafted for you.
                 </p>
@@ -153,7 +153,7 @@ export function SideMenu({ triggerSizeClassName = "size-5", onOpenChange }: Side
                       <Link
                         href={style.href}
                         onClick={close}
-                        className="flex items-center gap-3 text-[16px] text-brand-neutral-800 transition-colors hover:text-logo-navy focus-visible:outline-2 focus-visible:outline-logo-navy"
+                        className="flex items-center gap-3 text-[16px] text-white/90 transition-colors hover:text-logo-sun focus-visible:outline-2 focus-visible:outline-logo-sun"
                       >
                         <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-logo-sun" />
                         {style.label}
@@ -170,7 +170,7 @@ export function SideMenu({ triggerSizeClassName = "size-5", onOpenChange }: Side
                   Explore More
                 </Link>
 
-                <p className="mt-8 text-[18px] text-brand-neutral-800">Connect with Us</p>
+                <p className="mt-8 text-[18px] text-white/90">Connect with Us</p>
                 <ul className="mt-3 flex flex-nowrap gap-1.5">
                   {socialLinks.map((link) => (
                     <li key={link.href}>

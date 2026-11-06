@@ -104,14 +104,14 @@ export function MoreMenu({
       {open ? (
         <ul
           id={panelId}
-          className="absolute top-full left-0 z-50 mt-3 w-[340px] max-w-[calc(100vw-2rem)] rounded-[8px] bg-brand-neutral-000 px-4 py-2 shadow-[0_10px_30px_rgba(6,74,112,0.25)]"
+          className="absolute top-full left-0 z-50 mt-3 w-[340px] max-w-[calc(100vw-2rem)] rounded-[8px] bg-[#064a70] px-4 py-2 shadow-[0_10px_30px_rgba(0,0,0,0.35)]"
         >
           {links.map((link) => (
-            <li key={link.label} className="border-b border-dashed border-brand-neutral-300 last:border-b-0">
+            <li key={link.label} className="border-b border-dashed border-white/20 last:border-b-0">
               <Link
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="block py-[14px] text-[17px] text-brand-neutral-900 transition-colors hover:text-logo-navy focus-visible:outline-2 focus-visible:outline-logo-navy"
+                className="block py-[14px] text-[17px] text-white transition-colors hover:text-logo-sun focus-visible:outline-2 focus-visible:outline-logo-sun"
               >
                 {link.label}
               </Link>
