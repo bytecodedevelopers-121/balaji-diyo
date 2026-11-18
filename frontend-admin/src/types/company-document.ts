@@ -13,8 +13,8 @@ export interface CompanyDocument {
 
 export interface CompanyDocumentFormValues {
   title: string;
-  description?: string;
-  imageUrl?: string;
+  description?: string | null;
+  imageUrl?: string | null;
   category?: "legal" | "association";
   sortOrder?: number;
   isActive?: boolean;

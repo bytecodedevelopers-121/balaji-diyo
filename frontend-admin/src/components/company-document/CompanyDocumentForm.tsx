@@ -53,8 +53,9 @@ export function CompanyDocumentForm({ defaultValues, onSubmit, isLoading, submit
   const submit = (values: FormValues) => {
     onSubmit({
       title: values.title,
-      description: values.description || undefined,
-      imageUrl: values.imageUrl || undefined,
+      // null (not undefined) so clearing a field is sent and actually removed
+      description: values.description?.trim() ? values.description : null,
+      imageUrl: values.imageUrl || null,
       category: values.category,
       sortOrder: values.sortOrder,
       isActive: values.isActive,
