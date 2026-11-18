@@ -1,4 +1,5 @@
 import { apiFetch } from "@/lib/api/api-client";
+import { getServerEnv } from "@/lib/env";
 import type { Paginated } from "@/types/api.types";
 import type { CompanyDocument } from "../types/company-document.types";
 
@@ -21,5 +22,11 @@ export async function getCompanyDocuments(): Promise<CompanyDocument[]> {
     "/company-documents?isActive=true&perPage=100",
     { next: { revalidate: 900, tags: ["company-documents"] } },
   );
-  return page.items;
+  // A scan uploaded while the admin ran locally is saved with a `http://localhost:…` address that no visitor
+  // can reach; point it at the API server's own address instead (same /files path).
+  const { origin } = new URL(getServerEnv().API_URL);
+  return page.items.map((item) => ({
+    ...item,
+    imageUrl: item.imageUrl ? item.imageUrl.replace(/^https?:\/\/localhost:\d+/, origin) : item.imageUrl,
+  }));
 }

@@ -6,13 +6,15 @@ import { PaginationDto, PaginationQueryDto } from '../../common/dto/pagination.d
 import { revalidateFrontendTags } from '../../lib/revalidate-frontend';
 
 const REVALIDATE_TAG = 'company-documents';
+// The public page is statically prerendered, so its HTML cache is keyed by path and needs busting too.
+const REVALIDATE_PATHS = ['/company/legal-documents'];
 
 export class CompanyDocumentService {
   constructor(private repository: CompanyDocumentRepository) {}
 
   async create(dto: CreateCompanyDocumentDtoType) {
     const document = await this.repository.create(dto);
-    void revalidateFrontendTags([REVALIDATE_TAG]);
+    void revalidateFrontendTags([REVALIDATE_TAG], REVALIDATE_PATHS);
     return document;
   }
 
@@ -42,13 +44,13 @@ export class CompanyDocumentService {
   async update(id: string, dto: UpdateCompanyDocumentDtoType) {
     await this.findById(id);
     const document = await this.repository.update(id, dto);
-    void revalidateFrontendTags([REVALIDATE_TAG]);
+    void revalidateFrontendTags([REVALIDATE_TAG], REVALIDATE_PATHS);
     return document;
   }
 
   async remove(id: string) {
     await this.findById(id);
     await this.repository.softDelete(id);
-    void revalidateFrontendTags([REVALIDATE_TAG]);
+    void revalidateFrontendTags([REVALIDATE_TAG], REVALIDATE_PATHS);
   }
 }
