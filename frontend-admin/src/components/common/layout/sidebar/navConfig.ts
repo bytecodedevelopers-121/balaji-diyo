@@ -16,7 +16,7 @@ import {
   Images,
   Contact,
   FileCheck,
-  ConciergeBell,
+  // ConciergeBell, // needed again when the Services menu is restored
   Quote,
   Plane,
   Timer,
@@ -169,17 +169,18 @@ export const NAV_ITEMS: NavItem[] = [
       { label: "Add Document", path: PATHS.COMPANY_DOCUMENT_CREATE, permission: "create:document" },
     ],
   },
-  {
-    label: "Services",
-    path: PATHS.SERVICES,
-    icon: ConciergeBell,
-    permission: "read:service",
-    section: "main",
-    children: [
-      { label: "All Services", path: PATHS.SERVICES, permission: "read:service" },
-      { label: "Add Service", path: PATHS.SERVICE_CREATE, permission: "create:service" },
-    ],
-  },
+  // Services menu hidden for now — uncomment this block (and the ConciergeBell import) to restore.
+  // {
+  //   label: "Services",
+  //   path: PATHS.SERVICES,
+  //   icon: ConciergeBell,
+  //   permission: "read:service",
+  //   section: "main",
+  //   children: [
+  //     { label: "All Services", path: PATHS.SERVICES, permission: "read:service" },
+  //     { label: "Add Service", path: PATHS.SERVICE_CREATE, permission: "create:service" },
+  //   ],
+  // },
   {
     label: "Testimonials",
     path: PATHS.TESTIMONIALS,

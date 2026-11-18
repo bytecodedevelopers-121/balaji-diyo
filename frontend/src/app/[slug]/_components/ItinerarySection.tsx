@@ -1,8 +1,8 @@
 import type { ComponentType } from "react";
 import { BedDouble, CarFront, Clock, Footprints, MapPin, Mountain, Route, Utensils } from "lucide-react";
 import { CmsProse } from "@/components/ui/CmsProse";
-import { FillImage } from "@/components/ui/FillImage";
 import type { ItineraryDay, PackageDetail } from "../data";
+import { DayHighlight } from "./DayHighlight";
 import { ItineraryPhotoGallery } from "./ItineraryPhotoGallery";
 
 const METERS_TO_FEET = 3.28084;
@@ -24,22 +24,6 @@ function dayFacts(day: ItineraryDay): { Icon: MetaIcon; text: string }[] {
   if (day.lunchPlace) facts.push({ Icon: Footprints, text: `Lunch: ${day.lunchPlace}` });
   if (day.transport) facts.push({ Icon: CarFront, text: `Travel Mode: ${day.transport}` });
   return facts;
-}
-
-/** One photo beside a "Highlight of the day" caption — the day's own photo, else its leg's. */
-function DayHighlight({ title, image }: { title: string; image?: string }) {
-  if (!image) return null;
-  return (
-    <div className="mt-4 flex flex-col gap-4 border-t border-[#e7dfd2] pt-4 sm:flex-row sm:items-start sm:gap-6">
-      <div className="relative aspect-[3/2] w-full shrink-0 overflow-hidden rounded-md bg-brand-neutral-200 sm:w-[204px]">
-        <FillImage src={image} alt={title} className="object-cover" sizes="204px" />
-      </div>
-      <div>
-        <p className="text-[15px] font-semibold text-brand-neutral-900">Highlight of the day</p>
-        <p className="mt-2 text-[13px] text-brand-neutral-800">{title}</p>
-      </div>
-    </div>
-  );
 }
 
 /**
