@@ -14,6 +14,7 @@ import { siteConfig } from "@/config/site";
 import { publicEnv } from "@/lib/env";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { playfairDisplay, poppins, raleway } from "@/lib/fonts";
+import { Toaster } from "@/components/ui/Toast/Toaster";
 import {
   organizationJsonLd,
   serializeJsonLd,
@@ -118,6 +119,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             is that group layout's rendered output. Footer doesn't vary,
             so it stays global, here. */}
         {children}
+        <Toaster />
         <Footer
           footerColumns={footerColumns}
           siteName={settings.companyName}

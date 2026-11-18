@@ -19,7 +19,7 @@ const STAR_ITEM =
 
 function InfoIcon({ children }: { children: ReactNode }) {
   return (
-    <span className="grid size-[30px] shrink-0 place-items-center rounded-full bg-white text-[#064a70]">
+    <span className="grid size-[30px] shrink-0 place-items-center rounded-full bg-logo-sun text-[#064a70]">
       <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         {children}
       </svg>
@@ -31,7 +31,7 @@ function InfoRow({ icon, label, children }: { icon: ReactNode; label: string; ch
   return (
     <div className="flex items-start gap-4">
       <InfoIcon>{icon}</InfoIcon>
-      <div className="text-[12px] leading-[1.7] text-white">
+      <div className="text-[12px] leading-[1.7] text-logo-sun">
         <p className="text-[13px] font-semibold">{label}</p>
         {children}
       </div>

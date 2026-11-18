@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { PageCard } from "@/components/layout/PageCard";
 import { Alert } from "@/components/ui/Alert";
@@ -24,9 +25,19 @@ import {
 import { getErrorMessage } from "@/lib/apiError";
 import { formatDate } from "@/lib/formatDate";
 import { COMPANY_INFO } from "@/constants";
+import { getInquiryType } from "@/constants/inquiryTypes";
 import type { ContactMessage } from "@/types/contact";
 
+/** Contact messages / inquiries. `/inquiries/:type` narrows the list to one kind (affiliate, feedback, …). */
 export default function ContactsPage() {
+  const { type } = useParams();
+  // Keyed so paging, search and selection start fresh when switching between kinds.
+  return <InquiriesView key={type ?? "all"} typeSlug={type} />;
+}
+
+function InquiriesView({ typeSlug }: { typeSlug?: string }) {
+  const group = getInquiryType(typeSlug);
+  const heading = group ? `${group.label} Inquiries` : "Inquiries";
   const canModerate = usePermission("update:contact");
   const canDelete = usePermission("delete:contact");
 
@@ -40,14 +51,15 @@ export default function ContactsPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    document.title = `Contact Messages | ${COMPANY_INFO.name} Admin`;
-  }, []);
+    document.title = `${heading} | ${COMPANY_INFO.name} Admin`;
+  }, [heading]);
 
   const { data, isLoading, isError, isFetching, refetch } = useContacts({
     page,
     perPage: 15,
     search: search || undefined,
     isRead: isRead === "" ? undefined : isRead === "true",
+    types: group?.types.join(","),
   });
   const contacts = data?.data.items ?? [];
   const meta = data?.data.meta;
@@ -178,7 +190,7 @@ export default function ContactsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Contact Messages" action={<RefreshButton isFetching={isFetching} onRefresh={refetch} />} />
+      <PageHeader title={heading} action={<RefreshButton isFetching={isFetching} onRefresh={refetch} />} />
 
       {isError && <Alert variant="error" message="Failed to load contact messages." />}
       {error && <Alert variant="error" message={error} onClose={() => setError(null)} />}
@@ -216,7 +228,7 @@ export default function ContactsPage() {
           )}
         </div>
 
-        <DataTable columns={columns} data={contacts} isLoading={isLoading} emptyMessage="No contact messages yet." />
+        <DataTable columns={columns} data={contacts} isLoading={isLoading} emptyMessage={group ? `No ${group.label.toLowerCase()} inquiries yet.` : "No inquiries yet."} />
 
         {meta && meta.total > 0 && (
           <Pagination

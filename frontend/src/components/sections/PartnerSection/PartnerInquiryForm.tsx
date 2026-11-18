@@ -8,6 +8,7 @@ import {
   type PartnerFormId,
 } from "@/config/partner-content";
 import { isApiEnvelope } from "@/lib/api/api-response";
+import { toast } from "@/components/ui/Toast/toast";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -155,6 +156,7 @@ function PartnerFormPanel({ form }: { form: PartnerFormDefinition }) {
       }
 
       setStatus("success");
+      toast.success("Thank you — your inquiry has been sent. We'll reply within 48 hours.");
       setValues({});
       setDetails("");
     } catch (error) {
@@ -263,11 +265,6 @@ function PartnerFormPanel({ form }: { form: PartnerFormDefinition }) {
       </button>
 
       <div aria-live="polite">
-        {status === "success" ? (
-          <p className="text-center text-body-m font-medium text-success-800">
-            Thank you — your inquiry has been sent. We&apos;ll reply within 48 hours.
-          </p>
-        ) : null}
         {status === "error" ? (
           <p className="text-center text-body-m font-medium text-error-700">{errorMessage}</p>
         ) : null}

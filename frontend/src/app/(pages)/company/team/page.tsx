@@ -3,13 +3,13 @@ import { PageHero } from "@/components/sections/PageHero";
 import { TeamSection } from "@/components/sections/TeamSection";
 import { CtaSection } from "@/components/sections/CtaSection";
 import { buildMetadata } from "@/lib/seo/metadata";
+import { getPageSections, resolveSection } from "@/features/page-content/api";
+import { TEAM_DEFAULTS } from "@/features/page-content/company-defaults";
 
-export const metadata: Metadata = buildMetadata({
-  title: "Our Team",
-  description:
-    "Know the heroes who work behind the scenes and make things happen on the ground to give you a remarkable travel story.",
-  path: "/company/team",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  const { content } = resolveSection(await getPageSections("team"), "seo", TEAM_DEFAULTS.seo);
+  return buildMetadata({ title: content.title, description: content.description, path: "/company/team" });
+}
 
 /**
  * Transcribed from design-references/our-team.png and
@@ -24,7 +24,13 @@ export const metadata: Metadata = buildMetadata({
  * (see navigation.ts), not a guess like the initial "/our-team" this page
  * launched at.
  */
-export default function TeamPage() {
+export default async function TeamPage() {
+  // Hero, intro text and photo, and the grid heading are editable in the admin (Page Content → Our Team);
+  // the team members themselves come from Team in the admin sidebar.
+  const sections = await getPageSections("team");
+  const hero = resolveSection(sections, "hero", TEAM_DEFAULTS.hero).content;
+  const intro = resolveSection(sections, "intro", TEAM_DEFAULTS.intro).content;
+  const grid = resolveSection(sections, "grid", TEAM_DEFAULTS.grid).content;
   return (
     <>
       <PageHero
@@ -36,10 +42,10 @@ export default function TeamPage() {
           { label: "Home", href: "/" },
           { label: "Nepal" },
           { label: "About" },
-          { label: "Our Team" },
+          { label: hero.title },
         ]}
-        title="Our Team"
-        subtitle="Know the heroes who work behind the scenes and make things happen on the ground to give you a remarkable travel story."
+        title={hero.title}
+        subtitle={hero.subtitle}
         // The design reference (our-team.png) shows a dusk/sunset version
         // of this shot, but only as a flattened screenshot with the
         // headline/breadcrumb already baked into the pixels — no clean
@@ -50,10 +56,10 @@ export default function TeamPage() {
         // the sunset shot just to erase the ghosted duplicate text. Swap
         // in a real clean export of the sunset photo here if one becomes
         // available.
-        image="/images/team/hero.jpg"
-        imageAlt="A snow-capped Himalayan peak rising through clouds"
+        image={hero.image}
+        imageAlt={hero.imageAlt}
       />
-      <TeamSection />
+      <TeamSection content={{ intro, grid }} />
       <CtaSection />
     </>
   );

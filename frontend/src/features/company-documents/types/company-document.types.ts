@@ -11,5 +11,7 @@ export interface CompanyDocument {
   title: string;
   description: string | null;
   imageUrl: string | null;
+  /** Which group of the Legal Documents page it sits in. */
+  category?: "legal" | "association";
   sortOrder: number;
 }

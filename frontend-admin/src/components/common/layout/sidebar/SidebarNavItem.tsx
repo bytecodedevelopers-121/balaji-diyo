@@ -59,6 +59,7 @@ export function SidebarNavItem({ item, collapsed }: SidebarNavItemProps) {
               <NavLink
                 key={child.path}
                 to={child.path}
+                end={child.end}
                 className={({ isActive }) =>
                   [
                     "group flex items-center px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200",

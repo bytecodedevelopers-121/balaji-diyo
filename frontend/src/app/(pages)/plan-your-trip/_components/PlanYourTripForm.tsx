@@ -3,6 +3,8 @@
 import { useState, type FormEvent, type ReactNode } from "react";
 import { countries } from "@/config/contact-form-options";
 import { isApiEnvelope } from "@/lib/api/api-response";
+import { toast } from "@/components/ui/Toast/toast";
+import { PLAN_DEFAULTS, type PlanContent } from "@/features/page-content/plan-defaults";
 
 const TRIP_TYPES = ["Trekking", "Peak Climbing", "Cultural Tour", "Jungle Safari", "Helicopter Tour", "Pilgrimage", "Custom Holiday"];
 const HOTEL_TYPES = ["Budget / Tea house", "3 Star", "4 Star", "5 Star / Luxury", "Mixed"];
@@ -61,7 +63,7 @@ function Select({ name, label, options, required = true }: { name: string; label
   );
 }
 
-export function PlanYourTripForm() {
+export function PlanYourTripForm({ content = PLAN_DEFAULTS.form }: { content?: PlanContent["form"] } = {}) {
   const [accepted, setAccepted] = useState(false);
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [message, setMessage] = useState<string | null>(null);
@@ -114,7 +116,8 @@ export function PlanYourTripForm() {
       form.reset();
       setAccepted(false);
       setStatus("success");
-      setMessage("Thank you! Our team will get back to you with a personalised plan soon.");
+      setMessage(null);
+      toast.success(content.successMessage);
     } catch (error) {
       setStatus("error");
       setMessage(error instanceof Error ? error.message : "Something went wrong. Please try again.");
@@ -123,7 +126,7 @@ export function PlanYourTripForm() {
 
   return (
     <form onSubmit={handleSubmit} className="rounded-md border border-brand-neutral-200 bg-white p-5 shadow-[0_2px_14px_rgba(6,74,112,0.1)] sm:p-10">
-      <h2 className="text-[20px] font-semibold text-[#d98a00]">Personal Information</h2>
+      <h2 className="text-[20px] font-semibold text-[#d98a00]">{content.personalTitle}</h2>
       <div className="mt-5 grid gap-5 sm:grid-cols-2">
         <Input name="name" label="Full Name" />
         <Input name="email" label="Email Address" type="email" />
@@ -131,7 +134,7 @@ export function PlanYourTripForm() {
         <Select name="country" label="Choose Your Country" options={countries} />
       </div>
 
-      <h2 className="mt-10 text-[20px] font-semibold text-[#d98a00]">Trip Details</h2>
+      <h2 className="mt-10 text-[20px] font-semibold text-[#d98a00]">{content.tripTitle}</h2>
       <div className="mt-5 grid gap-5 sm:grid-cols-2">
         <Select name="tripType" label="Select Trip Type" options={TRIP_TYPES} />
         <Input name="date" label="Approx. Date of Travel" type="date" />
@@ -172,7 +175,7 @@ export function PlanYourTripForm() {
         disabled={status === "submitting"}
         className="mt-6 rounded-[4px] bg-logo-sun px-10 py-3.5 text-[15px] font-bold tracking-wide text-logo-navy-dark uppercase transition-opacity hover:opacity-90 disabled:opacity-60"
       >
-        {status === "submitting" ? "Submitting..." : "Submit"}
+        {status === "submitting" ? "Submitting..." : content.submitLabel}
       </button>
     </form>
   );

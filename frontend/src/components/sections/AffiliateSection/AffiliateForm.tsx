@@ -4,6 +4,8 @@ import { useId, useRef, useState } from "react";
 import { Captcha, type CaptchaHandle } from "@/components/ui/Captcha/Captcha";
 import { countries } from "@/config/contact-form-options";
 import { isApiEnvelope } from "@/lib/api/api-response";
+import { AFFILIATE_DEFAULTS, type AffiliateContent } from "@/features/page-content/affiliate-defaults";
+import { toast } from "@/components/ui/Toast/toast";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -18,7 +20,7 @@ const fieldClassName =
  * ContactMessage column (phone, country, website) are folded into `message`
  * as "Label: value" lines, like the partner form does.
  */
-export function AffiliateForm() {
+export function AffiliateForm({ content = AFFILIATE_DEFAULTS.form }: { content?: AffiliateContent["form"] } = {}) {
   const idPrefix = useId();
   const [values, setValues] = useState(emptyValues);
   const [status, setStatus] = useState<Status>("idle");
@@ -66,6 +68,7 @@ export function AffiliateForm() {
       }
 
       setStatus("success");
+      toast.success(content.successMessage);
       setValues(emptyValues);
     } catch (error) {
       setStatus("error");
@@ -83,7 +86,7 @@ export function AffiliateForm() {
       onSubmit={handleSubmit}
       className="mt-8 rounded-md bg-white p-6 shadow-card-strong md:p-7"
     >
-      <h2 className="text-[18px] font-semibold text-primary-500">Become an affiliate</h2>
+      <h2 className="text-[18px] font-semibold text-primary-500">{content.title}</h2>
 
       <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
         <input
@@ -179,15 +182,10 @@ export function AffiliateForm() {
         disabled={status === "submitting" || (captchaRequired && !captchaToken)}
         className="mt-4 rounded-md bg-primary-500 px-8 py-3 text-body-l font-semibold tracking-wide text-white uppercase transition-opacity hover:opacity-90 disabled:opacity-60"
       >
-        {status === "submitting" ? "Sending…" : "Submit"}
+        {status === "submitting" ? "Sending…" : content.submitLabel}
       </button>
 
       <div aria-live="polite">
-        {status === "success" ? (
-          <p className="mt-3 text-body-m font-medium text-success-800">
-            Thank you — your request has been sent. We&apos;ll get back to you soon.
-          </p>
-        ) : null}
         {status === "error" ? <p className="mt-3 text-body-m font-medium text-error-700">{errorMessage}</p> : null}
       </div>
     </form>

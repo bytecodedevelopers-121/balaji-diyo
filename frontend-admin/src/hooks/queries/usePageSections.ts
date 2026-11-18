@@ -8,6 +8,8 @@ export const usePageSections = (pageKey: string) =>
   useQuery({
     queryKey: queryKeys.pageSections.page(pageKey),
     queryFn: () => pageSectionService.getPage(pageKey),
+    // Always re-read when the page is opened, so an editor never starts from a stale cached copy of a section.
+    refetchOnMount: "always",
   });
 
 export const useSaveSection = (pageKey: string) => {

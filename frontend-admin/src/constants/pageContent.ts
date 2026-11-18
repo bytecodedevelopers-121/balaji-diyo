@@ -1,4 +1,4 @@
-import type { FieldDef, PageDef } from "@/types/page-content";
+import type { FieldDef, PageDef, SectionDef } from "@/types/page-content";
 
 /**
  * Which pages the page-content CMS edits, and the fields of each section.
@@ -21,6 +21,37 @@ const heading = (eyebrow = "Small label above the title"): FieldDef[] => [
   text("buttonLabel", "Button text"),
   link("buttonHref", "Button link"),
 ];
+
+const rich = (key: string, label: string, hint?: string): FieldDef => ({ key, label, kind: "richtext", hint });
+const img = (key: string, label: string): FieldDef => ({ key, label, kind: "image", hint: "Pick one from the media library or upload a new one." });
+
+const SEO: SectionDef = {
+  key: "seo",
+  title: "Search & browser title",
+  description: "The page title and description shown in Google results and browser tabs.",
+  fields: [text("title", "Page title"), area("description", "Meta description")],
+};
+
+/** A text page: heading + one rich-text body (and an optional top photo). */
+const proseDef = (key: string, title: string, path: string, withImage: boolean, note = ""): PageDef => ({
+  key,
+  title,
+  description: `The heading and whole text of the ${title} page, written in the text editor.${note ? " " + note : ""}`,
+  path,
+  sections: [
+    SEO,
+    {
+      key: "content",
+      title: "Page text",
+      description: "Heading, photo (if the page has one) and the full text with headings, bold, lists and links.",
+      fields: [
+        text("title", "Page heading"),
+        ...(withImage ? [img("image", "Top photo"), text("imageAlt", "Photo description (alt text)")] : []),
+        rich("body", "Page text"),
+      ],
+    },
+  ],
+});
 
 export const PAGE_DEFS: PageDef[] = [
   {
@@ -295,6 +326,205 @@ export const PAGE_DEFS: PageDef[] = [
     ],
   },
   {
+    key: "affiliate",
+    title: "Affiliate Program page",
+    description: "Headings, paragraphs, form text and the closing banner of the Affiliate Program page.",
+    path: "/affiliate-program",
+    sections: [
+      {
+        key: "seo",
+        title: "Search & browser title",
+        description: "The page title and description shown in Google results and browser tabs.",
+        fields: [text("title", "Page title"), area("description", "Meta description")],
+      },
+      {
+        key: "intro",
+        title: "Page text",
+        description: "The page heading and the whole text of the page, written in the text editor (headings, bold, lists, links).",
+        fields: [
+          text("title", "Page heading"),
+          { key: "body", label: "Page text", kind: "richtext", hint: "Shown above the application form." },
+        ],
+      },
+      {
+        key: "form",
+        title: "Application form",
+        description: "Form heading, button text and the message shown after a successful submission.",
+        fields: [text("title", "Form heading"), text("submitLabel", "Submit button text"), area("successMessage", "Success message")],
+      },
+    ],
+  },
+  {
+    key: "webstories",
+    title: "Travel Web Stories page",
+    description: "The top photo and heading of the Nepal Travel Web Stories page. The story cards themselves are managed under Travel → Web Stories.",
+    path: "/travel-web-stories",
+    sections: [
+      {
+        key: "seo",
+        title: "Search & browser title",
+        description: "The page title and description shown in Google results and browser tabs.",
+        fields: [text("title", "Page title"), area("description", "Meta description")],
+      },
+      {
+        key: "hero",
+        title: "Top photo & heading",
+        description: "The wide thumbnail image at the top of the page and the page heading.",
+        fields: [
+          text("title", "Page heading"),
+          { key: "image", label: "Top image", kind: "image", hint: "Wide photo (about 16:7). Pick one from the media library or upload a new one." },
+          text("imageAlt", "Image description (alt text)"),
+        ],
+      },
+    ],
+  },
+  {
+    key: "about",
+    title: "About Us",
+    description: "Hero, company story, statistics, photos and the history timeline of the About Us page.",
+    path: "/company/about-us",
+    sections: [
+      SEO,
+      {
+        key: "hero",
+        title: "Top banner",
+        description: "Heading, subtitle and photo at the top of the page.",
+        fields: [text("title", "Heading"), area("subtitle", "Subtitle"), img("image", "Photo"), text("imageAlt", "Photo description (alt text)")],
+      },
+      {
+        key: "story",
+        title: "Who we are",
+        description: "The story text, photo collage, statistics band and photo strip.",
+        fields: [
+          text("label", "Small label"),
+          text("heading", "Heading"),
+          text("headingAccent", "Highlighted word(s) in the heading", "Shown in yellow italics."),
+          rich("body", "Story text"),
+          { key: "collage", label: "Photo collage (first photo is the wide one)", kind: "list", itemLabel: "photo", itemFields: [img("image", "Photo"), text("imageAlt", "Description (alt text)")] },
+          { key: "stats", label: "Statistics", kind: "list", itemLabel: "statistic", itemFields: [text("value", "Number"), text("label", "Label")] },
+          { key: "strip", label: "Photo strip", kind: "list", itemLabel: "photo", itemFields: [img("image", "Photo"), text("imageAlt", "Description (alt text)")] },
+        ],
+      },
+      {
+        key: "history",
+        title: "Our History",
+        description: "The timeline rows, each with a photo and text.",
+        fields: [
+          text("title", "Heading"),
+          text("titleAccent", "Highlighted word(s)", "Shown in yellow italics."),
+          {
+            key: "milestones",
+            label: "Milestones",
+            kind: "list",
+            itemLabel: "milestone",
+            itemFields: [text("year", "Years"), text("title", "Title"), img("image", "Photo"), text("imageAlt", "Photo description (alt text)"), rich("body", "Text")],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    key: "team",
+    title: "Our Team",
+    description: "Banner, intro text and headings of the Our Team page. The team members are managed under Team in the sidebar.",
+    path: "/company/team",
+    sections: [
+      SEO,
+      {
+        key: "hero",
+        title: "Top banner",
+        description: "Heading, subtitle and photo at the top of the page.",
+        fields: [text("title", "Heading"), area("subtitle", "Subtitle"), img("image", "Photo"), text("imageAlt", "Photo description (alt text)")],
+      },
+      {
+        key: "intro",
+        title: "Intro",
+        description: "Label, heading, text and photo beside it.",
+        fields: [
+          text("label", "Small label"),
+          text("heading", "Heading"),
+          text("headingAccent", "Highlighted word(s)", "Shown in yellow italics."),
+          rich("body", "Intro text"),
+          img("image", "Photo"),
+          text("imageAlt", "Photo description (alt text)"),
+        ],
+      },
+      {
+        key: "grid",
+        title: "Team grid heading",
+        description: "Heading above the team members.",
+        fields: [text("heading", "Start of heading"), text("headingAccent", "Highlighted word(s)", "Shown in yellow italics."), text("headingEnd", "End of heading")],
+      },
+    ],
+  },
+  {
+    key: "legal",
+    title: "Legal Documents",
+    description: "Statement text and group headings. The scanned certificates are managed under Company Documents in the sidebar.",
+    path: "/company/legal-documents",
+    sections: [
+      SEO,
+      {
+        key: "intro",
+        title: "Heading & statement",
+        description: "Page heading, the registration statement and the highlighted note.",
+        fields: [text("title", "Page heading"), rich("body", "Registration statement"), area("note", "Highlighted note")],
+      },
+      {
+        key: "groups",
+        title: "Document group headings",
+        description: "Headings above the two groups of certificates.",
+        fields: [text("legalTitle", "First group heading"), text("associationsTitle", "Second group heading")],
+      },
+    ],
+  },
+  {
+    key: "plan",
+    title: "Plan Your Trip",
+    description: "Heading, introduction text (text editor) and form headings of the Plan Your Nepal Trip page.",
+    path: "/plan-your-trip",
+    sections: [
+      SEO,
+      {
+        key: "content",
+        title: "Heading & introduction",
+        description: "Page heading and the intro text above the form, written in the text editor.",
+        fields: [text("title", "Page heading"), rich("body", "Introduction text")],
+      },
+      {
+        key: "form",
+        title: "Form text",
+        description: "Section headings of the form, the button text and the message shown after sending.",
+        fields: [text("personalTitle", "First section heading"), text("tripTitle", "Second section heading"), text("submitLabel", "Submit button text"), area("successMessage", "Success message")],
+      },
+    ],
+  },
+  {
+    key: "wishlist",
+    title: "Wishlist",
+    description: "Heading and the “No saved trips yet” message of the Wishlist page.",
+    path: "/wishlist",
+    sections: [
+      {
+        key: "content",
+        title: "Heading & empty message",
+        description: "The page heading and what visitors see before they have saved any trip.",
+        fields: [
+          text("title", "Page heading"),
+          text("emptyTitle", "Empty-wishlist title"),
+          text("emptyText", "Empty-wishlist text"),
+          text("buttonLabel", "Link text"),
+          link("buttonHref", "Link address"),
+        ],
+      },
+    ],
+  },
+  proseDef("guided", "Why Guided Travel?", "/company/why-guided-travel", true),
+  proseDef("responsible", "Responsible Travel", "/company/responsible-travel", true),
+  proseDef("partner", "Partner with Us", "/company/partner-with-us", false, "The partner enquiry form below the text isn't editable here."),
+  proseDef("terms", "Terms and Conditions", "/company/terms-and-conditions", false),
+  proseDef("privacy", "Privacy Policy", "/company/privacy-policy", false),
+  {
     key: "footer",
     title: "Footer",
     description: "The footer shown on every page: newsletter, headings, tagline, payments and legal line.",
@@ -361,5 +591,26 @@ export const PAGE_DEFS: PageDef[] = [
     ],
   },
 ];
+
+/** Pages shown together under one card on the Page Content screen. */
+export interface PageGroup {
+  key: string;
+  title: string;
+  description: string;
+  /** Keys of the PAGE_DEFS entries inside this group, in display order. */
+  pages: string[];
+}
+
+export const PAGE_GROUPS: PageGroup[] = [
+  {
+    key: "company",
+    title: "Company",
+    description: "Pages in the website's Company menu: About Us, Our Team, Legal Documents, Why Guided Travel, Responsible Travel, Partner with Us, Affiliate Program, Terms and Privacy.",
+    pages: ["about", "team", "legal", "guided", "responsible", "partner", "affiliate", "terms", "privacy"],
+  },
+];
+
+export const getPageGroup = (key: string) => PAGE_GROUPS.find((g) => g.key === key);
+export const getGroupOfPage = (pageKey: string) => PAGE_GROUPS.find((g) => g.pages.includes(pageKey));
 
 export const getPageDef = (key: string) => PAGE_DEFS.find((p) => p.key === key);

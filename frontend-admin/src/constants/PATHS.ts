@@ -31,6 +31,7 @@ export const PATHS = {
   BLOG_COMMENTS: "/blog-comments",
 
   CONTACTS: "/contacts",
+  INQUIRIES: "/inquiries",
   MEDIA: "/media",
 
   FAQS: "/faqs",
@@ -88,6 +89,7 @@ export const PATHS = {
   MENU_ITEMS: (typeId: string) => `/menu-items/${typeId}`,
 
   PAGE_CONTENT: "/page-content",
+  PAGE_CONTENT_GROUP: (groupKey: string) => `/page-content/group/${groupKey}`,
   PAGE_CONTENT_EDIT: (pageKey: string) => `/page-content/${pageKey}`,
 
   GLOBAL_SETTINGS: "/global-settings",

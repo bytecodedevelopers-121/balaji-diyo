@@ -38,6 +38,7 @@ export class ContactMessageService {
     const pagination = new PaginationQueryDto({ page: dto.page, perPage: dto.perPage });
     const where: Prisma.ContactMessageWhereInput = {
       ...(dto.isRead !== undefined ? { isRead: dto.isRead } : {}),
+      ...(dto.types ? { type: { in: dto.types.split(',').map((t) => t.trim()).filter(Boolean) } } : {}),
       ...(dto.search
         ? { OR: [{ name: { contains: dto.search, mode: 'insensitive' } }, { email: { contains: dto.search, mode: 'insensitive' } }] }
         : {}),

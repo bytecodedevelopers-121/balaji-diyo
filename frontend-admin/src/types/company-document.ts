@@ -3,6 +3,7 @@ export interface CompanyDocument {
   title: string;
   description: string | null;
   imageUrl: string | null;
+  category: "legal" | "association";
   sortOrder: number;
   isActive: boolean;
   createdAt: string;
@@ -14,6 +15,7 @@ export interface CompanyDocumentFormValues {
   title: string;
   description?: string;
   imageUrl?: string;
+  category?: "legal" | "association";
   sortOrder?: number;
   isActive?: boolean;
 }

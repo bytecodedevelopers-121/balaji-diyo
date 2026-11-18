@@ -2,6 +2,7 @@ import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
+import { RichTextEditor } from "@/components/form/RichTextEditor";
 import { ThumbnailField } from "@/components/site-content/ThumbnailField";
 import type { FieldDef } from "@/types/page-content";
 
@@ -26,6 +27,14 @@ export function FieldInput({ field, value, onChange }: Props) {
   switch (field.kind) {
     case "textarea":
       return <Textarea id={id} label={field.label} hint={field.hint} rows={3} value={asString(value)} onChange={(e) => onChange(e.target.value)} />;
+    case "richtext":
+      return (
+        <div>
+          <span className="mb-1.5 block text-sm font-medium text-gray-700">{field.label}</span>
+          <RichTextEditor value={asString(value)} onChange={onChange} minHeight={320} placeholder="Write the content…" />
+          {field.hint && <p className="mt-1 text-xs text-gray-500">{field.hint}</p>}
+        </div>
+      );
     case "html":
       return (
         <Textarea

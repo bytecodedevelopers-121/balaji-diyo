@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { isApiEnvelope } from "@/lib/api/api-response";
 import { salutations, countries } from "@/config/contact-form-options";
 import { Captcha, type CaptchaHandle } from "@/components/ui/Captcha/Captcha";
+import { toast } from "@/components/ui/Toast/toast";
 
 /**
  * The card on the right half of ContactSection (design-references/
@@ -139,6 +140,7 @@ export function ContactForm({
       }
 
       setStatus("success");
+      toast.success("Thanks — your message has been sent. We'll get back to you soon.");
       setValues({
         salutation: salutations[0],
         fullName: "",
@@ -314,11 +316,6 @@ export function ContactForm({
           >
             {status === "submitting" ? "Sending…" : "Submit"}
           </button>
-          {status === "success" ? (
-            <p className="font-poppins text-[14px] leading-[22.4px] text-success-800">
-              Thanks — your message has been sent. We&apos;ll get back to you soon.
-            </p>
-          ) : null}
           {status === "error" ? (
             <p className="font-poppins text-[14px] leading-[22.4px] text-error-700">
               {errorMessage}

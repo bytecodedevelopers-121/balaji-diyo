@@ -7,21 +7,23 @@ import { HistorySection } from "@/components/sections/HistorySection";
 import { CtaSection } from "@/components/sections/CtaSection";
 import { getCmsPage } from "@/features/pages/api/get-cms-page";
 import { buildMetadata } from "@/lib/seo/metadata";
+import { getPageSections, resolveSection } from "@/features/page-content/api";
+import { ABOUT_DEFAULTS } from "@/features/page-content/company-defaults";
 
 const SLUG = "about-us";
-const FALLBACK_SUBTITLE =
-  "We plan trips the way we'd want to travel — unhurried, honest, and a little off the usual path.";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const page = await getCmsPage(SLUG);
+  const [page, sections] = await Promise.all([getCmsPage(SLUG), getPageSections("about")]);
+  const seo = resolveSection(sections, "seo", ABOUT_DEFAULTS.seo).content;
 
   if (!page) {
-    return buildMetadata({ title: "About Us", path: `/company/${SLUG}`, noIndex: true });
+    return buildMetadata({ title: seo.title, path: `/company/${SLUG}`, noIndex: true });
   }
 
+  // Search title and description saved in the admin (Page Content → About Us) win over the older Pages entry.
   return buildMetadata({
-    title: page.meta?.metaTitle || page.title,
-    description: page.meta?.metaDescription || undefined,
+    title: seo.title || page.meta?.metaTitle || page.title,
+    description: seo.description || page.meta?.metaDescription || undefined,
     path: `/company/${SLUG}`,
   });
 }
@@ -40,8 +42,11 @@ export async function generateMetadata(): Promise<Metadata> {
  * real title/meta description (breadcrumbs + SEO), not its body.
  */
 export default async function AboutUsPage() {
-  const page = await getCmsPage(SLUG);
+  const [page, sections] = await Promise.all([getCmsPage(SLUG), getPageSections("about")]);
   if (!page) notFound();
+  const hero = resolveSection(sections, "hero", ABOUT_DEFAULTS.hero).content;
+  const story = resolveSection(sections, "story", ABOUT_DEFAULTS.story);
+  const history = resolveSection(sections, "history", ABOUT_DEFAULTS.history);
 
   return (
     <>
@@ -53,17 +58,21 @@ export default async function AboutUsPage() {
           { label: "About" },
           { label: page.title },
         ]}
-        title="Built by a community."
-        subtitle={page.meta?.metaDescription || FALLBACK_SUBTITLE}
-        image="/images/hero/hero-3.jpeg"
-        imageAlt="Sunrise turning the Everest summits gold"
+        title={hero.title}
+        subtitle={hero.subtitle}
+        image={hero.image}
+        imageAlt={hero.imageAlt}
       />
-      <Reveal variant="auto">
-        <AboutUsIntroSection />
-      </Reveal>
-      <Reveal variant="auto">
-        <HistorySection />
-      </Reveal>
+      {story.isActive && (
+        <Reveal variant="auto">
+          <AboutUsIntroSection content={story.content} />
+        </Reveal>
+      )}
+      {history.isActive && (
+        <Reveal variant="auto">
+          <HistorySection content={history.content} />
+        </Reveal>
+      )}
       <CtaSection />
     </>
   );

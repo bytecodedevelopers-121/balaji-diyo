@@ -29,6 +29,18 @@ const PAGES: Record<string, string> = {
   contact: 'contact-defaults.json',
   footer: 'footer-defaults.json',
   site: 'site-defaults.json',
+  affiliate: 'affiliate-defaults.json',
+  webstories: 'webstories-defaults.json',
+  about: 'about-defaults.json',
+  plan: 'plan-defaults.json',
+  wishlist: 'wishlist-defaults.json',
+  team: 'team-defaults.json',
+  legal: 'legal-defaults.json',
+  guided: 'guided-defaults.json',
+  responsible: 'responsible-defaults.json',
+  partner: 'partner-defaults.json',
+  terms: 'terms-defaults.json',
+  privacy: 'privacy-defaults.json',
 };
 
 /** Global Settings keys behind the "site" page, so the admin starts with what the website shows today. */

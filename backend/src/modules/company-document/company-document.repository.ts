@@ -7,6 +7,7 @@ export interface CompanyDocumentCoreFields {
   title: string;
   description?: string | null;
   imageUrl?: string | null;
+  category?: 'legal' | 'association';
   sortOrder?: number;
   isActive?: boolean;
 }
@@ -23,6 +24,7 @@ export class CompanyDocumentRepository {
         title: data.title,
         description: data.description ?? null,
         imageUrl: data.imageUrl ?? null,
+        category: data.category ?? 'legal',
         sortOrder: data.sortOrder ?? 0,
         isActive: data.isActive ?? true,
       },
@@ -36,6 +38,7 @@ export class CompanyDocumentRepository {
         title: data.title,
         description: data.description,
         imageUrl: data.imageUrl,
+        category: data.category,
         sortOrder: data.sortOrder,
         isActive: data.isActive,
       },

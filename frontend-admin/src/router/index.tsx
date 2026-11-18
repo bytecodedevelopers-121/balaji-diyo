@@ -79,6 +79,7 @@ const PaymentsPage = lazy(() => import("@/pages/content/payments/PaymentsPage"))
 const MenuTypesPage = lazy(() => import("@/pages/content/menu-types/MenuTypesPage"));
 const MenuItemsPage = lazy(() => import("@/pages/content/menu-items/MenuItemsPage"));
 const PageContentPage = lazy(() => import("@/pages/content/page-content/PageContentPage"));
+const PageGroupPage = lazy(() => import("@/pages/content/page-content/PageGroupPage"));
 const PageSectionsPage = lazy(() => import("@/pages/content/page-content/PageSectionsPage"));
 const GlobalSettingsPage = lazy(() => import("@/pages/content/global-settings/GlobalSettingsPage"));
 const RedirectsPage = lazy(() => import("@/pages/content/redirects/RedirectsPage"));
@@ -163,7 +164,11 @@ export const router = createBrowserRouter([
               },
               {
                 element: <PermissionRoute permission="read:contact" />,
-                children: [{ path: "contacts", element: withSuspense(<ContactsPage />) }],
+                children: [
+                  { path: "contacts", element: withSuspense(<ContactsPage />) },
+                  { path: "inquiries", element: withSuspense(<ContactsPage />) },
+                  { path: "inquiries/:type", element: withSuspense(<ContactsPage />) },
+                ],
               },
               {
                 element: <PermissionRoute permission="read:media" />,
@@ -302,6 +307,7 @@ export const router = createBrowserRouter([
                 element: <PermissionRoute permission="read:settings" />,
                 children: [
                   { path: "page-content", element: withSuspense(<PageContentPage />) },
+                  { path: "page-content/group/:groupKey", element: withSuspense(<PageGroupPage />) },
                   { path: "page-content/:pageKey", element: withSuspense(<PageSectionsPage />) },
                 ],
               },

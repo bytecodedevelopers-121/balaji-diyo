@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { Alert } from "@/components/ui/Alert";
 import { Spinner } from "@/components/ui/Spinner";
 import { SectionEditor } from "@/components/page-content/SectionEditor";
-import { getPageDef } from "@/constants/pageContent";
+import { getGroupOfPage, getPageDef } from "@/constants/pageContent";
 import { PATHS } from "@/constants/PATHS";
 import { COMPANY_INFO } from "@/constants";
 import { usePermission } from "@/hooks/usePermission";
@@ -18,6 +18,7 @@ const SITE_URL = ((import.meta.env.VITE_SITE_URL as string | undefined) ?? "http
 export default function PageSectionsPage() {
   const { pageKey = "" } = useParams();
   const def = getPageDef(pageKey);
+  const group = getGroupOfPage(pageKey);
   const canEdit = usePermission("update:settings");
 
   useEffect(() => {
@@ -35,8 +36,12 @@ export default function PageSectionsPage() {
     <>
       <PageHeader
         title={def.title}
-        backHref={PATHS.PAGE_CONTENT}
-        breadcrumbs={[{ label: "Page Content", href: PATHS.PAGE_CONTENT }, { label: def.title }]}
+        backHref={group ? PATHS.PAGE_CONTENT_GROUP(group.key) : PATHS.PAGE_CONTENT}
+        breadcrumbs={[
+          { label: "Page Content", href: PATHS.PAGE_CONTENT },
+          ...(group ? [{ label: group.title, href: PATHS.PAGE_CONTENT_GROUP(group.key) }] : []),
+          { label: def.title },
+        ]}
         action={
           <a href={`${SITE_URL}${def.path}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:underline">
             View page <ExternalLink size={14} />

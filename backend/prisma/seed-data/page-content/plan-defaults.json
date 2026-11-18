@@ -1,0 +1,16 @@
+{
+  "seo": {
+    "title": "Plan Your Nepal Trip",
+    "description": "Tell us what you want from your holiday and our team will build a personalised Nepal itinerary around it."
+  },
+  "content": {
+    "title": "Plan Your Nepal Trip",
+    "body": "<p><strong>Looking for a unique travel experience? With Joyful Trekking, you can plan a holiday that meets all your needs and desires.</strong></p><p>Are you tired of cookie-cutter travel packages that don't quite fit your interests and preferences? Whether you want to explore the mountains, immerse yourself in local culture, or indulge in adventure activities, our team can help you create a personalised travel plan.</p><p>Our team of experts has years of experience planning tailor-made holidays that meet the needs and desires of our clients. We offer a wide range of activities and destinations to choose from, and our attention to detail and commitment to your satisfaction ensures that your trip will be unforgettable.</p>"
+  },
+  "form": {
+    "personalTitle": "Personal Information",
+    "tripTitle": "Trip Details",
+    "submitLabel": "Submit",
+    "successMessage": "Thank you! Our team will get back to you with a personalised plan soon."
+  }
+}

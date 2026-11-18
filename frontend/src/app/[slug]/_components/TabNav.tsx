@@ -256,8 +256,8 @@ export function TabNav() {
           data-tab-id={tab.id}
           href={`#${tab.id}`}
           onClick={(event) => handleTabClick(event, tab.id)}
-          className={`shrink-0 border-b-2 px-3 py-4 text-[15px] font-medium whitespace-nowrap text-white outline-none transition-opacity focus-visible:bg-white/10 ${
-            active === tab.id ? "border-white" : "border-transparent opacity-80 hover:opacity-100"
+          className={`shrink-0 border-b-2 px-3 py-4 text-[15px] font-medium whitespace-nowrap outline-none transition-colors focus-visible:bg-white/10 hover:border-logo-sun hover:text-logo-sun ${
+            active === tab.id ? "border-white text-white" : "border-transparent text-white/80"
           }`}
         >
           {tab.label}

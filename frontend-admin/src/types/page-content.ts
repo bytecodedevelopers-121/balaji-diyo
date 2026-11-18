@@ -14,7 +14,7 @@ export interface SaveSectionDto {
   isActive?: boolean;
 }
 
-export type FieldKind = "text" | "textarea" | "html" | "url" | "number" | "image" | "list" | "select";
+export type FieldKind = "text" | "textarea" | "html" | "url" | "number" | "image" | "list" | "select" | "richtext";
 
 /** One editable field of a section. `list` fields repeat `itemFields` once per row. */
 export interface FieldDef {

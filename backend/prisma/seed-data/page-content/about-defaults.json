@@ -1,0 +1,95 @@
+{
+  "seo": {
+    "title": "About Us",
+    "description": ""
+  },
+  "hero": {
+    "title": "Built by a community.",
+    "subtitle": "We plan trips the way we'd want to travel — unhurried, honest, and a little off the usual path.",
+    "image": "/images/hero/hero-3.jpeg",
+    "imageAlt": "Sunrise turning the Everest summits gold"
+  },
+  "story": {
+    "label": "Who we are",
+    "heading": "Trekking the Himalayas,",
+    "headingAccent": "joyfully.",
+    "body": "<p>Joyful Trekking Pvt. Ltd. is a leading outbound and inbound tour and trekking company based in Kathmandu. We organize outbound tours to Tibet and Bhutan, alongside trekking and expedition trips through the Mount Everest region, Sagarmatha National Park, the Annapurna and Langtang regions, and Nepal's restricted areas.</p><p>We also arrange cultural tours, paragliding, and pilgrimage trips to explore Nepal's ancient heritage, always with an eye on ecological and environmental preservation. Sustainable, responsible tourism is the objective behind every Nepal, Tibet, and Bhutan package we run.</p>",
+    "collage": [
+      {
+        "image": "/images/hero/hero-2.jpeg",
+        "imageAlt": "Trekkers walking below Himalayan peaks and blooming rhododendrons"
+      },
+      {
+        "image": "/images/journey/climb.jpg",
+        "imageAlt": "A climber on a snow slope under a deep blue sky"
+      },
+      {
+        "image": "/images/gallery/everest-5.jpg",
+        "imageAlt": "The golden spire of Swayambhunath stupa with prayer flags"
+      }
+    ],
+    "stats": [
+      {
+        "value": "1992",
+        "label": "Guiding the Himalayas begins"
+      },
+      {
+        "value": "2010",
+        "label": "Joyful Trekking founded"
+      },
+      {
+        "value": "3",
+        "label": "Countries: Nepal, Tibet, Bhutan"
+      }
+    ],
+    "strip": [
+      {
+        "image": "/images/gallery/everest-1.jpg",
+        "imageAlt": "A trekker on a mountain path with snowy peaks behind"
+      },
+      {
+        "image": "/images/gallery/everest-2.jpg",
+        "imageAlt": "A trekker looking over a deep blue mountain lake"
+      },
+      {
+        "image": "/images/gallery/everest-3.jpg",
+        "imageAlt": "A group of trekkers walking toward the mountains"
+      },
+      {
+        "image": "/images/journey/trek.jpg",
+        "imageAlt": "Himalayan peaks above a rocky stream with prayer flags"
+      },
+      {
+        "image": "/images/trips/featured-annapurna-trek.jpg",
+        "imageAlt": "Annapurna peaks rising above the trail"
+      }
+    ]
+  },
+  "history": {
+    "title": "Our",
+    "titleAccent": "History",
+    "milestones": [
+      {
+        "year": "1992 – 2008",
+        "title": "Guiding the Himalayas",
+        "image": "/images/gallery/everest-4.jpg",
+        "imageAlt": "Two trekkers on a green mountain slope",
+        "body": "<p>Dambar Khadka, who would go on to found Joyful Trekking Pvt. Ltd., spent these years leading trekkers through the Himalayas as a guide for an established trekking company, building the on-the-ground experience in Nepal's trails, terrain, and local customs the company still runs on today.</p>"
+      },
+      {
+        "year": "2008 – 2010",
+        "title": "Working Independently",
+        "image": "/images/hero/hero-4.jpeg",
+        "imageAlt": "Ama Dablam rising above a ridge",
+        "body": "<p>He struck out on his own as a freelance guide, continuing to lead trips through Nepal while building the relationships and reputation that would soon become the foundation of his own company.</p>"
+      },
+      {
+        "year": "2010 – Present",
+        "title": "Founding Joyful Trekking Pvt. Ltd.",
+        "image": "/images/cta/gokyo-lake-yak-wide.jpg",
+        "imageAlt": "Gokyo lake and the Himalayas",
+        "body": "<p>Drawing on nearly two decades in the field, Dambar Khadka founded Joyful Trekking Pvt. Ltd. with a team of fellow field experts, turning that guiding and freelance experience into a company focused on the traveler's satisfaction.</p><p>The company built early partnerships with hotels including Yak &amp; Yeti, Annapurna, Shangri-La, and Malla, and grew its team of field staff and tour leaders. Starting from a small space with three countries as trip destinations, it has continued expanding its reach ever since.</p>"
+      }
+    ]
+  }
+}

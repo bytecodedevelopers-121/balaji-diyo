@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { Captcha, type CaptchaHandle } from "@/components/ui/Captcha/Captcha";
 import { countries } from "@/config/contact-form-options";
 import { isApiEnvelope } from "@/lib/api/api-response";
+import { toast } from "@/components/ui/Toast/toast";
 
 const emptyValues = { fullName: "", email: "", phone: "", country: "", message: "" };
 
@@ -54,6 +55,7 @@ export function ContactUsForm() {
       }
 
       setStatus("success");
+      toast.success("Thanks — your message has been sent. We'll get back to you soon.");
       setValues(emptyValues);
     } catch (error) {
       setStatus("error");
@@ -142,9 +144,6 @@ export function ContactUsForm() {
       </button>
 
       <div aria-live="polite">
-        {status === "success" ? (
-          <p className="text-[14px] font-medium text-success-800">Thanks — your message has been sent. We&apos;ll get back to you soon.</p>
-        ) : null}
         {status === "error" ? <p className="text-[14px] font-medium text-error-700">{errorMessage}</p> : null}
       </div>
     </form>

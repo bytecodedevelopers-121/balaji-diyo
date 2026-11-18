@@ -1,10 +1,14 @@
 import { Reveal } from "@/components/animation/Reveal";
 import { getCompanyDocuments } from "@/features/company-documents/api/get-company-documents";
 import type { CompanyDocument } from "@/features/company-documents/types/company-document.types";
+import { CmsProse } from "@/components/ui/CmsProse";
+import { LEGAL_DEFAULTS, type LegalContent } from "@/features/page-content/company-defaults";
 import { CompanyDocumentCard } from "./CompanyDocumentCard";
 
-/** Documents issued by an association, board or membership body go in the second group. */
+/** Older rows without a type are grouped by title: association, board or membership documents go in the second group. */
 const ASSOCIATION_PATTERN = /associat|membership|board|federation|union/i;
+const isAssociation = (document: CompanyDocument) =>
+  document.category ? document.category === "association" : ASSOCIATION_PATTERN.test(document.title);
 
 function DocumentGroup({ title, documents }: { title: string; documents: CompanyDocument[] }) {
   if (documents.length === 0) return null;
@@ -14,7 +18,7 @@ function DocumentGroup({ title, documents }: { title: string; documents: Company
       <h2 data-reveal="up" className="text-[22px] font-bold text-brand-neutral-1000">
         {title}
       </h2>
-      <ul className="mt-5 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
+      <ul className="mt-5 grid grid-cols-2 items-start gap-x-6 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
         {documents.map((document) => (
           <li key={document.id} data-reveal="up" className="flex flex-col gap-3">
             <CompanyDocumentCard document={document} />
@@ -38,34 +42,27 @@ function DocumentGroup({ title, documents }: { title: string; documents: Company
  * documents come from `GET /company-documents` (placeholders when the API has
  * none); clicking a scan opens it full size.
  */
-export async function CompanyDocumentsSection() {
+export async function CompanyDocumentsSection({ content = LEGAL_DEFAULTS }: { content?: Pick<LegalContent, "intro" | "groups"> } = {}) {
   const documents = await getCompanyDocuments();
-  const associations = documents.filter((document) => ASSOCIATION_PATTERN.test(document.title));
-  const legal = documents.filter((document) => !ASSOCIATION_PATTERN.test(document.title));
+  const associations = documents.filter(isAssociation);
+  const legal = documents.filter((document) => !isAssociation(document));
 
   return (
     <section className="bg-brand-neutral-000 px-4 pt-6 pb-16 min-[768px]:px-10 min-[1120px]:px-[72px]">
       <Reveal variant="auto">
         <div className="mx-auto w-full max-w-[1100px]">
           <h1 data-reveal="up" className="mt-2 font-display text-[clamp(30px,5vw,44px)] leading-tight font-bold text-brand-neutral-1000">
-            Legal Documents
+            {content.intro.title}
           </h1>
 
-          <p data-reveal="up" className="mt-5 max-w-[900px] text-[15px] leading-[1.8] text-brand-neutral-800">
-            <strong className="text-brand-neutral-1000">
-              Joyful Trekking Pvt. Ltd. is legally registered and accredited by the Government of Nepal
-            </strong>{" "}
-            under the Company Act of Nepal, and is licensed by the Department of Tourism (Ministry of Culture, Tourism and Civil Aviation,
-            Government of Nepal).
-          </p>
+          <CmsProse html={content.intro.body} className="mt-5 max-w-[900px] !text-[15px] !leading-[1.8] !text-brand-neutral-800" />
 
           <div data-reveal="up" className="mt-5 max-w-[900px] rounded-md border border-[#f4e0a6] bg-[#fffaeb] p-5 text-[14px] leading-[1.8] text-brand-neutral-900">
-            Joyful Trekking Pvt. Ltd. has fulfilled all the legal liabilities to operate a tourism business in Nepal, Tibet and Bhutan. So,
-            book your holiday with us without worry, you are in safe hands and can view our legal documents hereunder.
+            {content.intro.note}
           </div>
 
-          <DocumentGroup title="Legal Documents" documents={legal} />
-          <DocumentGroup title="Travel and Trade Associations" documents={associations} />
+          <DocumentGroup title={content.groups.legalTitle} documents={legal} />
+          <DocumentGroup title={content.groups.associationsTitle} documents={associations} />
         </div>
       </Reveal>
     </section>

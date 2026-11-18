@@ -1,0 +1,9 @@
+{
+  "content": {
+    "title": "Your Wishlist",
+    "emptyTitle": "No saved trips yet",
+    "emptyText": "Trips you save will appear here.",
+    "buttonLabel": "Explore trips",
+    "buttonHref": "/nepal-tour-packages"
+  }
+}

@@ -1,0 +1,1 @@
+export { CompanyProsePage } from "./CompanyProsePage";

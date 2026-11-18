@@ -53,6 +53,11 @@ export default function CompanyDocumentsPage() {
 
   const columns: DataTableColumn<CompanyDocument>[] = [
     { key: "title", header: "Title", render: (d) => <span className="font-medium text-gray-900">{d.title}</span> },
+    {
+      key: "category",
+      header: "Type",
+      render: (d) => <Badge label={d.category === "association" ? "Trade Association" : "Legal Document"} variant={d.category === "association" ? "blue" : "gray"} />,
+    },
     { key: "sortOrder", header: "Sort Order", render: (d) => d.sortOrder },
     {
       key: "isActive",

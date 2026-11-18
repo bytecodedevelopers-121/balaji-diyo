@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
+import { Select } from "@/components/ui/Select";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
@@ -15,6 +16,7 @@ const schema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
   imageUrl: z.string().optional(),
+  category: z.enum(["legal", "association"]),
   sortOrder: z.number().min(0).optional(),
   isActive: z.boolean(),
 });
@@ -42,6 +44,7 @@ export function CompanyDocumentForm({ defaultValues, onSubmit, isLoading, submit
       title: defaultValues?.title ?? "",
       description: defaultValues?.description ?? "",
       imageUrl: defaultValues?.imageUrl ?? "",
+      category: defaultValues?.category ?? "legal",
       sortOrder: defaultValues?.sortOrder ?? 0,
       isActive: defaultValues?.isActive ?? true,
     },
@@ -52,6 +55,7 @@ export function CompanyDocumentForm({ defaultValues, onSubmit, isLoading, submit
       title: values.title,
       description: values.description || undefined,
       imageUrl: values.imageUrl || undefined,
+      category: values.category,
       sortOrder: values.sortOrder,
       isActive: values.isActive,
     });
@@ -64,6 +68,17 @@ export function CompanyDocumentForm({ defaultValues, onSubmit, isLoading, submit
       <fieldset disabled={!isOnline} className="space-y-6">
         <FormSection title="Document" columns={2}>
           <Input label="Title" required error={errors.title?.message} {...register("title")} />
+          <Select
+            label="Document type"
+            required
+            hint="Decides which group of the website's Legal Documents page it appears in."
+            options={[
+              { value: "legal", label: "Legal Document" },
+              { value: "association", label: "Travel and Trade Association" },
+            ]}
+            error={errors.category?.message}
+            {...register("category")}
+          />
           <Input
             label="Sort Order"
             type="number"

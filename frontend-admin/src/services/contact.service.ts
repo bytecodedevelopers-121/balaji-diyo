@@ -7,6 +7,8 @@ export interface ContactListAdminParams {
   perPage?: number;
   search?: string;
   isRead?: boolean;
+  /** Comma-separated inquiry types. */
+  types?: string;
 }
 
 export const contactService = {

@@ -4,6 +4,7 @@ import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { countries, salutations } from "@/config/contact-form-options";
 import type { Trip } from "@/features/trips/types/trip.types";
 import { isApiEnvelope } from "@/lib/api/api-response";
+import { toast } from "@/components/ui/Toast/toast";
 
 interface CustomizeTripFormProps {
   packages: Trip[];
@@ -97,6 +98,7 @@ export function CustomizeTripForm({ packages }: CustomizeTripFormProps) {
       }
 
       setStatus("success");
+      toast.success("Thanks — your request has been sent. We'll get back to you soon.");
       setValues({
         packageId: "",
         salutation: salutations[0],
@@ -220,7 +222,6 @@ export function CustomizeTripForm({ packages }: CustomizeTripFormProps) {
             {status === "submitting" ? "Sending…" : "Submit"}
           </button>
           {packages.length === 0 ? <p className="font-poppins text-body-m text-error-700">No packages are currently available.</p> : null}
-          {status === "success" ? <p className="font-poppins text-body-m text-success-800">Thanks — your request has been sent. We&apos;ll get back to you soon.</p> : null}
           {status === "error" ? <p className="font-poppins text-body-m text-error-700">{errorMessage}</p> : null}
         </div>
       </form>

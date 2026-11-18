@@ -19,6 +19,7 @@ export class CompanyDocumentService {
   async findAll(dto: GetCompanyDocumentsDtoType) {
     const pagination = new PaginationQueryDto({ page: dto.page, perPage: dto.perPage });
     const where: Prisma.CompanyDocumentWhereInput = {
+      ...(dto.category ? { category: dto.category } : {}),
       deletedAt: null,
       ...(dto.isActive !== undefined ? { isActive: dto.isActive } : {}),
       ...(dto.search ? { title: { contains: dto.search, mode: 'insensitive' } } : {}),

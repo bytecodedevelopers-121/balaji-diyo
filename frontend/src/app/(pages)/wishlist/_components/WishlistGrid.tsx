@@ -4,21 +4,22 @@ import Link from "next/link";
 import { Heart } from "lucide-react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PackageCard } from "@/components/ui/PackageCard";
+import { WISHLIST_DEFAULTS, type WishlistContent } from "@/features/page-content/wishlist-defaults";
 import { toggleWishlist, useWishlist } from "@/features/wishlist/wishlist-store";
 
 /** Trips saved with the heart on a package page, as the same cards used across the site. */
-export function WishlistGrid() {
+export function WishlistGrid({ content = WISHLIST_DEFAULTS.content }: { content?: WishlistContent["content"] } = {}) {
   const items = useWishlist();
 
   if (items.length === 0) {
     return (
       <div className="mx-auto w-full max-w-3xl">
         <EmptyState
-          title="No saved trips yet"
-          description="Trips you save will appear here."
+          title={content.emptyTitle}
+          description={content.emptyText}
           action={
-            <Link href="/nepal-tour-packages" className="mt-2 font-semibold text-logo-navy underline">
-              Explore trips
+            <Link href={content.buttonHref} className="mt-2 font-semibold text-logo-navy underline">
+              {content.buttonLabel}
             </Link>
           }
         />

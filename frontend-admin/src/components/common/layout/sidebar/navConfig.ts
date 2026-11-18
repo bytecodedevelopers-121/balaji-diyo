@@ -30,6 +30,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { PATHS } from "@/constants/PATHS";
+import { INQUIRY_TYPES } from "@/constants/inquiryTypes";
 
 export type NavSection = "main" | "system";
 
@@ -41,6 +42,8 @@ export interface NavItem {
   permission?: string | null;
   /** Groups the item under a labeled section in the sidebar. Defaults to "main". */
   section?: NavSection;
+  /** Match the path exactly, so a parent-style link isn't highlighted on its sub-routes. */
+  end?: boolean;
   children?: Omit<NavItem, "icon" | "children">[];
 }
 
@@ -101,11 +104,15 @@ export const NAV_ITEMS: NavItem[] = [
     section: "main",
   },
   {
-    label: "Contact Messages",
-    path: PATHS.CONTACTS,
+    label: "Inquiries",
+    path: PATHS.INQUIRIES,
     icon: Mail,
     permission: "read:contact",
     section: "main",
+    children: [
+      { label: "All Inquiries", path: PATHS.INQUIRIES, permission: "read:contact", end: true },
+      ...INQUIRY_TYPES.map((t) => ({ label: t.label, path: `${PATHS.INQUIRIES}/${t.slug}`, permission: "read:contact" })),
+    ],
   },
   {
     label: "FAQs",
