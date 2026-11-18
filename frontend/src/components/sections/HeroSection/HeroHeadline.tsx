@@ -2,9 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-const LINE_ONE = "Live the Nepal";
-const LINE_TWO = "you’ve only dreamed of.";
-const TOTAL = LINE_ONE.length + LINE_TWO.length;
 
 const TYPE_MS = 65;
 /** How long the finished headline stays before it starts over. */
@@ -27,7 +24,15 @@ function Caret() {
  * is also kept for screen readers. With reduced motion it simply shows the whole
  * headline.
  */
-export function HeroHeadline() {
+interface HeroHeadlineProps {
+  lineOne: string;
+  lineTwo: string;
+  /** Visually hidden prefix kept for screen readers and search engines. */
+  prefix: string;
+}
+
+export function HeroHeadline({ lineOne: LINE_ONE, lineTwo: LINE_TWO, prefix }: HeroHeadlineProps) {
+  const TOTAL = LINE_ONE.length + LINE_TWO.length;
   const [typed, setTyped] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(false);
 
@@ -53,7 +58,7 @@ export function HeroHeadline() {
 
   return (
     <h1 className="font-playfair-display mt-8 text-[clamp(44px,8.5vw,92px)] leading-[1.08] font-bold">
-      <span className="sr-only">Nepal&apos;s Local Trekking Agency — {LINE_ONE} {LINE_TWO}</span>
+      <span className="sr-only">{prefix} — {LINE_ONE} {LINE_TWO}</span>
       <span aria-hidden="true" className="block">
         <span className="relative inline-block">
           <span className="invisible">{LINE_ONE}</span>

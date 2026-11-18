@@ -52,3 +52,7 @@ react-front/node_modules/
 
 # --- DB backups: local only ---
 /manpower_boundless_backup.dump
+
+# Database export + uploads archive for server migration (contain customer data)
+*.json.gz
+uploads.zip

@@ -1,0 +1,35 @@
+{
+  "newsletter": {
+    "title": "Get travel deals in your inbox",
+    "text": "Trek news, seasonal offers and new itineraries. No spam, unsubscribe anytime.",
+    "namePlaceholder": "Your name",
+    "emailPlaceholder": "Your email",
+    "buttonLabel": "Subscribe"
+  },
+  "columns": {
+    "companyHeading": "Company",
+    "usefulLinksHeading": "Useful Links"
+  },
+  "brand": {
+    "tagline": "Kathmandu, Pokhara and Everest, Nepal",
+    "openingHours": "10:00 AM to 5:00 PM (Sunday to Friday)",
+    "watermark": "",
+    "backgroundImage": "/images/footer/footer.webp"
+  },
+  "social": {
+    "heading": "Connect with us"
+  },
+  "payments": {
+    "heading": "We accept",
+    "image": "/images/footer/payment-methods.png",
+    "imageAlt": "Accepted payment methods: American Express, Mastercard, Visa, UnionPay, and Google Pay",
+    "href": "/online-payment"
+  },
+  "legal": {
+    "rightsText": "All rights reserved.",
+    "developedByLabel": "Developed By",
+    "developerName": "Bytecode Developers",
+    "developerUrl": "https://bytecodedevelopers.com/",
+    "registration": "Nepal Govt. Regd. No: 88177/068/069 | Tourism Regd. No: 1509"
+  }
+}

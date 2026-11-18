@@ -78,6 +78,8 @@ const CustomBookingsPage = lazy(() => import("@/pages/content/custom-bookings/Cu
 const PaymentsPage = lazy(() => import("@/pages/content/payments/PaymentsPage"));
 const MenuTypesPage = lazy(() => import("@/pages/content/menu-types/MenuTypesPage"));
 const MenuItemsPage = lazy(() => import("@/pages/content/menu-items/MenuItemsPage"));
+const PageContentPage = lazy(() => import("@/pages/content/page-content/PageContentPage"));
+const PageSectionsPage = lazy(() => import("@/pages/content/page-content/PageSectionsPage"));
 const GlobalSettingsPage = lazy(() => import("@/pages/content/global-settings/GlobalSettingsPage"));
 const RedirectsPage = lazy(() => import("@/pages/content/redirects/RedirectsPage"));
 const ActivityLogsPage = lazy(() => import("@/pages/content/activity-logs/ActivityLogsPage"));
@@ -294,6 +296,13 @@ export const router = createBrowserRouter([
                 children: [
                   { path: "menu-types", element: withSuspense(<MenuTypesPage />) },
                   { path: "menu-items/:typeId", element: withSuspense(<MenuItemsPage />) },
+                ],
+              },
+              {
+                element: <PermissionRoute permission="read:settings" />,
+                children: [
+                  { path: "page-content", element: withSuspense(<PageContentPage />) },
+                  { path: "page-content/:pageKey", element: withSuspense(<PageSectionsPage />) },
                 ],
               },
               {

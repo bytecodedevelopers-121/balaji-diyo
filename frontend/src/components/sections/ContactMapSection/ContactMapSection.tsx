@@ -1,4 +1,5 @@
 import { footerOffices } from "@/config/navigation";
+import { CONTACT_DEFAULTS, type ContactContent } from "@/features/page-content/contact-defaults";
 
 /**
  * Map strip between ContactSection and CtaSection (design-references/
@@ -13,9 +14,9 @@ import { footerOffices } from "@/config/navigation";
  * same visual spot, and needs no API key (the classic `output=embed`
  * query form, not the newer keyed Maps Embed API).
  */
-export function ContactMapSection() {
+export function ContactMapSection({ content = CONTACT_DEFAULTS.map }: { content?: ContactContent["map"] } = {}) {
   const nepalOffice = footerOffices[0]!;
-  const query = encodeURIComponent(`Joyful Trekking Pvt. Ltd., ${nepalOffice.address ?? ""}`);
+  const query = encodeURIComponent(content.searchText || `Joyful Trekking Pvt. Ltd., ${nepalOffice.address ?? ""}`);
   const mapsSearchUrl = `https://www.google.com/maps/search/?api=1&query=${query}`;
 
   return (
@@ -26,7 +27,7 @@ export function ContactMapSection() {
         rel="noreferrer"
         className="absolute top-4 left-4 z-10 flex items-center gap-1.5 bg-brand-neutral-000 px-3 py-2 font-poppins text-[14px] leading-[22.4px] font-medium text-primary-500 shadow-card-soft transition-opacity hover:opacity-90"
       >
-        Open in Maps
+        {content.buttonLabel}
         <ExternalLinkIcon className="size-3.5" />
       </a>
       <iframe

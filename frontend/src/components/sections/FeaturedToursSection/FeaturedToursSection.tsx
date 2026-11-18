@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Mountain } from "lucide-react";
 import type { CardTrip } from "@/components/ui/PackageCard";
 import { FeaturedTripCard } from "./FeaturedTripCard";
+import { HOME_DEFAULTS, type FeaturedToursContent } from "@/features/page-content/home-defaults";
 import { getFeaturedTrips } from "@/features/trips/api/get-trips";
 
 /**
@@ -10,7 +11,6 @@ import { getFeaturedTrips } from "@/features/trips/api/get-trips";
  * nothing when there are no trips, so an empty or unreachable API never
  * leaves a bare heading.
  */
-const TOURS_PAGE = "/nepal-tour-packages";
 
 
 /** Desktop scatter positions around the centred heading: left %, top px, tilt deg. */
@@ -27,8 +27,8 @@ const SLOTS = [
   { x: 82.2, y: 575, r: 8 },
 ]
 
-export async function FeaturedToursSection() {
-  const trips: CardTrip[] = await getFeaturedTrips(10).catch(() => []);
+export async function FeaturedToursSection({ content = HOME_DEFAULTS.featuredTours }: { content?: FeaturedToursContent }) {
+  const trips: CardTrip[] = await getFeaturedTrips(content.maxCards).catch(() => []);
   if (trips.length === 0) return null;
 
   return (
@@ -38,23 +38,23 @@ export async function FeaturedToursSection() {
           <div className="pointer-events-auto flex w-full max-w-[420px] flex-col items-center text-center">
             <p className="mb-4 inline-flex items-center gap-2 rounded-pill border border-logo-sun/50 bg-logo-sun/10 px-4 py-1.5 text-[11px] font-semibold tracking-[0.14em] text-logo-navy uppercase">
               <Mountain aria-hidden="true" className="size-3.5" />
-              Featured Trips
+              {content.badge}
               <span aria-hidden="true">/</span>
               {trips.length} Handpicked
             </p>
             <h2 className="font-playfair-display text-[clamp(28px,6vw,44px)] leading-[1.1] font-bold text-logo-navy-dark">
-              10 Best Tours &amp;
-              <span className="block text-logo-sun italic">Holidays for 2026</span>
+              {content.titleLine1}
+              <span className="block text-logo-sun italic">{content.titleLine2}</span>
             </h2>
             <p className="mt-4 max-w-[340px] text-body-s text-brand-neutral-800">
-              Handcrafted Himalayan adventures — treks, tours, safaris and scenic escapes, all led by local experts.
+              {content.description}
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
               <Link
-                href={TOURS_PAGE}
+                href={content.buttonHref}
                 className="inline-flex items-center gap-2 rounded-pill border border-logo-sun bg-brand-neutral-000 px-5 py-2 text-body-s font-semibold text-logo-navy shadow-sm transition-colors hover:bg-logo-sun"
               >
-                View All Tours
+                {content.buttonLabel}
                 <ArrowRight aria-hidden="true" className="size-4" />
               </Link>
             </div>

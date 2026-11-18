@@ -1,0 +1,41 @@
+{
+  "contact": {
+    "address": "Thamel, Kathmandu, Nepal",
+    "email": "joyfultrekking@gmail.com",
+    "phone": "+977 14701884",
+    "secondaryPhone": "+977 14701885",
+    "mobile": "+977 9845000000"
+  },
+  "social": {
+    "links": [
+      {
+        "label": "Facebook",
+        "href": "https://facebook.com/"
+      },
+      {
+        "label": "X",
+        "href": "https://x.com/"
+      },
+      {
+        "label": "Instagram",
+        "href": "https://instagram.com/"
+      },
+      {
+        "label": "LinkedIn",
+        "href": "https://linkedin.com/"
+      },
+      {
+        "label": "YouTube",
+        "href": "https://youtube.com/"
+      },
+      {
+        "label": "Pinterest",
+        "href": "https://pinterest.com/"
+      },
+      {
+        "label": "TikTok",
+        "href": "https://tiktok.com/"
+      }
+    ]
+  }
+}

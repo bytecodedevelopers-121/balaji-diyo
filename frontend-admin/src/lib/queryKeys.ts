@@ -271,4 +271,9 @@ export const queryKeys = {
     list: (params?: object) => ["activity-logs", "list", params] as const,
     detail: (id: string) => ["activity-logs", id] as const,
   },
+
+  // page-content CMS (sections of public pages)
+  pageSections: {
+    page: (pageKey: string) => ["page-sections", pageKey] as const,
+  },
 };

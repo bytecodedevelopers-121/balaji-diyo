@@ -1,0 +1,132 @@
+{
+  "hero": {
+    "badge": "Namaste & welcome to Nepal",
+    "headlineLine1": "Live the Nepal",
+    "headlineLine2": "you’ve only dreamed of.",
+    "headlinePrefix": "Nepal's Local Trekking Agency",
+    "description": "Created for travellers who don’t just visit the Himalayas, they feel them. Prayer flags at 5,000 m, rhinos at dawn, lakes the colour of sky. Guided by born-here locals since 2011.",
+    "categories": [
+      { "label": "Trekking and Hiking", "sub": "Himalayan treks", "href": "/trekking-routes-in-nepal", "image": "/images/nav/trekking-and-hiking.jpg", "countSlug": "" },
+      { "label": "Climbing and Expedition", "sub": "Summit expeditions", "href": "/nepal-peak-climbing", "image": "/images/nav/climbing-and-expedition.jpg", "countSlug": "nepal-peak-climbing" },
+      { "label": "Jungle and Wildlife Safari", "sub": "Chitwan and Bardia", "href": "/nepal-tour-packages", "image": "/images/nav/jungle-safari.jpg", "countSlug": "" },
+      { "label": "Nepal Tours and Holidays", "sub": "Culture and sightseeing", "href": "/nepal-tour-packages", "image": "/images/nav/nepal-tours.webp", "countSlug": "nepal-tour-packages" },
+      { "label": "Day Tours and Activities", "sub": "Short getaways", "href": "/nepal-day-tours", "image": "/images/nav/day-tours.webp", "countSlug": "" },
+      { "label": "Deals and Discounts", "sub": "Last minute offers", "href": "/last-minute-trip-deals", "image": "", "countSlug": "" }
+    ],
+    "places": [
+      { "name": "Everest Base Camp" },
+      { "name": "Annapurna Circuit" },
+      { "name": "Poon Hill" },
+      { "name": "Chitwan" },
+      { "name": "Lumbini" },
+      { "name": "Upper Mustang" },
+      { "name": "Nagarkot" },
+      { "name": "Langtang" },
+      { "name": "Phewa" },
+      { "name": "Pokhara" }
+    ]
+  },
+  "bestSellers": {
+    "eyebrow": "Best Sellers",
+    "title": "10 Best Treks – Offered for 2026",
+    "buttonLabel": "View All Treks",
+    "buttonHref": "/trekking-routes-in-nepal",
+    "maxCards": 8
+  },
+  "upcomingTrips": {
+    "eyebrow": "Last Minute Deals",
+    "title": "Join Upcoming Trips",
+    "buttonLabel": "View All Departures",
+    "buttonHref": "/last-minute-trip-deals",
+    "maxRows": 4,
+    "noteTitle": "Solo Travelers!",
+    "noteBody": "A solo traveller will be paired with another traveller when booking through Last Minute Booking. Please add the Single Supplement Fee while booking to secure a single private room."
+  },
+  "featuredTours": {
+    "badge": "Featured Trips",
+    "titleLine1": "10 Best Tours &",
+    "titleLine2": "Holidays for 2026",
+    "description": "Handcrafted Himalayan adventures — treks, tours, safaris and scenic escapes, all led by local experts.",
+    "buttonLabel": "View All Tours",
+    "buttonHref": "/nepal-tour-packages",
+    "maxCards": 10
+  },
+  "exploreNepal": {
+    "eyebrow": "We make your travel dreams come true,",
+    "title": "Explore Nepal with Joyful Trekking Pvt. Ltd.",
+    "bodyHtml": "<p><strong>Joyful Trekking Pvt. Ltd.</strong>, known simply as <strong>Joyful Trekking</strong>, is an independent, Kathmandu-based trekking, tour and travel company with <strong>over 20 years of experience</strong> in Nepal's tourism and hospitality industry. We specialize in trekking, hiking, tours, holidays, jungle safaris and climbing adventures across the Nepal Himalayas, and extend our travel services to Bhutan and Tibet.</p><p>Our best-selling holiday packages include the <strong>Everest Base Camp, Annapurna Base Camp, Manaslu Circuit, Langtang Valley, Annapurna Circuit, Kathmandu Tour, Pokhara Tour, Spirit of Nepal, Chitwan Safari</strong> and the <strong>Nepal Bhutan Tour</strong>.</p>",
+    "buttonLabel": "Know More",
+    "buttonHref": "/company/about-us",
+    "whyTitle": "Why Choose Us?",
+    "whyItems": [
+      { "title": "20+ Years Experienced Team", "body": "Our guides and trip planners have spent over two decades on the trails and in the villages of Nepal, so every itinerary is built on first-hand knowledge." },
+      { "title": "Registered and Authorized", "body": "Joyful Trekking Pvt. Ltd. is a government-registered and authorized trekking and travel company, fully licensed to operate in Nepal." },
+      { "title": "Happy Clients and Repeated Customers", "body": "Travelers from around the world trust us, and many return year after year for their next trek, tour or climb." },
+      { "title": "Use of Local Products", "body": "We stay in local lodges, eat local food and hire local porters and guides, so your trip supports the communities you walk through." }
+    ],
+    "backgroundImage": "/images/why-choose-us/choose-us.jpg"
+  },
+  "clientReviews": {
+    "badge": "Joyful Trekking Reviews",
+    "titleLine1": "What Our Clients",
+    "titleLine2": "Say?",
+    "platforms": [
+      { "name": "Tripadvisor", "meta": "287 reviews" },
+      { "name": "Google Reviews", "meta": "111 reviews" },
+      { "name": "Trustpilot", "meta": "79 reviews" }
+    ],
+    "buttonLabel": "Read All Reviews",
+    "buttonHref": "/reviews",
+    "maxCards": 3
+  },
+  "webStories": {
+    "eyebrow": "Inspiration and Tips",
+    "title": "Travel Web Stories",
+    "buttonLabel": "View All Stories",
+    "buttonHref": "/travel-web-stories",
+    "maxCards": 4
+  },
+  "faqGuided": {
+    "faqEyebrow": "Top FAQs",
+    "faqTitle": "Joyful Travel Queries",
+    "faqs": [
+      { "q": "What is Joyful Trekking Pvt. Ltd.?", "a": "Joyful Trekking Pvt. Ltd. is a Kathmandu-based trekking, tour and travel company offering treks, peak climbs, tours and safaris across Nepal, Bhutan and Tibet." },
+      { "q": "Where is Joyful Trekking Pvt. Ltd. located?", "a": "Our main office is in Kathmandu, Nepal. See the contact page for the full address and map." },
+      { "q": "What is the best time to travel to Nepal?", "a": "Spring (March to May) and autumn (September to November) offer the clearest views and the most stable weather for trekking." },
+      { "q": "How to get a Nepal tourist visa?", "a": "Most nationalities can get a visa on arrival at Kathmandu airport or apply online in advance. We can guide you through the steps." }
+    ],
+    "faqButtonLabel": "More FAQs",
+    "faqButtonHref": "/contact",
+    "guidedEyebrow": "Explore with Locals",
+    "guidedTitle": "Why Guided Travel?",
+    "points": [
+      { "title": "Know the destinations", "body": "We provide local expert guides on our trekking and tour holidays who interpret the destination, people, culture, lifestyle, history, geography and much more. No one can interpret the destination better than the locals." },
+      { "title": "Peace of mind", "body": "We arrange all the related travel services for your holidays from arrival to departure, including airport transfer, hotel booking, transport, domestic flights, guides, tours, porters, permits and entrance fees. You enjoy your holiday with peace of mind." },
+      { "title": "Travel safety", "body": "Adventure trekking holidays involve traveling into the high Himalayas, and it is risky to travel alone without a guide. You are safe when you are on our guided holidays." },
+      { "title": "Support local economy", "body": "Nepal has been facing unemployment problems, and tourism is a fast-growing industry that can offer job opportunities to many locals, including porters, guides, drivers and organizers. Taking guided holidays means you support the local economy." }
+    ]
+  },
+  "travelNews": {
+    "eyebrow": "Our Latest Blogs",
+    "title": "Travel News & Articles",
+    "buttonLabel": "Read All Blogs",
+    "buttonHref": "/blog",
+    "maxCards": 3
+  },
+  "associatedWith": {
+    "title": "We're Associated With",
+    "partners": [
+      { "name": "Nepal Government", "src": "/images/associate/nepal-goverment-logo.svg" },
+      { "name": "Nepal Mountaineering Association", "src": "/images/associate/nma-logo.svg" },
+      { "name": "Nepal Tourism Board", "src": "/images/associate/ntb-logo.svg" },
+      { "name": "Trekking Agencies' Association of Nepal (TAAN)", "src": "/images/associate/taan-logo.svg" },
+      { "name": "Kathmandu Environmental Education Project (KEEP)", "src": "/images/associate/keep-logo.svg" }
+    ]
+  },
+  "cta": {
+    "title": "Ready for the Himalaya Holidays?",
+    "description": "Let us know when and where you want to spend your next holiday in Nepal, Bhutan, and Tibet. Locals know more than anyone about the destinations. Let's plan your next travel with Joyful Trekking Pvt. Ltd.",
+    "buttonLabel": "Plan Your Trip Now",
+    "buttonHref": "/plan-your-trip"
+  }
+}

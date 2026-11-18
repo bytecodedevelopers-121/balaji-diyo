@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Tag, type LucideIcon } from "lucide-react";
+import { Tag } from "lucide-react";
 import { FillImage } from "@/components/ui/FillImage";
-import { TRIP_CATEGORIES } from "@/config/trip-categories";
+import type { HeroContent } from "@/features/page-content/home-defaults";
+import { HOME_DEFAULTS } from "@/features/page-content/home-defaults";
 import { getCategoryPackageCount } from "@/features/trips/api/get-category-by-slug";
 import { HeroHeadline } from "./HeroHeadline";
 import { HeroSearchButton } from "./HeroSearchButton";
@@ -17,48 +18,13 @@ import { HeroVideo } from "./HeroVideo";
  * hidden prefix so screen readers and search engines still get
  * "Nepal's Local Trekking Agency".
  */
-// Label and link come from the shared category list (also the Destinations menu's filters);
-// each card only adds its subtitle and artwork here.
-const [TREKKING, CLIMBING, SAFARI, TOURS, DAY, DEALS] = TRIP_CATEGORIES;
-interface HeroCategory {
-  key: string;
-  label: string;
-  href: string;
-  sub: string;
-  countSlug?: string;
-  image?: string;
-  Icon?: LucideIcon;
-}
-
-const CATEGORIES: HeroCategory[] = [
-  { ...TREKKING, sub: "Himalayan treks", image: "/images/nav/trekking-and-hiking.jpg" },
-  { ...CLIMBING, sub: "Summit expeditions", countSlug: "nepal-peak-climbing", image: "/images/nav/climbing-and-expedition.jpg" },
-  // No dedicated jungle-safari / day-tour pages exist yet — both point at
-  // the general tour packages listing.
-  { ...SAFARI, sub: "Chitwan and Bardia", image: "/images/nav/jungle-safari.jpg" },
-  { ...TOURS, sub: "Culture and sightseeing", countSlug: "nepal-tour-packages", image: "/images/nav/nepal-tours.webp" },
-  { ...DAY, sub: "Short getaways", image: "/images/nav/day-tours.webp" },
-  { ...DEALS, sub: "Last minute offers", Icon: Tag },
-];
-
-const PLACES = [
-  "Everest Base Camp",
-  "Annapurna Circuit",
-  "Poon Hill",
-  "Chitwan",
-  "Lumbini",
-  "Upper Mustang",
-  "Nagarkot",
-  "Langtang",
-  "Phewa",
-  "Pokhara",
-];
-
-export async function HeroSection() {
+export async function HeroSection({ content = HOME_DEFAULTS.hero }: { content?: HeroContent } = {}) {
+  const CATEGORIES = content.categories;
+  const PLACES = content.places.map((p) => p.name);
   // Real package counts where a category slug exists; others keep their
   // short subtitle. Failures resolve to null, so the hero never errors.
   const counts = await Promise.all(
-    CATEGORIES.map((c) => ("countSlug" in c && c.countSlug ? getCategoryPackageCount(c.countSlug) : null)),
+    CATEGORIES.map((c) => (c.countSlug ? getCategoryPackageCount(c.countSlug) : null)),
   );
   return (
     <section id="home-hero" className="relative isolate flex min-h-[100dvh] w-full flex-col overflow-hidden bg-[#064a70] text-white">
@@ -80,14 +46,13 @@ export async function HeroSection() {
           <span aria-hidden="true" className="text-logo-sun">
             ✦
           </span>
-          Namaste &amp; welcome to Nepal
+          {content.badge}
         </p>
 
-        <HeroHeadline />
+        <HeroHeadline lineOne={content.headlineLine1} lineTwo={content.headlineLine2} prefix={content.headlinePrefix} />
 
         <p className="mt-8 max-w-[560px] text-[15px] leading-[1.85] text-white/90 min-[768px]:text-[16px]">
-          Created for travellers who don&rsquo;t just visit the Himalayas, they feel them. Prayer flags at 5,000 m,
-          rhinos at dawn, lakes the colour of sky. Guided by born-here locals since 2011.
+          {content.description}
         </p>
 
         <div data-hero="pill" className="mt-9 w-full max-w-[600px]">
@@ -95,7 +60,7 @@ export async function HeroSection() {
         </div>
 
         <ul className="mt-16 flex w-full max-w-[1180px] gap-3 overflow-x-auto px-1 pb-6 [scrollbar-width:none] min-[768px]:justify-center [&::-webkit-scrollbar]:hidden">
-          {CATEGORIES.map(({ label, sub, href, image, Icon }, index) => (
+          {CATEGORIES.map(({ label, sub, href, image }, index) => (
             <li key={label} data-hero="card" className="shrink-0">
               <Link
                 href={href}
@@ -111,13 +76,13 @@ export async function HeroSection() {
                       sizes="176px"
                     />
                   </span>
-                ) : Icon ? (
-                  <Icon
+                ) : (
+                  <Tag
                     aria-hidden="true"
                     className="size-9 text-logo-navy transition-colors group-hover:text-logo-green md:size-12"
                     strokeWidth={1.25}
                   />
-                ) : null}
+                )}
                 <span>
                   <span className="block text-body-m leading-snug font-semibold text-brand-neutral-800 transition-colors group-hover:text-logo-navy-dark group-focus-visible:text-logo-navy-dark md:text-[17px]">
                     {label}

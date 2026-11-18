@@ -11,6 +11,7 @@ import { socialLinks as staticSocialLinks, type SocialLink } from "@/config/soci
 import { MailIcon, PhoneIcon, PinIcon, SocialIcon } from "@/components/ui/ContactIcons";
 import { Logo } from "@/components/ui/Logo";
 import { WhatsAppGlyph } from "@/components/ui/WhatsAppButton";
+import { FOOTER_DEFAULTS, type FooterContent } from "@/features/page-content/footer-defaults";
 import { toTelHref } from "@/features/site-settings/lib/to-tel-href";
 import type { SiteSettings } from "@/features/site-settings/types/site-settings.types";
 
@@ -37,6 +38,8 @@ interface FooterProps {
   socialLinks?: SocialLink[];
   /** Admin-managed Nepal office details from Global Settings. */
   siteSettings?: SiteSettings;
+  /** Editable footer copy (admin → Page Content → Footer); defaults to the built-in text. */
+  content?: FooterContent;
 }
 
 interface ContactItem {
@@ -76,9 +79,10 @@ export function Footer({
   siteName = siteConfig.name,
   socialLinks = staticSocialLinks,
   siteSettings,
+  content = FOOTER_DEFAULTS,
 }: FooterProps) {
   const year = new Date().getFullYear();
-  const brandName = siteName.replace(/\s+pvt\.?\s*ltd\.?$/i, "");
+  const brandName = content.brand.watermark || siteName.replace(/\s+pvt\.?\s*ltd\.?$/i, "");
   const office = footerOffices[0]!;
 
   const address = siteSettings?.address || office.address;
@@ -104,7 +108,7 @@ export function Footer({
           external: true,
         }
       : null,
-    { key: "hours", Icon: Clock, text: "10:00 AM to 5:00 PM (Sunday to Friday)" },
+    { key: "hours", Icon: Clock, text: content.brand.openingHours },
   ];
   const contactItems = contactEntries.filter((item): item is ContactItem => item !== null);
 
@@ -116,7 +120,7 @@ export function Footer({
       {/* Panoramic trail photo (sun, peaks, pines, river, meadow, trekkers) pinned to the bottom of the footer at full width and faded into the page colour above. */}
       {/* eslint-disable-next-line @next/next/no-img-element -- static decorative photo */}
       <img
-        src="/images/footer/footer.webp"
+        src={content.brand.backgroundImage}
         alt=""
         aria-hidden="true"
         loading="lazy"
@@ -131,25 +135,25 @@ export function Footer({
       <div className="relative z-10 mx-auto w-full max-w-[1100px] px-4 pt-14 sm:px-6 min-[1120px]:px-0">
         <section className="flex flex-col gap-6 rounded-[28px] border border-[#efe6da] bg-white/60 px-6 py-8 sm:px-8 min-[900px]:flex-row min-[900px]:items-center min-[900px]:justify-between">
           <div className="max-w-[340px]">
-            <h2 className="text-[22px] leading-tight font-bold text-logo-navy-dark">Get travel deals in your inbox</h2>
+            <h2 className="text-[22px] leading-tight font-bold text-logo-navy-dark">{content.newsletter.title}</h2>
             <p className="mt-2 text-[13px] text-brand-neutral-800">
-              Trek news, seasonal offers and new itineraries. No spam, unsubscribe anytime.
+              {content.newsletter.text}
             </p>
           </div>
           <form className="flex flex-1 flex-col gap-3 sm:flex-row min-[900px]:max-w-[600px]">
             <label className="sr-only" htmlFor="newsletter-name">
               Your name
             </label>
-            <input id="newsletter-name" type="text" placeholder="Your name" autoComplete="name" className={INPUT_CLASS} />
+            <input id="newsletter-name" type="text" placeholder={content.newsletter.namePlaceholder} autoComplete="name" className={INPUT_CLASS} />
             <label className="sr-only" htmlFor="newsletter-email">
               Your email address
             </label>
-            <input id="newsletter-email" type="email" placeholder="Your email" autoComplete="email" className={INPUT_CLASS} />
+            <input id="newsletter-email" type="email" placeholder={content.newsletter.emailPlaceholder} autoComplete="email" className={INPUT_CLASS} />
             <button
               type="submit"
               className="h-10 shrink-0 rounded-[10px] bg-logo-sun px-6 text-[13px] font-bold text-logo-navy-dark transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-logo-navy"
             >
-              Subscribe
+              {content.newsletter.buttonLabel}
             </button>
           </form>
         </section>
@@ -157,7 +161,7 @@ export function Footer({
         <div className="mt-12 grid gap-10 pb-12 min-[768px]:grid-cols-2 min-[1120px]:grid-cols-[1.45fr_0.8fr_1.5fr]">
           {companyColumn ? (
             <div>
-              <p className={HEADING_CLASS}>Company</p>
+              <p className={HEADING_CLASS}>{content.columns.companyHeading}</p>
               <div className="mt-6">
                 <LinkList links={companyColumn.links} />
               </div>
@@ -166,7 +170,7 @@ export function Footer({
 
           {usefulColumns.length > 0 ? (
             <div>
-              <p className={HEADING_CLASS}>Useful Links</p>
+              <p className={HEADING_CLASS}>{content.columns.usefulLinksHeading}</p>
               <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
                 {usefulColumns.map((column) => (
                   <LinkList key={column.title} links={column.links} />
@@ -182,7 +186,7 @@ export function Footer({
               </span>
               <span className="text-[14px] leading-tight font-bold text-logo-navy-dark">
                 {siteName}
-                <span className="block text-[11px] font-normal text-logo-navy">Kathmandu, Pokhara and Everest, Nepal</span>
+                <span className="block text-[11px] font-normal text-logo-navy">{content.brand.tagline}</span>
               </span>
             </Link>
             <ul className="mt-6 flex flex-col gap-4 text-[13px] text-brand-neutral-900">
@@ -211,7 +215,7 @@ export function Footer({
 
         <div className="flex flex-col gap-6 border-t border-[#e7dfd2] pt-7 min-[640px]:flex-row min-[640px]:items-end min-[640px]:justify-between">
           <nav aria-label="Social">
-            <p className="text-[12px] font-semibold text-brand-neutral-800">Connect with us</p>
+            <p className="text-[12px] font-semibold text-brand-neutral-800">{content.social.heading}</p>
             <ul className="mt-3 flex flex-wrap gap-2.5">
               {socialLinks.map((link) => (
                 <li key={link.href}>
@@ -230,16 +234,16 @@ export function Footer({
           </nav>
 
           <div>
-            <p className="text-[12px] font-semibold text-brand-neutral-800 min-[640px]:text-right">We accept</p>
+            <p className="text-[12px] font-semibold text-brand-neutral-800 min-[640px]:text-right">{content.payments.heading}</p>
             <Link
-              href="/online-payment"
+              href={content.payments.href}
               aria-label="Make a secure payment"
               className="mt-3 block w-fit transition-opacity hover:opacity-80"
             >
               {/* eslint-disable-next-line @next/next/no-img-element -- static payment marks */}
               <img
-                src="/images/footer/payment-methods.png"
-                alt="Accepted payment methods: American Express, Mastercard, Visa, UnionPay, and Google Pay"
+                src={content.payments.image}
+                alt={content.payments.imageAlt}
                 loading="lazy"
                 className="h-7 w-auto"
               />
@@ -249,17 +253,17 @@ export function Footer({
 
         <div className="mt-6 flex flex-col gap-2 border-t border-[#e7dfd2] pt-5 text-[11px] text-logo-navy min-[768px]:flex-row min-[768px]:justify-between">
           <p>
-            &copy; {year} {siteName}. All rights reserved. Developed By{" "}
+            &copy; {year} {siteName}. {content.legal.rightsText} {content.legal.developedByLabel}{" "}
             <a
-              href="https://bytecodedevelopers.com/"
+              href={content.legal.developerUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="font-semibold underline-offset-2 hover:text-logo-navy-dark hover:underline focus-visible:outline-2 focus-visible:outline-logo-sun"
             >
-              Bytecode Developers
+              {content.legal.developerName}
             </a>
           </p>
-          <p>Nepal Govt. Regd. No: 88177/068/069 | Tourism Regd. No: 1509</p>
+          <p>{content.legal.registration}</p>
         </div>
       </div>
 

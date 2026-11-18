@@ -1,0 +1,36 @@
+{
+  "seo": {
+    "title": "Contact Us",
+    "description": "Have questions or need assistance? Contact Joyful Trekking: address, phone, WhatsApp, email, opening hours and our enquiry form."
+  },
+  "intro": {
+    "title": "Contact Us",
+    "subtitle": "Have questions or need assistance? Contact us today!",
+    "openedTitle": "We are Opened",
+    "openedItems": [
+      { "text": "Sunday to Friday (10:00 AM to 5:00 PM)" }
+    ],
+    "salesTitle": "Sales and Operation",
+    "salesNote": "(24/7)"
+  },
+  "details": {
+    "companyName": "",
+    "addressLabel": "Address",
+    "phoneLabel": "Phone",
+    "mobileLabel": "Mobile/WhatsApp/Viber",
+    "emailLabel": "Email",
+    "hoursLabel": "Opening Hours",
+    "hoursText": "10:00 AM to 5:00 PM (Sunday to Friday)"
+  },
+  "map": {
+    "title": "Our Location",
+    "buttonLabel": "Open in Maps",
+    "searchText": ""
+  },
+  "cta": {
+    "title": "Ready for the Himalaya Holidays?",
+    "description": "Let us know when and where you want to spend your next holiday in Nepal, Bhutan, and Tibet. Locals know more than anyone about the destinations. Let's plan your next travel with Joyful Trekking Pvt. Ltd.",
+    "buttonLabel": "Plan Your Trip Now",
+    "buttonHref": "/plan-your-trip"
+  }
+}

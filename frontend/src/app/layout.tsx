@@ -7,6 +7,8 @@ import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { ScrollToTopButton } from "@/components/ui/ScrollToTopButton";
 import { getFooterNavData } from "@/features/navigation/lib/build-navigation";
+import { getPageSections, resolveSection } from "@/features/page-content/api";
+import { FOOTER_DEFAULTS, type FooterContent } from "@/features/page-content/footer-defaults";
 import { getSiteSettings } from "@/features/site-settings/api/get-site-settings";
 import { siteConfig } from "@/config/site";
 import { publicEnv } from "@/lib/env";
@@ -52,10 +54,19 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   // Independent requests — run in parallel instead of one-after-another so
   // this layout (rendered on every route) doesn't serialize two API round
   // trips before it can return any HTML.
-  const [{ footerColumns }, settings] = await Promise.all([
+  const [{ footerColumns }, settings, footerSections] = await Promise.all([
     getFooterNavData(),
     getSiteSettings(),
+    getPageSections("footer"),
   ]);
+  const footerContent: FooterContent = {
+    newsletter: resolveSection(footerSections, "newsletter", FOOTER_DEFAULTS.newsletter).content,
+    columns: resolveSection(footerSections, "columns", FOOTER_DEFAULTS.columns).content,
+    brand: resolveSection(footerSections, "brand", FOOTER_DEFAULTS.brand).content,
+    social: resolveSection(footerSections, "social", FOOTER_DEFAULTS.social).content,
+    payments: resolveSection(footerSections, "payments", FOOTER_DEFAULTS.payments).content,
+    legal: resolveSection(footerSections, "legal", FOOTER_DEFAULTS.legal).content,
+  };
 
   return (
     <html
@@ -112,6 +123,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           siteName={settings.companyName}
           socialLinks={settings.socialLinks}
           siteSettings={settings}
+          content={footerContent}
         />
         {/* Was mounted per-page (BookingTermsSection, WhyBoundlessSection,
             BlogDetailSection each carried their own copy) — moved here

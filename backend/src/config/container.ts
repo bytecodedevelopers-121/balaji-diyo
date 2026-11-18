@@ -112,6 +112,9 @@ import { MenuItemController } from '../modules/menu-item/menu-item.controller';
 import { GlobalCategoryRepository } from '../modules/global-category/global-category.repository';
 import { GlobalCategoryService } from '../modules/global-category/global-category.service';
 import { GlobalCategoryController } from '../modules/global-category/global-category.controller';
+import { PageSectionRepository } from '../modules/page-section/page-section.repository';
+import { PageSectionService } from '../modules/page-section/page-section.service';
+import { PageSectionController } from '../modules/page-section/page-section.controller';
 import { GlobalSettingRepository } from '../modules/global-setting/global-setting.repository';
 import { GlobalSettingService } from '../modules/global-setting/global-setting.service';
 import { GlobalSettingController } from '../modules/global-setting/global-setting.controller';
@@ -341,3 +344,7 @@ export const contactMessageController = new ContactMessageController(contactMess
 // ─── Add new modules above this line ─────────────────────────────────────────
 // All modules from the drafted schema are now scaffolded. Travel/Booking/
 // Payment fields are still pending reconciliation against the real SQL dump.
+
+const pageSectionRepository = new PageSectionRepository(prisma);
+const pageSectionService = new PageSectionService(pageSectionRepository);
+export const pageSectionController = new PageSectionController(pageSectionService);

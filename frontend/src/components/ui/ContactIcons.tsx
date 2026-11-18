@@ -176,7 +176,37 @@ export function SocialIcon({
           />
         </svg>
       );
+    case "WhatsApp":
+      return (
+        <svg {...common}>
+          <rect width="24" height="24" rx="6" fill="#25D366" />
+          <path
+            d="M12 5.5a6.5 6.5 0 0 0-5.6 9.8L5.5 18.5l3.3-.9A6.5 6.5 0 1 0 12 5.5zm3.4 8.9c-.1.4-.8.8-1.2.8-.3 0-.7.1-2.2-.5a7.4 7.4 0 0 1-3-2.7c-.6-.8-1-1.700-.9-2.500.1-.7.7-1.100 1-1.100h.3c.1 0 .3 0 .4.3l.6 1.400c.1.100 0 .3-.1.4l-.3.4c-.1.100-.2.200-.1.400.4.700 1 1.300 1.800 1.700.2.100.3.100.4-.1l.5-.6c.1-.2.300-.2.400-.1l1.400.7c.2.100.3.100.3.300 0 .3 0 .8-.2 1.200z"
+            fill="#fff"
+          />
+        </svg>
+      );
+    case "Telegram":
+      return (
+        <svg {...common}>
+          <rect width="24" height="24" rx="6" fill="#26A5E4" />
+          <path d="M5.8 11.7l11.200-4.400c.5-.2 1 .1.8.9l-1.900 9c-.1.600-.5.800-1 .5l-2.800-2.100-1.400 1.300c-.2.200-.3.300-.6.300l.2-2.900 5.200-4.700c.2-.2 0-.3-.3-.1l-6.400 4-2.800-.9c-.6-.2-.6-.6.100-.9z" fill="#fff" />
+        </svg>
+      );
     default:
-      return null;
+      // Any platform without its own badge gets a neutral link badge, so a newly added link still shows.
+      return (
+        <svg {...common}>
+          <rect width="24" height="24" rx="6" fill="#064A70" />
+          <path
+            d="M10.500 13.500a3 3 0 0 0 4.200 0l2.100-2.100a3 3 0 0 0-4.200-4.200l-.8.800M13.500 10.500a3 3 0 0 0-4.200 0l-2.100 2.100a3 3 0 0 0 4.200 4.200l.8-.8"
+            fill="none"
+            stroke="#fff"
+            strokeWidth={1.600}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      );
   }
 }

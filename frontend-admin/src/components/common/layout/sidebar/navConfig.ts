@@ -24,6 +24,7 @@ import {
   CreditCard,
   ListTree,
   Settings,
+  LayoutTemplate,
   Link2,
   History,
   type LucideIcon,
@@ -73,6 +74,13 @@ export const NAV_ITEMS: NavItem[] = [
       { label: "All Pages", path: PATHS.PAGES, permission: "read:page" },
       { label: "Create Page", path: PATHS.PAGE_CREATE, permission: "create:page" },
     ],
+  },
+  {
+    label: "Page Content",
+    path: PATHS.PAGE_CONTENT,
+    icon: LayoutTemplate,
+    permission: "read:settings",
+    section: "main",
   },
   {
     label: "Categories",

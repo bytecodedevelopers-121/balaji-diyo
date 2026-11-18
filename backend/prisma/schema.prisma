@@ -1470,3 +1470,22 @@ model WebStory {
 
   @@map("web_stories")
 }
+
+// ==================== PAGE SECTIONS (CMS) ====================
+
+/// Editable copy/images/links for one section of a public page (e.g. pageKey "home", sectionKey "hero").
+model PageSection {
+  id         String  @id @default(cuid())
+  pageKey    String
+  sectionKey String
+  // Free-form per-section content; its shape is defined by the admin's section schema.
+  content    Json
+  isActive   Boolean @default(true)
+  sortOrder  Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([pageKey, sectionKey])
+  @@map("page_sections")
+}

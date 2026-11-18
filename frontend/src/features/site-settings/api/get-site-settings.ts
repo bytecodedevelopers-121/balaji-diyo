@@ -1,6 +1,7 @@
 import "server-only";
 import { apiFetch } from "@/lib/api/api-client";
 import { siteConfig } from "@/config/site";
+import { getPageSections } from "@/features/page-content/api";
 import type { SiteSettings } from "../types/site-settings.types";
 
 /** Wire shape of `GET /global-settings/public` — a flat map of every
@@ -10,6 +11,26 @@ import type { SiteSettings } from "../types/site-settings.types";
  *  collapse into one JSON payload); narrowed to `string` below since
  *  every key this frontend reads is legacy-migrated as STRING/TEXT. */
 type RawPublicSettings = Record<string, unknown>;
+
+/** CMS contact field → the Global Settings key it overrides. */
+const CMS_CONTACT_KEYS = [
+  { field: "address", setting: "address" },
+  { field: "email", setting: "email" },
+  { field: "phone", setting: "phone" },
+  { field: "secondaryPhone", setting: "secondary_phone" },
+  { field: "mobile", setting: "mobile" },
+] as const;
+
+/** Social links saved in the CMS, minus rows missing a platform or an address. */
+function readCmsSocialLinks(value: unknown): SiteSettings["socialLinks"] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((row) => {
+    const { label, href } = (row ?? {}) as { label?: unknown; href?: unknown };
+    return typeof label === "string" && label && typeof href === "string" && href.trim()
+      ? [{ label, href: href.trim() }]
+      : [];
+  });
+}
 
 function asString(raw: RawPublicSettings, key: string, fallback: string): string {
   const value = raw[key];
@@ -52,9 +73,20 @@ function buildSocialLinks(raw: RawPublicSettings): SiteSettings["socialLinks"] {
  * use — doesn't mean one request per layout at runtime).
  */
 export async function getSiteSettings(): Promise<SiteSettings> {
-  const raw = await apiFetch<RawPublicSettings>("/global-settings/public", {
-    next: { revalidate: 300, tags: ["site-settings"] },
-  }).catch(() => ({}) as RawPublicSettings);
+  const [globals, cms] = await Promise.all([
+    apiFetch<RawPublicSettings>("/global-settings/public", {
+      next: { revalidate: 300, tags: ["site-settings"] },
+    }).catch(() => ({}) as RawPublicSettings),
+    getPageSections("site"),
+  ]);
+  // Contact details and social links saved in the admin (Page Content → Contact details & social links)
+  // win over the older Global Settings rows, which stay as the fallback.
+  const raw: RawPublicSettings = { ...globals };
+  for (const key of CMS_CONTACT_KEYS) {
+    const value = cms.contact?.content?.[key.field];
+    if (typeof value === "string" && value.trim().length > 0) raw[key.setting] = value.trim();
+  }
+  const cmsLinks = readCmsSocialLinks(cms.social?.content?.links);
 
   return {
     companyName: asString(raw, "company_name", siteConfig.name),
@@ -65,6 +97,6 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     secondaryEmail: asString(raw, "secondary_email", "joyfultrekking@gmail.com"),
     address: asString(raw, "address", "Thamel, Kathmandu, Nepal"),
     poBox: asString(raw, "po_box", "P.O. Box No. 11670"),
-    socialLinks: buildSocialLinks(raw),
+    socialLinks: cmsLinks.length > 0 ? cmsLinks : buildSocialLinks(raw),
   };
 }

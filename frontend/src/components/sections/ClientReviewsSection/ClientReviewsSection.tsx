@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Mountain, Quote, Star } from "lucide-react";
 import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
 import { getFeaturedTestimonials } from "@/features/testimonials/api/get-testimonials";
+import { HOME_DEFAULTS, type ClientReviewsContent } from "@/features/page-content/home-defaults";
 import { TiltCard } from "./TiltCard";
 
 /**
@@ -20,11 +21,12 @@ interface ReviewCard {
   body: string;
 }
 
-const PLATFORMS = [
-  { name: "Tripadvisor", meta: "287 reviews", color: "text-[#00aa6c]" },
-  { name: "Google Reviews", meta: "111 reviews", color: "text-[#fbbc04]" },
-  { name: "Trustpilot", meta: "79 reviews", color: "text-[#00b67a]" },
-];
+/** Brand colour of each review platform's stars, matched by name. */
+const PLATFORM_COLORS: Record<string, string> = {
+  tripadvisor: "text-[#00aa6c]",
+  "google reviews": "text-[#fbbc04]",
+  trustpilot: "text-[#00b67a]",
+};
 
 /** Resting tilt (degrees) of each card, repeating. */
 const ANGLES = [-1.5, 1, -1];
@@ -45,8 +47,8 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-export async function ClientReviewsSection() {
-  const featured = await getFeaturedTestimonials(3).catch(() => []);
+export async function ClientReviewsSection({ content = HOME_DEFAULTS.clientReviews }: { content?: ClientReviewsContent }) {
+  const featured = await getFeaturedTestimonials(content.maxCards).catch(() => []);
   const cards: ReviewCard[] = featured.map((t) => ({
     id: t.id,
     name: t.fullName,
@@ -64,18 +66,18 @@ export async function ClientReviewsSection() {
         <div className="flex flex-col items-center text-center">
           <p className="inline-flex items-center gap-2 rounded-pill border border-logo-sun/50 bg-logo-sun/10 px-4 py-1.5 text-[11px] font-semibold tracking-[0.14em] text-logo-navy uppercase">
             <Mountain aria-hidden="true" className="size-3.5" />
-            Joyful Trekking Reviews
+            {content.badge}
           </p>
           <h2 className="font-playfair-display mt-5 text-[clamp(30px,6vw,48px)] leading-[1.1] font-bold text-logo-navy-dark">
-            What Our Clients
-            <span className="block text-logo-sun italic">Say?</span>
+            {content.titleLine1}
+            <span className="block text-logo-sun italic">{content.titleLine2}</span>
           </h2>
           <ul className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-3">
-            {PLATFORMS.map((platform) => (
+            {content.platforms.map((platform) => (
               <li key={platform.name} className="text-[13px] font-bold text-brand-neutral-900">
                 {platform.name}
                 <span className="flex items-center justify-center gap-1.5 text-[11px] font-normal text-brand-neutral-800">
-                  <span className={`flex ${platform.color}`} aria-hidden="true">
+                  <span className={`flex ${PLATFORM_COLORS[platform.name.toLowerCase()] ?? "text-logo-sun"}`} aria-hidden="true">
                     {[0, 1, 2, 3, 4].map((i) => (
                       <Star key={i} className="size-3 fill-current" />
                     ))}
@@ -118,10 +120,10 @@ export async function ClientReviewsSection() {
 
         <div className="mt-10 flex justify-center">
           <Link
-            href="/reviews"
+            href={content.buttonHref}
             className="inline-flex items-center gap-2 rounded-pill border border-logo-sun bg-brand-neutral-000 px-5 py-2 text-[12px] font-semibold text-logo-navy transition-colors hover:bg-logo-sun"
           >
-            Read All Reviews
+            {content.buttonLabel}
             <ArrowRight aria-hidden="true" className="size-4" />
           </Link>
         </div>

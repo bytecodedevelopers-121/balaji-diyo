@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Mountain } from "lucide-react";
 import { FillImage } from "@/components/ui/FillImage";
+import { HOME_DEFAULTS, type WebStoriesContent } from "@/features/page-content/home-defaults";
 import { getWebStories } from "@/features/site-content/api";
 
 /**
@@ -8,8 +9,8 @@ import { getWebStories } from "@/features/site-content/api";
  * opening its full-screen story at `/web-stories/<slug>`; "View All Stories"
  * goes to the `/travel-web-stories` listing.
  */
-export async function WebStoriesSection() {
-  const stories = (await getWebStories()).slice(0, 4);
+export async function WebStoriesSection({ content = HOME_DEFAULTS.webStories }: { content?: WebStoriesContent }) {
+  const stories = (await getWebStories()).slice(0, content.maxCards);
   if (stories.length === 0) return null;
 
   return (
@@ -19,17 +20,17 @@ export async function WebStoriesSection() {
           <div>
             <p className="mb-1 flex items-center gap-2 text-body-s font-medium text-logo-navy">
               <Mountain aria-hidden="true" className="size-4" />
-              Inspiration and Tips
+              {content.eyebrow}
             </p>
             <h2 className="font-display text-[clamp(22px,5vw,32px)] leading-tight font-bold text-brand-neutral-1000">
-              Travel Web Stories
+              {content.title}
             </h2>
           </div>
           <Link
-            href="/travel-web-stories"
+            href={content.buttonHref}
             className="inline-flex shrink-0 items-center gap-2 rounded-pill border border-logo-sun px-5 py-2 text-body-s font-semibold text-logo-navy transition-colors hover:bg-logo-sun"
           >
-            View All Stories
+            {content.buttonLabel}
             <ArrowRight aria-hidden="true" className="size-4" />
           </Link>
         </div>

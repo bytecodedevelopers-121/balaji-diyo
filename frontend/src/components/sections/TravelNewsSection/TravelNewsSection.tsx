@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Mountain } from "lucide-react";
 import { getBlogs } from "@/features/blogs/api/get-blogs";
+import { HOME_DEFAULTS, type TravelNewsContent } from "@/features/page-content/home-defaults";
 import { BlogCard } from "@/features/blogs/components/BlogCard";
 
 /**
@@ -9,8 +10,8 @@ import { BlogCard } from "@/features/blogs/components/BlogCard";
  * (with the built-in samples while the database has none, see `getBlogs`);
  * the section is hidden when there is nothing to show.
  */
-export async function TravelNewsSection() {
-  const { items } = await getBlogs({ perPage: 3 }).catch(() => ({ items: [] }));
+export async function TravelNewsSection({ content = HOME_DEFAULTS.travelNews }: { content?: TravelNewsContent }) {
+  const { items } = await getBlogs({ perPage: content.maxCards }).catch(() => ({ items: [] }));
   if (items.length === 0) return null;
 
   return (
@@ -20,17 +21,17 @@ export async function TravelNewsSection() {
           <div>
             <p className="mb-1 flex items-center gap-2 text-body-s font-medium text-logo-navy">
               <Mountain aria-hidden="true" className="size-4" />
-              Our Latest Blogs
+              {content.eyebrow}
             </p>
             <h2 className="font-display text-[clamp(22px,5vw,32px)] leading-tight font-bold text-brand-neutral-1000">
-              Travel News &amp; Articles
+              {content.title}
             </h2>
           </div>
           <Link
-            href="/blog"
+            href={content.buttonHref}
             className="hidden shrink-0 items-center gap-2 rounded-pill border border-logo-sun px-5 py-2 text-body-s font-semibold text-logo-navy transition-colors hover:bg-logo-sun sm:inline-flex"
           >
-            Read All Blogs
+            {content.buttonLabel}
             <ArrowRight aria-hidden="true" className="size-4" />
           </Link>
         </div>
@@ -44,10 +45,10 @@ export async function TravelNewsSection() {
         </ul>
 
         <Link
-          href="/blog"
+          href={content.buttonHref}
           className="mt-6 inline-flex items-center gap-2 rounded-pill border border-logo-sun px-5 py-2 text-body-s font-semibold text-logo-navy sm:hidden"
         >
-          Read All Blogs
+          {content.buttonLabel}
           <ArrowRight aria-hidden="true" className="size-4" />
         </Link>
       </div>

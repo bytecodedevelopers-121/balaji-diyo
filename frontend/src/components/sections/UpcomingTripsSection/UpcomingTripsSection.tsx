@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Info, Mountain } from "lucide-react";
 import { getUpcomingDepartures } from "@/features/departures/api/get-upcoming-departures";
+import { HOME_DEFAULTS, type UpcomingTripsContent } from "@/features/page-content/home-defaults";
 import type { Departure } from "@/features/departures/types/departure.types";
 
 /**
@@ -20,8 +21,6 @@ interface Row {
   price: number;
   oldPrice?: number;
 }
-
-const MAX_ROWS = 4;
 
 function addDays(date: Date, days: number): Date {
   const next = new Date(date);
@@ -56,9 +55,9 @@ function joinHref(row: Row): string {
   return `/last-minute-booking?${params.toString()}`;
 }
 
-export async function UpcomingTripsSection() {
+export async function UpcomingTripsSection({ content = HOME_DEFAULTS.upcomingTrips }: { content?: UpcomingTripsContent }) {
   const departures = await getUpcomingDepartures().catch(() => []);
-  const rows: Row[] = departures.slice(0, MAX_ROWS).map(toRow);
+  const rows: Row[] = departures.slice(0, content.maxRows).map(toRow);
   if (rows.length === 0) return null;
 
   return (
@@ -68,15 +67,15 @@ export async function UpcomingTripsSection() {
           <div>
             <p className="mb-1 flex items-center gap-2 text-body-s font-medium">
               <Mountain aria-hidden="true" className="size-4" />
-              Last Minute Deals
+              {content.eyebrow}
             </p>
-            <h2 className="font-display text-[clamp(24px,5vw,38px)] leading-tight font-bold">Join Upcoming Trips</h2>
+            <h2 className="font-display text-[clamp(24px,5vw,38px)] leading-tight font-bold">{content.title}</h2>
           </div>
           <Link
-            href="/last-minute-trip-deals"
+            href={content.buttonHref}
            className="hidden shrink-0 items-center gap-2 rounded-pill border border-logo-sun bg-brand-neutral-000 px-5 py-2 text-body-s font-semibold text-logo-navy-dark transition-colors hover:bg-logo-sun sm:inline-flex"
           >
-            View All Departures
+            {content.buttonLabel}
             <ArrowRight aria-hidden="true" className="size-4" />
           </Link>
         </div>
@@ -170,10 +169,9 @@ export async function UpcomingTripsSection() {
           <div className="flex gap-3 bg-[#fdf3d6] px-5 py-5">
             <Info aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-[#d98a00]" />
             <div>
-              <p className="text-[16px] font-semibold text-logo-navy-dark">Solo Travelers!</p>
+              <p className="text-[16px] font-semibold text-logo-navy-dark">{content.noteTitle}</p>
               <p className="mt-1.5 text-[14px] leading-relaxed text-brand-neutral-800">
-                A solo traveller will be paired with another traveller when booking through Last Minute Booking. Please
-                add the Single Supplement Fee while booking to secure a single private room.
+                {content.noteBody}
               </p>
             </div>
           </div>

@@ -87,6 +87,9 @@ export const PATHS = {
   MENU_TYPES: "/menu-types",
   MENU_ITEMS: (typeId: string) => `/menu-items/${typeId}`,
 
+  PAGE_CONTENT: "/page-content",
+  PAGE_CONTENT_EDIT: (pageKey: string) => `/page-content/${pageKey}`,
+
   GLOBAL_SETTINGS: "/global-settings",
   REDIRECTS: "/redirects",
   ACTIVITY_LOG: "/activity-log",
