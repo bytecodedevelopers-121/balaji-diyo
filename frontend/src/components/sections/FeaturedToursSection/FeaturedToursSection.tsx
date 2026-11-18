@@ -28,7 +28,7 @@ const SLOTS = [
 ]
 
 export async function FeaturedToursSection() {
-  const trips: CardTrip[] = await getFeaturedTrips(8).catch(() => []);
+  const trips: CardTrip[] = await getFeaturedTrips(10).catch(() => []);
   if (trips.length === 0) return null;
 
   return (
