@@ -111,16 +111,18 @@ export function TripPlacement({ categoryIds, destinationId, onChange }: TripPlac
     apply(selected.has(id) ? categoryIds.filter((x) => x !== id) : [...categoryIds, id]);
 
   const chooseCountry = (slug: string) => {
-    const next = countries.find((c) => c.slug === slug)!;
+    const next = countries.find((c) => c.slug === slug);
+    if (!next?.category) return;
+    const nextCategoryId = next.category.id;
     // Drop other countries (keep a shared Nepal/tours category if it is also a tour type) and any region.
     const keepTourTypes = categoryIds.filter((id) => tourTypeIds.has(id));
     const rest = categoryIds.filter((id) => !countryIds.has(id) && !regionIds.has(id) && !tourTypeIds.has(id));
     // Nepal only sets the destination — adding its (shared) category would also tick "Tours, Holidays and Safari".
     if (next.slug === "nepal-tour-packages") {
-      onChange({ categoryIds: [...rest, ...keepTourTypes], destinationId: next.category.id });
+      onChange({ categoryIds: [...rest, ...keepTourTypes], destinationId: nextCategoryId });
       return;
     }
-    apply([...rest, ...keepTourTypes, next.category.id]);
+    apply([...rest, ...keepTourTypes, nextCategoryId]);
   };
 
   const chooseRegion = (id: string) => {
