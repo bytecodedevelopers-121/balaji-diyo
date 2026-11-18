@@ -15,6 +15,10 @@ interface FullImageProps {
    * itinerary day gallery opts out per client feedback (2026-09-22).
    */
   showBlurBackdrop?: boolean;
+  /** "cover" fills the whole tile (edges may trim); "contain" (default) shows the whole photo with letterboxing. */
+  fit?: "contain" | "cover";
+  /** Encoder quality (must be listed in next.config images.qualities). */
+  quality?: number;
 }
 
 /**
@@ -31,7 +35,7 @@ interface FullImageProps {
  * URL/`sizes` as the foreground, so it's served from the same optimized-
  * image cache entry rather than costing a second download.
  */
-export function FullImage({ src, alt, sizes, preload = false, className, showBlurBackdrop = true }: FullImageProps) {
+export function FullImage({ src, alt, sizes, preload = false, className, showBlurBackdrop = true, fit = "contain", quality }: FullImageProps) {
   return (
     <>
       {showBlurBackdrop ? (
@@ -50,7 +54,8 @@ export function FullImage({ src, alt, sizes, preload = false, className, showBlu
         fill
         sizes={sizes}
         preload={preload}
-        className={cn("object-contain", className)}
+        quality={quality}
+        className={cn(fit === "cover" ? "object-cover" : "object-contain", className)}
       />
     </>
   );

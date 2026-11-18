@@ -6,23 +6,22 @@ import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { CMS_ARTICLE_CLASSES } from "@/components/ui/cms-article-classes";
 import { CmsProse } from "@/components/ui/CmsProse";
 import { FillImage } from "@/components/ui/FillImage";
-import { DESTINATIONS, getDestination, type Destination } from "@/config/destinations";
+import { getDestination, getDestinations } from "@/features/site-content/api";
+import type { Destination } from "@/features/site-content/types";
 import { getAllCategorySlugsWithPackages, getCategoryPackageCount } from "@/features/trips/api/get-category-by-slug";
-import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
-import { sampleTripsForCountry } from "@/lib/sample-trips";
 import { buildMetadata } from "@/lib/seo/metadata";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-export function generateStaticParams() {
-  return DESTINATIONS.map((destination) => ({ slug: destination.slug }));
+export async function generateStaticParams() {
+  return (await getDestinations()).map((destination) => ({ slug: destination.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const destination = getDestination(slug);
+  const destination = await getDestination(slug);
   if (!destination) return buildMetadata({ title: "Page Not Found", path: `/destination/${slug}`, noIndex: true });
   return buildMetadata({
     title: `${destination.name} Travel and Tours`,
@@ -34,7 +33,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 /**
  * How many packages each card's category has: the live count for cards whose
- * link is a real category, else the sample trips. Only real category slugs are
+ * link is a real category, else 0. Only real category slugs are
  * looked up, so cards that link to ordinary pages never hit the API with a
  * slug it would answer with a 404.
  */
@@ -47,20 +46,13 @@ async function packageCounts(destination: Destination): Promise<Record<string, n
       counts[card.label] = realSlugs.has(slug) ? ((await getCategoryPackageCount(slug)) ?? 0) : 0;
     }),
   );
-
-  if (SHOW_SAMPLE_DATA && Object.values(counts).every((count) => count === 0)) {
-    const samples = sampleTripsForCountry(destination.countryLabel);
-    for (const card of destination.cards) {
-      counts[card.label] = card.categoryKey ? samples.filter((trip) => trip.categories?.includes(card.categoryKey as never)).length : 0;
-    }
-  }
   return counts;
 }
 
 /** A country landing page: hero photo, intro, category cards with package counts and a long-form guide. */
 export default async function DestinationPage({ params }: PageProps) {
   const { slug } = await params;
-  const destination = getDestination(slug);
+  const destination = await getDestination(slug);
   if (!destination) notFound();
 
   const counts = await packageCounts(destination);

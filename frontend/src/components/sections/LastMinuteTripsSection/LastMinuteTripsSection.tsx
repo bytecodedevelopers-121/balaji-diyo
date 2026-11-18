@@ -9,7 +9,7 @@ import { DepartureTable } from "./DepartureTable";
  * compact instruction card with their own spacing and typography.
  */
 export async function LastMinuteTripsSection() {
-  const departures = await getUpcomingDepartures();
+  const departures = await getUpcomingDepartures({ lastMinuteOnly: true });
 
   return (
     <section className="bg-brand-neutral-000 px-5 py-10 md:px-8 lg:px-16 lg:pb-11 lg:pt-[108px]">

@@ -4,20 +4,20 @@ import { notFound } from "next/navigation";
 import { CtaSection } from "@/components/sections/CtaSection";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { FillImage } from "@/components/ui/FillImage";
-import { getTravelGuide, TRAVEL_GUIDES } from "@/config/travel-guides";
+import { getTravelGuide, getTravelGuides } from "@/features/site-content/api";
 import { buildMetadata } from "@/lib/seo/metadata";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-export function generateStaticParams() {
-  return TRAVEL_GUIDES.map((guide) => ({ slug: guide.slug }));
+export async function generateStaticParams() {
+  return (await getTravelGuides()).map((guide) => ({ slug: guide.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const guide = getTravelGuide(slug);
+  const guide = await getTravelGuide(slug);
   if (!guide) return buildMetadata({ title: "Page Not Found", path: `/travel-guides/${slug}`, noIndex: true });
   return buildMetadata({ title: guide.title, description: guide.summary, path: `/travel-guides/${guide.slug}`, image: guide.image });
 }
@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 /** One country's travel guide: a grid of topic cards, each linking to its own page. */
 export default async function TravelGuideCountryPage({ params }: PageProps) {
   const { slug } = await params;
-  const guide = getTravelGuide(slug);
+  const guide = await getTravelGuide(slug);
   if (!guide) notFound();
 
   return (

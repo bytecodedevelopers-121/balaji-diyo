@@ -3,7 +3,7 @@ import Link from "next/link";
 import { CtaSection } from "@/components/sections/CtaSection";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { FillImage } from "@/components/ui/FillImage";
-import { WEB_STORIES } from "@/config/web-stories";
+import { getWebStories } from "@/features/site-content/api";
 import { buildMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = buildMetadata({
@@ -13,7 +13,8 @@ export const metadata: Metadata = buildMetadata({
 });
 
 /** Nepal Travel Web Stories: wide hero photo, breadcrumb, title and a grid of story cards. */
-export default function TravelWebStoriesPage() {
+export default async function TravelWebStoriesPage() {
+  const stories = await getWebStories();
   return (
     <>
       <section className="bg-brand-neutral-000 px-4 pt-6 pb-16 min-[768px]:px-10 min-[1120px]:px-[72px]">
@@ -39,7 +40,7 @@ export default function TravelWebStoriesPage() {
             </h1>
 
             <ul className="mt-6 grid grid-cols-1 gap-4 min-[520px]:grid-cols-2 lg:grid-cols-4">
-              {WEB_STORIES.map((story) => (
+              {stories.map((story) => (
                 <li key={story.slug}>
                   <Link
                     href={`/web-stories/${story.slug}`}

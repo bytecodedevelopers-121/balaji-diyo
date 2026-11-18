@@ -15,7 +15,7 @@ export default function CreateRolePage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    document.title = "Create Role | Boundless Adventure Admin";
+    document.title = "Create Role | Joyful Trekking Admin";
   }, []);
 
   const handleSubmit = (data: CreateRoleDto | UpdateRoleDto) => {

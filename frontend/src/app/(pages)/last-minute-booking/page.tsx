@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { FillImage } from "@/components/ui/FillImage";
 import { siteConfig } from "@/config/site";
-import { ALL_SAMPLE_TRIPS } from "@/lib/sample-trips";
+import { apiFetch } from "@/lib/api/api-client";
+import { lowestPrice } from "@/features/trips/lib/lowest-price";
+import type { Paginated } from "@/types/api.types";
+import type { RawPackagePriceGroup, Trip } from "@/features/trips/types/trip.types";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { LastMinuteBookingForm, type LastMinuteTrip } from "./_components/LastMinuteBookingForm";
 
@@ -18,10 +21,26 @@ interface PageProps {
 
 const FALLBACK_IMAGE = "/images/journey/trek.jpg";
 
+/** The package behind a departure row (matched by its title), for its photo, slug and price. */
+async function findTrip(title?: string, slug?: string): Promise<Trip | null> {
+  const term = slug || title;
+  if (!term) return null;
+  try {
+    const page = await apiFetch<Paginated<Trip & { priceGroups?: RawPackagePriceGroup[] }>>(
+      `/packages?search=${encodeURIComponent(title ?? slug ?? "")}&perPage=10`,
+      { next: { revalidate: 900, tags: ["trips"] } },
+    );
+    const match = page.items.find((t) => t.slug === slug || t.title === title) ?? null;
+    return match ? { ...match, priceFrom: lowestPrice(match.priceGroups) } : null;
+  } catch {
+    return null;
+  }
+}
+
 /** Last Minute Booking — reached from a "Join This Date" button on the homepage departures table. */
 export default async function LastMinuteBookingPage({ searchParams }: PageProps) {
   const q = await searchParams;
-  const match = ALL_SAMPLE_TRIPS.find((t) => t.slug === q.slug || t.title === q.title);
+  const match = await findTrip(q.title, q.slug);
   const today = new Date().toISOString().slice(0, 10);
 
   const trip: LastMinuteTrip = {

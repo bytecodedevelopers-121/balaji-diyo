@@ -3,7 +3,7 @@ import Link from "next/link";
 import { CtaSection } from "@/components/sections/CtaSection";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { FillImage } from "@/components/ui/FillImage";
-import { TRAVEL_GUIDES } from "@/config/travel-guides";
+import { getTravelGuides } from "@/features/site-content/api";
 import { buildMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = buildMetadata({
@@ -13,7 +13,8 @@ export const metadata: Metadata = buildMetadata({
 });
 
 /** Travel Guides index: one card per country, linking to its own guide. */
-export default function TravelGuidesPage() {
+export default async function TravelGuidesPage() {
+  const guides = await getTravelGuides();
   return (
     <>
       <section className="bg-brand-neutral-000 px-4 pt-6 pb-16 min-[768px]:px-10 min-[1120px]:px-[72px]">
@@ -28,7 +29,7 @@ export default function TravelGuidesPage() {
           </h1>
 
           <ul className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
-            {TRAVEL_GUIDES.map((guide) => (
+            {guides.map((guide) => (
               <li key={guide.slug}>
                 <Link href={`/travel-guides/${guide.slug}`} className="group block">
                   <div className="relative aspect-[3/2] w-full overflow-hidden rounded-[10px]">

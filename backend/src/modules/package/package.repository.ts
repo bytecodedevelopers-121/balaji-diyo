@@ -10,6 +10,10 @@ export interface ItineraryDetailMediaItem {
   type: 'image' | 'video';
 }
 
+// A package save runs dozens of queries in one transaction; against a remote database the default
+// 5s limit is too short, so give it room before Prisma gives up and aborts.
+const TRANSACTION_OPTIONS = { maxWait: 20_000, timeout: 120_000 };
+
 const packageInclude = {
   destination: true,
   grade: true,
@@ -304,7 +308,7 @@ export class PackageRepository {
       }
 
       return created;
-    });
+    }, TRANSACTION_OPTIONS);
 
     return this.withSeo(pkg);
   }
@@ -422,7 +426,7 @@ export class PackageRepository {
       }
 
       return updated;
-    });
+    }, TRANSACTION_OPTIONS);
 
     return this.withSeo(pkg);
   }

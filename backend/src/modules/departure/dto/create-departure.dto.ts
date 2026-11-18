@@ -6,6 +6,7 @@ export const CreateDepartureDto = z.object({
   departureCost: z.number().min(0),
   departureNote: z.string().max(255).optional(),
   departureStatus: z.string().min(1).max(20),
+  isLastMinute: z.boolean().optional(),
 });
 
 export type CreateDepartureDtoType = z.infer<typeof CreateDepartureDto>;
@@ -19,6 +20,7 @@ export const CreateDeparturesBulkDto = z.object({
         departureCost: z.number().min(0),
         departureNote: z.string().max(255).optional(),
         departureStatus: z.string().min(1).max(20),
+        isLastMinute: z.boolean().optional(),
       }),
     )
     .max(100),

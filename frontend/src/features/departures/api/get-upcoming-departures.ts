@@ -18,9 +18,10 @@ import type { Departure } from "../types/departure.types";
  * frontend-admin's DeparturesBulkModal uses), so admin edits show up
  * without waiting out the 900s window.
  */
-export async function getUpcomingDepartures(): Promise<Departure[]> {
+export async function getUpcomingDepartures(options: { lastMinuteOnly?: boolean } = {}): Promise<Departure[]> {
+  const lastMinute = options.lastMinuteOnly ? "&lastMinute=true" : "";
   const page = await apiFetch<Paginated<Departure>>(
-    "/departures?upcoming=true&perPage=50",
+    `/departures?upcoming=true${lastMinute}&perPage=50`,
     { next: { revalidate: 900, tags: ["departures"] } },
   );
   return page.items;

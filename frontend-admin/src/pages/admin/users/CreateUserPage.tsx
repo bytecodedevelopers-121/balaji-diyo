@@ -15,7 +15,7 @@ export default function CreateUserPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    document.title = "Create User | Boundless Adventure Admin";
+    document.title = "Create User | Joyful Trekking Admin";
   }, []);
 
   const handleSubmit = (data: CreateUserDto | UpdateUserDto) => {

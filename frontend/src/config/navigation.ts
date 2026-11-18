@@ -327,6 +327,8 @@ const TREKKING_REGION_HREF_BY_TITLE: Record<string, string> = {
   "ANNAPURNA REGION": "/annapurna-region-treks",
   "LANGTANG REGION": "/langtang-region-treks",
   "RESTRICTED AREA TREKKING": "/restricted-area-trekking",
+  // The "Manaslu Region" category lives under the restricted-area-trekking slug.
+  "MANASLU REGION": "/restricted-area-trekking",
 };
 
 function subSubCategoryHref(title: string): string {

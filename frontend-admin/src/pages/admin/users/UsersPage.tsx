@@ -34,7 +34,7 @@ export default function UsersPage() {
   const [viewTarget, setViewTarget] = useState<User | null>(null);
 
   useEffect(() => {
-    document.title = "Users | Boundless Adventure Admin";
+    document.title = "Users | Joyful Trekking Admin";
   }, []);
 
   const { data, isLoading, isError, isFetching, refetch } = useUsers({

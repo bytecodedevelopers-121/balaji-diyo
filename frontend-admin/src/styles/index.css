@@ -1,17 +1,23 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
-  --font-display: "Outfit", system-ui, sans-serif;
+  /* Same Merriweather lettering as the public site. */
+  --font-sans: "Merriweather", "Plus Jakarta Sans", Georgia, serif;
+  --font-display: "Merriweather", Georgia, serif;
 
-  /* Boundless Adventure brand palette, derived from public/logo.svg. */
-  --color-brand-navy: #071b25;
-  --color-brand-surface: #0b3343;
-  --color-brand-teal: #078cbf;
-  --color-brand-orange: #f7841e;
+  /* Joyful Trekking brand palette, derived from the logo. */
+  --color-brand-navy: #043449;
+  --color-brand-surface: #064a70;
+  --color-brand-teal: #00b8e8;
+  --color-brand-orange: #f8c028;
+  --color-logo-navy: #0b6a99;
+  --color-logo-navy-dark: #064a70;
+  --color-logo-sky: #00b8e8;
+  --color-logo-green: #38b050;
+  --color-logo-sun: #f8c028;
 
-  --color-primary: #078cbf;
-  --color-primary-container: #0b3343;
+  --color-primary: #0b6a99;
+  --color-primary-container: #064a70;
   --color-on-primary: #ffffff;
   --color-on-primary-container: #e4f7fc;
 
@@ -23,25 +29,26 @@
   --color-indigo-200: #afe2f0;
   --color-indigo-300: #78ccdf;
   --color-indigo-400: #36afd0;
-  --color-indigo-500: #078cbf;
-  --color-indigo-600: #07749d;
-  --color-indigo-700: #0a5c7b;
-  --color-indigo-800: #0b4b64;
-  --color-indigo-900: #0b3f54;
-  --color-indigo-950: #071b25;
+  --color-indigo-500: #0b6a99;
+  --color-indigo-600: #0b6a99;
+  --color-indigo-700: #064a70;
+  --color-indigo-800: #053c59;
+  --color-indigo-900: #043449;
+  --color-indigo-950: #022533;
 
   --color-secondary: #6b7280;
   --color-on-secondary: #ffffff;
 
-  --color-background: #f7f9f8;
+  --color-background: #faf5ee;
+  --color-site-row: #fbf7f0;
 
   --color-surface: #ffffff;
-  --color-surface-container-low: #f1f5f9;
-  --color-surface-container-high: #e9eef5;
-  --color-on-surface: #102c37;
-  --color-on-surface-variant: #5f737a;
+  --color-surface-container-low: #f3ece1;
+  --color-surface-container-high: #ebe2d4;
+  --color-on-surface: #0b2f45;
+  --color-on-surface-variant: #5b6f7a;
 
-  --color-outline-variant: #e2e8f0;
+  --color-outline-variant: #e6dccd;
 
   --color-danger: #dc2626;
   --color-error: #dc2626;

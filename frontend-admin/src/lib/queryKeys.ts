@@ -164,6 +164,7 @@ export const queryKeys = {
   departures: {
     all: ["departures"] as const,
     list: (packageId: string) => ["departures", "list", packageId] as const,
+    lastMinute: ["departures", "last-minute"] as const,
   },
 
   // itinerary (one per package)

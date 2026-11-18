@@ -2,8 +2,6 @@ import Link from "next/link";
 import { ArrowRight, Mountain } from "lucide-react";
 import { getPopularTrips } from "@/features/trips/api/get-trips";
 import { PackageCard, type CardTrip } from "@/components/ui/PackageCard";
-import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
-import { SAMPLE_TREKS } from "@/lib/sample-trips";
 
 /**
  * "10 Best Treks – Offered for 2026" — a 4-up grid of trek cards right
@@ -17,9 +15,7 @@ const TREKS_PAGE = "/trekking-routes-in-nepal";
 
 
 export async function BestTreksSection() {
-  const fetched: CardTrip[] = await getPopularTrips(8).catch(() => []);
-  const trips =
-    fetched.length === 0 && SHOW_SAMPLE_DATA ? SAMPLE_TREKS : fetched;
+  const trips: CardTrip[] = await getPopularTrips(8).catch(() => []);
   if (trips.length === 0) return null;
 
   return (
@@ -63,4 +59,3 @@ export async function BestTreksSection() {
     </section>
   );
 }
-export { SAMPLE_TREKS };

@@ -21,9 +21,9 @@ export function SidebarNavItem({ item, collapsed }: SidebarNavItemProps) {
 
   const baseItemClass =
     "group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 w-full cursor-pointer";
-  const activeClass = "bg-primary/10 text-primary border-l-2 border-primary shadow-xs pl-2.5";
+  const activeClass = "bg-white/15 text-logo-sun border-l-2 border-logo-sun shadow-xs pl-2.5";
   const inactiveClass =
-    "text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface border-l-2 border-transparent";
+    "text-white/80 hover:bg-white/10 hover:text-white border-l-2 border-transparent";
 
   if (hasChildren) {
     return (
@@ -36,7 +36,7 @@ export function SidebarNavItem({ item, collapsed }: SidebarNavItemProps) {
         >
           <Icon
             size={18}
-            className="shrink-0 transform group-hover:scale-110 transition-transform duration-200 text-on-surface-variant group-hover:text-on-surface"
+            className="shrink-0 transform group-hover:scale-110 transition-transform duration-200 text-white/70 group-hover:text-white"
           />
           {!collapsed && (
             <>
@@ -44,7 +44,7 @@ export function SidebarNavItem({ item, collapsed }: SidebarNavItemProps) {
               <ChevronDown
                 size={14}
                 className={[
-                  "transition-transform duration-300 text-on-surface-variant group-hover:text-on-surface",
+                  "transition-transform duration-300 text-white/70 group-hover:text-white",
                   subOpen ? "rotate-180" : "",
                 ].join(" ")}
               />
@@ -54,7 +54,7 @@ export function SidebarNavItem({ item, collapsed }: SidebarNavItemProps) {
 
         {/* Submenu */}
         {!collapsed && subOpen && (
-          <div className="mt-1 ml-5 border-l border-outline-variant/60 pl-3.5 space-y-1 animate-dropdown-enter">
+          <div className="mt-1 ml-5 border-l border-white/15 pl-3.5 space-y-1 animate-dropdown-enter">
             {item.children!.map((child) => (
               <NavLink
                 key={child.path}
@@ -62,9 +62,9 @@ export function SidebarNavItem({ item, collapsed }: SidebarNavItemProps) {
                 className={({ isActive }) =>
                   [
                     "group flex items-center px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200",
-                    isActive 
-                      ? "bg-primary/10 text-primary" 
-                      : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60",
+                    isActive
+                      ? "bg-white/15 text-logo-sun"
+                      : "text-white/70 hover:text-white hover:bg-white/10",
                   ].join(" ")
                 }
               >
@@ -72,7 +72,7 @@ export function SidebarNavItem({ item, collapsed }: SidebarNavItemProps) {
                   <>
                     <span className={[
                       "w-1.5 h-1.5 rounded-full mr-2.5 transition-colors shrink-0",
-                      isActive ? "bg-primary shadow-xs shadow-primary/30" : "bg-outline-variant group-hover:bg-on-surface-variant"
+                      isActive ? "bg-logo-sun" : "bg-white/30 group-hover:bg-white/70"
                     ].join(" ")} />
                     <span>{child.label}</span>
                   </>
@@ -99,7 +99,7 @@ export function SidebarNavItem({ item, collapsed }: SidebarNavItemProps) {
             size={18}
             className={[
               "shrink-0 transform group-hover:scale-110 transition-all duration-200",
-              isActive ? "text-primary" : "text-on-surface-variant group-hover:text-on-surface"
+              isActive ? "text-logo-sun" : "text-white/70 group-hover:text-white"
             ].join(" ")}
           />
           {!collapsed && <span className="truncate">{item.label}</span>}

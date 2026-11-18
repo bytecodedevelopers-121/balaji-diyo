@@ -1,24 +1,19 @@
 import Link from "next/link";
 import { ArrowRight, Mountain } from "lucide-react";
-import { SAMPLE_BEST_SELLERS } from "@/lib/sample-trips";
 import type { CardTrip } from "@/components/ui/PackageCard";
 import { getPopularTrips } from "@/features/trips/api/get-trips";
 import { BestSellersCarousel } from "./BestSellersCarousel";
-import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
 
 /**
  * "Best Sellers" as a coverflow fan on a dark stage: every best seller is a
  * `PackageCard`; the centre one is sharp and clickable, its neighbours tilt
  * away, blur and fade (see BestSellersCarousel). Fed by the admin's
- * "popular" pool; the shared sample trips show when there are
- * none (unless `SHOW_SAMPLE_DATA=false`), which hides the section until real
- * trips exist.
+ * "popular" pool; the section is hidden until there are popular trips.
  */
 const MAX_CARDS = 8;
 
 export async function BestSellersSection() {
-  const fetched: CardTrip[] = await getPopularTrips(MAX_CARDS).catch(() => []);
-  const trips = fetched.length === 0 && SHOW_SAMPLE_DATA ? SAMPLE_BEST_SELLERS : fetched;
+  const trips: CardTrip[] = await getPopularTrips(MAX_CARDS).catch(() => []);
   if (trips.length === 0) return null;
 
   return (

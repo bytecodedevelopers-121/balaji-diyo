@@ -5,21 +5,22 @@ import { notFound } from "next/navigation";
 import { CtaSection } from "@/components/sections/CtaSection";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { FillImage } from "@/components/ui/FillImage";
-import { getGuideTopic, getTravelGuide, TRAVEL_GUIDES, type GuideSection } from "@/config/travel-guides";
+import { findGuideTopic, getTravelGuide, getTravelGuides } from "@/features/site-content/api";
+import type { GuideSection } from "@/features/site-content/types";
 import { buildMetadata } from "@/lib/seo/metadata";
 
 interface PageProps {
   params: Promise<{ slug: string; topic: string }>;
 }
 
-export function generateStaticParams() {
-  return TRAVEL_GUIDES.flatMap((guide) => guide.topics.map((topic) => ({ slug: guide.slug, topic: topic.slug })));
+export async function generateStaticParams() {
+  return (await getTravelGuides()).flatMap((guide) => guide.topics.map((topic) => ({ slug: guide.slug, topic: topic.slug })));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug, topic: topicSlug } = await params;
-  const guide = getTravelGuide(slug);
-  const topic = guide ? getGuideTopic(guide, topicSlug) : undefined;
+  const guide = await getTravelGuide(slug);
+  const topic = guide ? findGuideTopic(guide, topicSlug) : undefined;
   if (!guide || !topic) {
     return buildMetadata({ title: "Page Not Found", path: `/travel-guides/${slug}/${topicSlug}`, noIndex: true });
   }
@@ -76,8 +77,8 @@ function Section({ section }: { section: GuideSection }) {
 /** A single guide topic (visa, insurance, permits, ...) for one country. */
 export default async function TravelGuideTopicPage({ params }: PageProps) {
   const { slug, topic: topicSlug } = await params;
-  const guide = getTravelGuide(slug);
-  const topic = guide ? getGuideTopic(guide, topicSlug) : undefined;
+  const guide = await getTravelGuide(slug);
+  const topic = guide ? findGuideTopic(guide, topicSlug) : undefined;
   if (!guide || !topic) notFound();
 
   return (

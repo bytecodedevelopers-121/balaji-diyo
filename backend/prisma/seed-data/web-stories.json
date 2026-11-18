@@ -1,0 +1,122 @@
+[
+  {
+    "slug": "explore-everest-base-camp",
+    "title": "Explore Everest Base Camp in 7 Stories",
+    "cover": "/images/gallery/everest-1.jpg",
+    "slides": [
+      {
+        "image": "/images/gallery/everest-1.jpg",
+        "caption": "Everest Base Camp sits at about 5,364 meters in the Khumbu region."
+      },
+      {
+        "image": "/images/gallery/everest-2.jpg",
+        "caption": "Most trekkers fly from Kathmandu to Lukla to begin the trek."
+      },
+      {
+        "image": "/images/gallery/everest-3.jpg",
+        "caption": "Namche Bazaar is the Sherpa capital and a key acclimatization stop."
+      },
+      {
+        "image": "/images/gallery/everest-4.jpg",
+        "caption": "Tengboche Monastery offers views of Everest, Lhotse and Ama Dablam."
+      },
+      {
+        "image": "/images/gallery/everest-5.jpg",
+        "caption": "Yaks carry gear along the high-altitude trails."
+      },
+      {
+        "image": "/images/gallery/everest-6.jpg",
+        "caption": "Gorak Shep is the last settlement before Base Camp."
+      },
+      {
+        "image": "/images/about-us/trail-1-overlook.jpg",
+        "caption": "Standing at Base Camp is a moment you will never forget."
+      }
+    ]
+  },
+  {
+    "slug": "explore-chitwan-national-park",
+    "title": "Explore Chitwan National Park",
+    "cover": "/images/about-us/trail-2-path.jpg",
+    "slides": [
+      {
+        "image": "/images/about-us/trail-2-path.jpg",
+        "caption": "Chitwan National Park is a UNESCO World Heritage Site in the Terai plains."
+      },
+      {
+        "image": "/images/about-us/trail-4-bridge.jpg",
+        "caption": "Jeep and walking safaris take you through grassland and jungle."
+      },
+      {
+        "image": "/images/about-us/trail-5-ridge.jpg",
+        "caption": "Spot one-horned rhinoceros, deer, crocodiles and hundreds of bird species."
+      },
+      {
+        "image": "/images/about-us/trail-3-group.jpg",
+        "caption": "Experience Tharu culture, dance and local food in nearby villages."
+      },
+      {
+        "image": "/images/gallery/everest-2.jpg",
+        "caption": "The best time to visit is October to March."
+      }
+    ]
+  },
+  {
+    "slug": "explore-boudhanath-stupa",
+    "title": "Explore Boudhanath Stupa",
+    "cover": "/images/guided-travel/temple.jpg",
+    "slides": [
+      {
+        "image": "/images/guided-travel/temple.jpg",
+        "caption": "Boudhanath is one of the largest stupas in the world."
+      },
+      {
+        "image": "/images/gallery/everest-3.jpg",
+        "caption": "Prayer flags and butter lamps fill the square around it."
+      },
+      {
+        "image": "/images/about-us/trail-3-group.jpg",
+        "caption": "Walk clockwise around the stupa, as pilgrims have done for centuries."
+      },
+      {
+        "image": "/images/gallery/everest-5.jpg",
+        "caption": "The painted eyes of the Buddha watch over Kathmandu."
+      }
+    ]
+  },
+  {
+    "slug": "sunrise-in-the-himalayas",
+    "title": "Sunrise in the Himalayas",
+    "cover": "/images/cta/gokyo-lake-yak.jpg",
+    "slides": [
+      {
+        "image": "/images/cta/gokyo-lake-yak.jpg",
+        "caption": "Early mornings in the mountains are cold, quiet and unforgettable."
+      },
+      {
+        "image": "/images/about-us/trail-1-overlook.jpg",
+        "caption": "Poon Hill, Kalapatthar and Nagarkot are classic sunrise viewpoints."
+      },
+      {
+        "image": "/images/gallery/everest-4.jpg",
+        "caption": "First light turns the snow peaks gold and pink."
+      },
+      {
+        "image": "/images/gallery/everest-6.jpg",
+        "caption": "Carry a warm jacket and a headlamp for the climb."
+      },
+      {
+        "image": "/images/about-us/trail-5-ridge.jpg",
+        "caption": "Your guide will wake you in time for the best light."
+      },
+      {
+        "image": "/images/about-us/trail-2-path.jpg",
+        "caption": "Breakfast always tastes better with a view."
+      },
+      {
+        "image": "/images/gallery/everest-1.jpg",
+        "caption": "Join us and see the Himalayas wake up."
+      }
+    ]
+  }
+]

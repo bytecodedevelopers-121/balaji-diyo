@@ -1,7 +1,5 @@
 import { apiFetch } from "@/lib/api/api-client";
 import { toNumber } from "@/lib/decimal";
-import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
-import { sampleTripsForRegion } from "@/lib/sample-trips";
 import type { Paginated } from "@/types/api.types";
 import type { RawPackagePriceGroup, Trip } from "@/features/trips/types/trip.types";
 import type { TrekkingRegion, TrekkingRegionDetail } from "../types/trekking-region.types";
@@ -36,45 +34,6 @@ function withCardStats(trip: RawRegionTrip): Trip {
   };
 }
 
-/** Sample regions (used only while the database has none): menu slug → region title. */
-const SAMPLE_REGION_TITLES: Record<string, string> = {
-  "everest-region-treks": "Everest Region",
-  "annapurna-region-treks": "Annapurna Region",
-  "langtang-region-treks": "Langtang Region",
-  "restricted-area-trekking": "Manaslu Region",
-};
-
-function sampleRegion(slug: string): TrekkingRegion | null {
-  const title = SAMPLE_REGION_TITLES[slug];
-  if (!SHOW_SAMPLE_DATA || !title) return null;
-  const trips = sampleTripsForRegion(title);
-  return {
-    id: `sample-${slug}`,
-    title,
-    description: null,
-    slug,
-    parentId: null,
-    imageUrl: trips[0]?.imageUrl ?? null,
-    packageCount: trips.length,
-  };
-}
-
-function sampleRegions(): TrekkingRegion[] {
-  return Object.keys(SAMPLE_REGION_TITLES)
-    .map(sampleRegion)
-    .filter((region): region is TrekkingRegion => region !== null);
-}
-
-function sampleRegionDetail(slug: string): TrekkingRegionDetail | null {
-  const region = sampleRegion(slug);
-  if (!region) return null;
-  return {
-    region,
-    trips: sampleTripsForRegion(region.title),
-    meta: { currentPage: 1, totalPages: 1 },
-  };
-}
-
 export async function getTrekkingRoutesCategory(): Promise<TrekkingRegion> {
   return apiFetch<TrekkingRegion>("/categories/slug/trekking-routes-in-nepal", {
     next: { revalidate: 900, tags: ["trekking-regions"] },
@@ -94,9 +53,9 @@ export async function getTrekkingRegions(): Promise<TrekkingRegion[]> {
       { next: { revalidate: 900, tags: ["trekking-regions"] } },
     );
     const regions = result.items.filter((region) => region.slug && trekkingRegionSlugSet.has(region.slug));
-    return regions.length > 0 ? regions : sampleRegions();
+    return regions;
   } catch {
-    return sampleRegions();
+    return [];
   }
 }
 
@@ -113,6 +72,6 @@ export async function getTrekkingRegionDetail(slug: string, page = 1): Promise<T
     );
     return { region, trips: result.items.map(withCardStats), meta: result.meta };
   } catch {
-    return sampleRegionDetail(slug);
+    return null;
   }
 }

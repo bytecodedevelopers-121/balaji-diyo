@@ -3,8 +3,6 @@ import { ArrowRight, Mountain } from "lucide-react";
 import type { CardTrip } from "@/components/ui/PackageCard";
 import { FeaturedTripCard } from "./FeaturedTripCard";
 import { getFeaturedTrips } from "@/features/trips/api/get-trips";
-import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
-import { SAMPLE_FEATURED } from "@/lib/sample-trips";
 
 /**
  * "10 Best Tours & Holidays for 2026" — same card grid as the Best Sellers
@@ -30,9 +28,7 @@ const SLOTS = [
 ]
 
 export async function FeaturedToursSection() {
-  const fetched: CardTrip[] = await getFeaturedTrips(8).catch(() => []);
-  const trips =
-    fetched.length === 0 && SHOW_SAMPLE_DATA ? SAMPLE_FEATURED.slice(0, 8) : fetched;
+  const trips: CardTrip[] = await getFeaturedTrips(8).catch(() => []);
   if (trips.length === 0) return null;
 
   return (

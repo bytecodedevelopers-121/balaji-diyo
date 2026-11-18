@@ -86,6 +86,11 @@ export function DeparturesTab({ packageId }: DeparturesTabProps) {
       header: "Status",
       render: (d) => <Badge label={d.departureStatus} variant={STATUS_VARIANT[d.departureStatus.toLowerCase()] ?? "gray"} />,
     },
+    {
+      key: "isLastMinute",
+      header: "Last Minute",
+      render: (d) => (d.isLastMinute ? <Badge label="Last minute" variant="yellow" /> : "—"),
+    },
     { key: "departureNote", header: "Note", render: (d) => d.departureNote || "—" },
     {
       key: "actions",

@@ -6,6 +6,9 @@ export interface Departure {
   departureCost: string | number;
   departureNote: string | null;
   departureStatus: string;
+  isLastMinute: boolean;
+  /** Joined trip (title only) — included by the backend's departureInclude. */
+  package?: { title: string };
   createdAt: string;
   updatedAt: string;
 }
@@ -16,6 +19,7 @@ export interface CreateDepartureDto {
   departureCost: number;
   departureNote?: string;
   departureStatus: string;
+  isLastMinute?: boolean;
 }
 
 export interface DepartureRowInput {
@@ -23,6 +27,7 @@ export interface DepartureRowInput {
   departureCost: number;
   departureNote?: string;
   departureStatus: string;
+  isLastMinute?: boolean;
 }
 
 export interface CreateDeparturesBulkDto {
@@ -35,4 +40,5 @@ export interface UpdateDepartureDto {
   departureCost?: number;
   departureNote?: string;
   departureStatus?: string;
+  isLastMinute?: boolean;
 }

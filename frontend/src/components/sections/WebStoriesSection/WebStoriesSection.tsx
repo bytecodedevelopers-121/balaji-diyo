@@ -1,15 +1,16 @@
 import Link from "next/link";
 import { ArrowRight, Mountain } from "lucide-react";
 import { FillImage } from "@/components/ui/FillImage";
-import { WEB_STORIES } from "@/config/web-stories";
+import { getWebStories } from "@/features/site-content/api";
 
 /**
- * "Travel Web Stories" — tall story tiles from `config/web-stories.ts`, each
+ * "Travel Web Stories" — tall story tiles from the `/web-stories` API, each
  * opening its full-screen story at `/web-stories/<slug>`; "View All Stories"
  * goes to the `/travel-web-stories` listing.
  */
-export function WebStoriesSection() {
-  const stories = WEB_STORIES.slice(0, 4);
+export async function WebStoriesSection() {
+  const stories = (await getWebStories()).slice(0, 4);
+  if (stories.length === 0) return null;
 
   return (
     <section className="bg-site-bg px-4 pt-6 pb-12 min-[768px]:px-10 min-[1120px]:px-[72px]">

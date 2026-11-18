@@ -50,7 +50,7 @@ export default function RoleDetailPage() {
   const status = getErrorStatus(error);
 
   useEffect(() => {
-    document.title = role ? `${role.name} | Boundless Adventure Admin` : "Role | Boundless Adventure Admin";
+    document.title = role ? `${role.name} | Joyful Trekking Admin` : "Role | Joyful Trekking Admin";
   }, [role]);
 
   if (isError && status === 404) {

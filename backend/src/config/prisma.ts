@@ -14,11 +14,25 @@ const globalForPrisma = globalThis as {
 };
 
 if (!globalForPrisma.prisma) {
-  const pool = new Pool({ connectionString });
+  // Keep-alive and a short idle timeout stop the remote (Neon) server from dropping connections mid-request.
+  const pool = new Pool({
+    connectionString,
+    max: 10,
+    keepAlive: true,
+    idleTimeoutMillis: 20_000,
+    connectionTimeoutMillis: 30_000,
+  });
+  pool.on("error", () => {
+    // An idle connection closed by the server is discarded; the pool opens a new one on next use.
+  });
   const adapter = new PrismaPg(pool);
 
   globalForPrisma.prisma = new PrismaClient({
     adapter,
+    // The database is remote, so every query in an interactive transaction costs a network round
+    // trip. The 5s default expired on big saves (a package's itinerary rewrites many rows) with
+    // "Transaction API error: A query cannot be executed on an expired transaction".
+    transactionOptions: { maxWait: 15_000, timeout: 60_000 },
     log:
       process.env.NODE_ENV === "development"
         ? ["query", "error", "warn"]

@@ -49,12 +49,14 @@ type FormValues = z.infer<typeof schema>;
 
 interface TestimonialFormProps {
   defaultValues?: Testimonial;
+  /** Packages pre-selected on a new review (e.g. when added from a package page). */
+  presetPackageIds?: string[];
   onSubmit: (data: TestimonialFormValues) => void;
   isLoading: boolean;
   submitLabel: string;
 }
 
-export function TestimonialForm({ defaultValues, onSubmit, isLoading, submitLabel }: TestimonialFormProps) {
+export function TestimonialForm({ defaultValues, presetPackageIds, onSubmit, isLoading, submitLabel }: TestimonialFormProps) {
   const { isOnline } = useOnlineStatus();
 
   const {
@@ -83,7 +85,7 @@ export function TestimonialForm({ defaultValues, onSubmit, isLoading, submitLabe
       organizationLink: defaultValues?.organizationLink ?? "",
       isFeatured: defaultValues?.isFeatured ?? false,
       isActive: defaultValues?.isActive ?? true,
-      packageIds: defaultValues?.packages.map((p) => p.id) ?? [],
+      packageIds: defaultValues?.packages.map((p) => p.id) ?? presetPackageIds ?? [],
       memberIds: defaultValues?.members.map((m) => m.id) ?? [],
       metaTitle: defaultValues?.meta?.metaTitle ?? "",
       metaKeywords: defaultValues?.meta?.metaKeywords ?? "",

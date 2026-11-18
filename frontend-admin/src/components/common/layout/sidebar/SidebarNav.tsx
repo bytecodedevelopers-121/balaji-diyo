@@ -44,7 +44,7 @@ export function SidebarNav({ collapsed }: SidebarNavProps) {
         return (
           <div key={section} className="space-y-1">
             {!collapsed && (
-              <p className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant/60">
+              <p className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-white/50">
                 {SECTION_LABELS[section]}
               </p>
             )}

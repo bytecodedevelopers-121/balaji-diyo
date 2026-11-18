@@ -48,7 +48,7 @@ export default function ProfilePage() {
   const fullName = user ? `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim() || user.email : "";
 
   useEffect(() => {
-    document.title = "My Profile | Boundless Adventure Admin";
+    document.title = "My Profile | Joyful Trekking Admin";
   }, []);
 
   useEffect(() => {

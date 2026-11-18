@@ -1,0 +1,18 @@
+[
+  {
+    "id": "sample-cat-everest",
+    "title": "Everest Region"
+  },
+  {
+    "id": "sample-cat-annapurna",
+    "title": "Annapurna Region"
+  },
+  {
+    "id": "sample-cat-guides",
+    "title": "Trekking Guides"
+  },
+  {
+    "id": "sample-cat-culture",
+    "title": "Culture and Wildlife"
+  }
+]

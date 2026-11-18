@@ -49,7 +49,7 @@ export default function UserDetailPage() {
   const fullName = user ? `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim() || user.email : "";
 
   useEffect(() => {
-    document.title = user ? `${fullName} | Boundless Adventure Admin` : "User | Boundless Adventure Admin";
+    document.title = user ? `${fullName} | Joyful Trekking Admin` : "User | Joyful Trekking Admin";
   }, [user, fullName]);
 
   if (isError && status === 404) {

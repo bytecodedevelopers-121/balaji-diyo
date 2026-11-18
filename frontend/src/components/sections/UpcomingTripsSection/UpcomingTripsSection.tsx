@@ -2,14 +2,12 @@ import Link from "next/link";
 import { ArrowRight, Info, Mountain } from "lucide-react";
 import { getUpcomingDepartures } from "@/features/departures/api/get-upcoming-departures";
 import type { Departure } from "@/features/departures/types/departure.types";
-import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
 
 /**
  * "Join Upcoming Trips" — a departures table right after the Best Sellers
  * grid: trip, date range, status, price, and a "Join This Date" button
- * that opens the Last Minute Booking page. Real rows come from `GET /departures`;
- * `oldPrice` / `spaces` aren't in that API yet, so they only show on the
- * sample rows used when the database has no departures.
+ * that opens the Last Minute Booking page. Rows come from `GET /departures`;
+ * `oldPrice` / `spaces` aren't in that API yet, so they are not shown.
  */
 interface Row {
   id: string;
@@ -30,18 +28,6 @@ function addDays(date: Date, days: number): Date {
   next.setUTCDate(next.getUTCDate() + days);
   return next;
 }
-
-function sample(id: string, title: string, start: string, days: number, spaces: string, price: number, oldPrice: number): Row {
-  const startDate = new Date(`${start}T00:00:00Z`);
-  return { id, title, start: startDate, end: addDays(startDate, days - 1), days, status: "Guaranteed", spaces, price, oldPrice };
-}
-
-const SAMPLE_ROWS: Row[] = [
-  sample("s1", "Ghorepani Poon Hill Trek", "2026-11-05", 4, "7 Space", 600, 850),
-  sample("s2", "Best of Nepal Adventure", "2026-11-05", 12, "8 Space Available", 750, 1000),
-  sample("s3", "Everest Base Camp Trek", "2026-11-05", 14, "7 Space Left", 1300, 1500),
-  sample("s4", "Annapurna Base Camp Trek", "2026-11-06", 14, "7 Space Available", 850, 1100),
-];
 
 function toRow(departure: Departure): Row {
   const start = new Date(departure.departureDate);
@@ -72,12 +58,7 @@ function joinHref(row: Row): string {
 
 export async function UpcomingTripsSection() {
   const departures = await getUpcomingDepartures().catch(() => []);
-  const rows: Row[] =
-    departures.length > 0
-      ? departures.slice(0, MAX_ROWS).map(toRow)
-      : SHOW_SAMPLE_DATA
-        ? SAMPLE_ROWS
-        : [];
+  const rows: Row[] = departures.slice(0, MAX_ROWS).map(toRow);
   if (rows.length === 0) return null;
 
   return (

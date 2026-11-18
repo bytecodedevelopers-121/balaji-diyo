@@ -1,6 +1,5 @@
 import { apiFetch } from "@/lib/api/api-client";
 import { ApiError } from "@/lib/api/api-error";
-import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
 import type { CmsPage } from "../types/cms-page.types";
 
 /**
@@ -24,19 +23,6 @@ export async function getCmsPage(slug: string): Promise<CmsPage | null> {
     if (error instanceof ApiError && error.status === 404) {
       return null;
     }
-    // Backend unreachable (not running yet): show a bare page from the slug, like an empty database would.
-    if (SHOW_SAMPLE_DATA && error instanceof ApiError && error.status === 0) {
-      return samplePage(slug);
-    }
     throw error;
   }
-}
-
-/** A title-only stand-in so CMS-backed pages still render without the API. */
-function samplePage(slug: string): CmsPage {
-  const title = slug
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-  return { id: `sample-${slug}`, title, content: null, slug, meta: null };
 }

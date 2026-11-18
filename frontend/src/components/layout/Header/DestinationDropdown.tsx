@@ -13,9 +13,8 @@ import {
 } from "@/config/navigation";
 import { getCategoriesTrips, getRegionPackages } from "@/features/trips/api/get-region-packages";
 import { searchTrips } from "@/features/trips/api/search-trips";
-import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
-import { sampleTripsForCountry, sampleTripsForRegion } from "@/lib/sample-trips";
 import { TRIP_CATEGORIES } from "@/config/trip-categories";
+import { useAdminTourTypes, useTourTypeRegions } from "./useAdminTourTypes";
 import type { Trip } from "@/features/trips/types/trip.types";
 import { fallbackImage, toTitleCase, tripMeta } from "@/lib/menu-utils";
 import { cn } from "@/lib/utils";
@@ -181,9 +180,17 @@ export function DestinationDropdown({
   // Regions of the active country (across its trip types). Clicking one shows
   // its packages; they come from the menu when it lists them, otherwise from
   // the API by the region's slug (cached per region).
-  const regionList = activeCategory.subCategories.flatMap((sub) =>
+  const menuRegionList = activeCategory.subCategories.flatMap((sub) =>
     sub.subSubCategories.map((region) => ({ ...region, group: sub.label })),
   );
+  // Regions an admin created under the selected tour type (Admin → Travel → Regions). The tour type
+  // is resolved a little further down; this state carries its slug up to here.
+  const [activeTourSlug, setActiveTourSlug] = useState<string | null>(null);
+  const adminRegions = useTourTypeRegions(activeTourSlug);
+  const adminRegionItems = adminRegions
+    .filter((r) => !menuRegionList.some((m) => m.href === r.href))
+    .map((r) => ({ title: r.title, href: r.href, packages: [], packageCount: 0, group: "", isAdminRegion: true }));
+  const regionList = [...menuRegionList, ...adminRegionItems] as typeof menuRegionList;
   // Real regions only — the menu also lists individual tours (no package count) in the same tier, which are links not regions.
   const browseRegions = regionList.filter((region, index) => region.packageCount !== undefined && regionList.findIndex((other) => other.href === region.href) === index);
   const [selectedRegionHref, setSelectedRegionHref] = useState<string | null>(null);
@@ -203,14 +210,12 @@ export function DestinationDropdown({
       if (region.packages.length > 0 || regionTrips[href] !== undefined || loadingRegions.current.has(href)) continue;
       loadingRegions.current.add(href);
       const title = region.title;
-      getRegionPackages(href.replace(/^\/+|\/+$/g, ""))
+      getRegionPackages(href.replace(/^\/+|\/+$/g, ""), { perPage: 50 })
         // No such category on the API — fall back to a title search ("Everest Region" -> "Everest").
         .then((trips) =>
-          trips.length > 0 ? trips : searchTrips(title.replace(/\b(region|treks?|from|trekking)\b/gi, "").trim() || title, { sampleFallback: false }),
+          trips.length > 0 ? trips : searchTrips(title.replace(/\b(region|treks?|from|trekking)\b/gi, "").trim() || title),
         )
-        // Empty database — show the sample trips for this region, like the rest of the site.
-        .then((trips) => (trips.length === 0 && SHOW_SAMPLE_DATA ? sampleTripsForRegion(title) : trips))
-        .catch(() => (SHOW_SAMPLE_DATA ? sampleTripsForRegion(title) : []))
+        .catch(() => [])
         .then((trips) => setRegionTrips((prev) => ({ ...prev, [href]: trips })));
     }
   }, [isOpen, browseRegions, regionTrips]);
@@ -235,9 +240,7 @@ export function DestinationDropdown({
       if (countryTrips[label] !== undefined || loadingCountries.current.has(label)) continue;
       loadingCountries.current.add(label);
       getCategoriesTrips(categorySlugs(category))
-        // Empty database — show the sample trips assigned to this country, like the rest of the site.
-        .then((trips) => (trips.length === 0 && SHOW_SAMPLE_DATA ? sampleTripsForCountry(label) : trips))
-        .catch(() => (SHOW_SAMPLE_DATA ? sampleTripsForCountry(label) : []))
+        .catch(() => [])
         .then((trips) => setCountryTrips((prev) => ({ ...prev, [label]: trips })));
     }
   }, [isOpen, categories, countryTrips]);
@@ -249,48 +252,66 @@ export function DestinationDropdown({
       ? menuPackages.map((pkg) => ({ title: pkg.label, href: pkg.href, meta: "", image: null }))
       : (regionHref ? (regionTrips[regionHref] ?? []) : []).map(toPackageItem)
     : countryItems;
-  const packagesLoading = selectedRegion
-    ? menuPackages.length === 0 && !regionLoaded
-    : !countryLoaded;
+
   // Activity category filter (Trekking and Hiking, Climbing and Expedition, ...). Sample trips carry their
   // categories; API trips are matched against the category's own package list, fetched on demand.
+  // Built-in activity categories plus the tour types an admin added.
+  const adminTourTypes = useAdminTourTypes();
+  const tripCategories: readonly { key: string; label: string; href: string }[] = [
+    ...TRIP_CATEGORIES,
+    ...adminTourTypes.map((t) => ({ key: `tour-type-${t.slug}`, label: t.label, href: t.href })),
+  ];
   const [chosenCategory, setChosenCategory] = useState<string | null>(null);
+  const [categoryIds, setCategoryIds] = useState<Record<string, string[]>>({});
+  // How many of this country's packages sit in each activity category (sample trips carry their own
+  // keys; API packages are matched by id against the category's package list, loaded below).
+  const inCategory = (item: PackageItem, key: string) => {
+    if (item.categories) return item.categories.includes(key);
+    return item.id ? (categoryIds[key] ?? []).includes(item.id) : false;
+  };
   const categoryCounts: Record<string, number> = Object.fromEntries(
-    TRIP_CATEGORIES.map((category) => [category.key, countryItems.filter((item) => item.categories?.includes(category.key)).length]),
+    tripCategories.map((category) => [category.key, countryItems.filter((item) => inCategory(item, category.key)).length]),
   );
   // Until one is clicked, the first category that has packages in this country is selected.
-  const categoryKey = chosenCategory ?? (TRIP_CATEGORIES.find((category) => categoryCounts[category.key] > 0)?.key ?? TRIP_CATEGORIES[0].key);
-  const [categoryIds, setCategoryIds] = useState<Record<string, string[]>>({});
-  const activeTripCategory = TRIP_CATEGORIES.find((category) => category.key === categoryKey) ?? TRIP_CATEGORIES[0];
-  const needsCategoryIds = packageItems.some((item) => item.id && !item.categories);
+  const categoryKey = chosenCategory ?? (tripCategories.find((category) => categoryCounts[category.key] > 0)?.key ?? tripCategories[0]!.key);
+  const activeTripCategory = tripCategories.find((category) => category.key === categoryKey) ?? tripCategories[0]!;
+  const activeTripSlug = activeTripCategory.href.replace(/^\/+|\/+$/g, "");
+  if (activeTourSlug !== activeTripSlug) setActiveTourSlug(activeTripSlug);
 
+  // Load every activity category's package list as soon as the menu opens, so the counts are real
+  // and switching category is instant (no empty "none here yet" flash while it loads).
+  const loadingCategories = useRef(new Set<string>());
   useEffect(() => {
-    if (!isOpen || !activeTripCategory || !needsCategoryIds || categoryIds[activeTripCategory.key]) return;
-    const controller = new AbortController();
-    getRegionPackages(activeTripCategory.href.replace(/^\/+|\/+$/g, ""), { signal: controller.signal, perPage: 100 })
-      .then((trips) => setCategoryIds((prev) => ({ ...prev, [activeTripCategory.key]: trips.map((trip) => trip.id) })))
-      .catch(() => {
-        if (!controller.signal.aborted) setCategoryIds((prev) => ({ ...prev, [activeTripCategory.key]: [] }));
-      });
-    return () => controller.abort();
-  }, [isOpen, activeTripCategory, needsCategoryIds, categoryIds]);
+    if (!isOpen) return;
+    for (const category of tripCategories) {
+      if (categoryIds[category.key] !== undefined || loadingCategories.current.has(category.key)) continue;
+      loadingCategories.current.add(category.key);
+      getRegionPackages(category.href.replace(/^\/+|\/+$/g, ""), { perPage: 100 })
+        .catch(() => [])
+        .then((trips) => setCategoryIds((prev) => ({ ...prev, [category.key]: trips.map((trip) => trip.id) })));
+    }
+  }, [isOpen, categoryIds, adminTourTypes]);
+  const categoryLoaded = categoryIds[activeTripCategory.key] !== undefined;
 
-  const visibleItems = activeTripCategory
-    ? packageItems.filter((item) =>
-        item.categories
-          ? item.categories.includes(activeTripCategory.key)
-          : item.id
-            ? (categoryIds[activeTripCategory.key] ?? []).includes(item.id)
-            : false,
-      )
+  const packagesLoading = selectedRegion
+    ? menuPackages.length === 0 && !regionLoaded
+    : !countryLoaded || !categoryLoaded;
+
+  // A selected region already is the filter — show all of its packages, not just those also
+  // in the Trekking and Hiking activity category (a region holds heli tours, peak climbs, ...).
+  const visibleItems = activeTripCategory && !selectedRegion
+    ? packageItems.filter((item) => inCategory(item, activeTripCategory.key))
     : packageItems;
 
   // The regions (Everest, Annapurna, ...) belong to the Trekking and Hiking category.
   const trekkingCategory = TRIP_CATEGORIES[0];
-  const regionsVisible = browseRegions.length > 0 && categoryKey === trekkingCategory.key;
+  const isTrekking = categoryKey === trekkingCategory.key;
+  // Trekking shows the menu's regions (plus any admin-created ones); other tour types show only admin-created regions.
+  const shownRegions = isTrekking ? browseRegions : browseRegions.filter((r) => (r as { isAdminRegion?: boolean }).isAdminRegion);
+  const regionsVisible = shownRegions.length > 0;
   // Trekking and Hiking opens on its first region (Everest) instead of every package in the country.
   // (Render-phase adjustment, same pattern as the reset-on-close above.)
-  if (regionsVisible && selectedRegionHref === null) {
+  if (regionsVisible && isTrekking && selectedRegionHref === null) {
     setSelectedRegionHref(browseRegions[0].href);
   }
 
@@ -298,8 +319,9 @@ export function DestinationDropdown({
   const regionCount = (region: { href: string; packages: unknown[] }) => {
     const trips = regionTrips[region.href];
     if (!trips) return region.packages.length;
+    if ((region as { isAdminRegion?: boolean }).isAdminRegion) return trips.length;
     return trips.filter((trip) => {
-      const categories = (trip as { categories?: string[] }).categories;
+      const categories = activityKeys((trip as { categories?: unknown }).categories);
       return !categories || categories.includes(categoryKey);
     }).length;
   };
@@ -532,7 +554,7 @@ export function DestinationDropdown({
               <div className="destination-dropdown-group destination-scroll overflow-y-auto border-white/10 px-5 py-6 min-[1120px]:border-r">
                 <p className="mb-3 text-[11px] font-bold tracking-[0.14em] text-white/55 uppercase">Category</p>
                 <ul className="flex flex-col gap-1">
-                  {TRIP_CATEGORIES.map((category) => {
+                  {tripCategories.map((category) => {
                     const isActive = category.key === categoryKey;
                     const count = categoryCounts[category.key];
                     return (
@@ -573,9 +595,9 @@ export function DestinationDropdown({
               {/* Regions — only for Trekking and Hiking. Click a region to narrow the packages; click it again to show them all. */}
               {regionsVisible ? (
                 <div className="destination-dropdown-group destination-scroll overflow-y-auto border-white/10 px-5 py-6 min-[1120px]:border-r">
-                  <p className="mb-2 text-[11px] font-bold tracking-[0.14em] text-logo-sun uppercase">{trekkingCategory.label}</p>
+                  <p className="mb-2 text-[11px] font-bold tracking-[0.14em] text-logo-sun uppercase">{activeTripCategory.label}</p>
                   <ul className="flex flex-col gap-1">
-                    {browseRegions.map((region) => {
+                    {shownRegions.map((region) => {
                       const isSelected = region.href === regionHref;
                       const count = regionCount(region);
                       return (
@@ -737,6 +759,15 @@ export function DestinationDropdown({
 }
 
 /** A trip as one menu row: title, "14 DAYS · FROM US$1,450" caption and its own photo. */
+/**
+ * Sample trips carry activity keys ("trekking") in `categories`; API packages carry
+ * category *objects* there instead. Only the string form is usable as an activity filter —
+ * API packages are matched by id against the category's own package list.
+ */
+function activityKeys(value: unknown): string[] | undefined {
+  return Array.isArray(value) && value.every((entry) => typeof entry === "string") ? (value as string[]) : undefined;
+}
+
 function toPackageItem(trip: Trip): PackageItem {
   return {
     title: trip.title,
@@ -744,7 +775,7 @@ function toPackageItem(trip: Trip): PackageItem {
     meta: tripMeta(trip),
     image: trip.imageUrl ?? null,
     id: trip.id,
-    categories: (trip as { categories?: string[] }).categories,
+    categories: activityKeys((trip as { categories?: unknown }).categories),
     tag: trip.isPopular ? "Best Seller" : trip.isFeatured ? "Featured Trip" : "Inspiration Trip",
   };
 }

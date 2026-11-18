@@ -8,6 +8,7 @@ import { X } from "lucide-react";
 import { SocialIcon } from "@/components/ui/ContactIcons";
 import { socialLinks } from "@/config/social-links";
 import { cn } from "@/lib/utils";
+import { useAdminTourTypes } from "./useAdminTourTypes";
 
 /** "Travel Styles" shortcuts — all existing category pages. */
 const TRAVEL_STYLES = [
@@ -38,6 +39,7 @@ export function SideMenu({ triggerSizeClassName = "size-5", onOpenChange }: Side
   const [mounted, setMounted] = useState(false);
   const [shown, setShown] = useState(false);
   const panelId = useId();
+  const travelStyles = [...TRAVEL_STYLES, ...useAdminTourTypes()];
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
 
@@ -148,7 +150,7 @@ export function SideMenu({ triggerSizeClassName = "size-5", onOpenChange }: Side
                 </p>
 
                 <ul className="mt-6 flex flex-col gap-4">
-                  {TRAVEL_STYLES.map((style) => (
+                  {travelStyles.map((style) => (
                     <li key={style.label}>
                       <Link
                         href={style.href}

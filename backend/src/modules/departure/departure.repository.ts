@@ -43,6 +43,14 @@ export class DepartureRepository {
     return this.prisma.departure.delete({ where: { id } });
   }
 
+  async hasLastMinute(packageId: string, excludeId?: string) {
+    const found = await this.prisma.departure.findFirst({
+      where: { packageId, isLastMinute: true, ...(excludeId ? { id: { not: excludeId } } : {}) },
+      select: { id: true },
+    });
+    return found !== null;
+  }
+
   packageExists(packageId: string) {
     return this.prisma.package.findUnique({ where: { id: packageId }, select: { id: true } });
   }

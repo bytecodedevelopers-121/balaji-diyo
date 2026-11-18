@@ -27,6 +27,10 @@ export class MediaRepository {
     return this.prisma.media.update({ where: { id }, data });
   }
 
+  async countAttachments(id: string) {
+    return this.prisma.attachment.count({ where: { mediaId: id } });
+  }
+
   async delete(id: string) {
     return this.prisma.media.delete({ where: { id } });
   }

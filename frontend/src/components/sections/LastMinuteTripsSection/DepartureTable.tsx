@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Departure } from "@/features/departures/types/departure.types";
 
 interface DepartureTableProps {
@@ -38,14 +39,12 @@ export function DepartureTable({ departures }: DepartureTableProps) {
                 {departure.package.duration} {departure.package.durationType}
               </td>
               <td className="px-5 text-center">
-                <a
-                  href={whatsAppHref(reserveSeatMessage(departure))}
-                  target="_blank"
-                  rel="noreferrer"
+                <Link
+                  href={bookingHref(departure)}
                   className="inline-flex min-h-[34px] shrink-0 items-center justify-center rounded-pill bg-secondary-500 px-4 py-1.5 text-button-m font-medium whitespace-nowrap text-brand-neutral-000 transition-opacity hover:opacity-90"
                 >
                   Reserve Seat
-                </a>
+                </Link>
               </td>
             </tr>
           ))}
@@ -102,14 +101,18 @@ function dummyDeparture(
   };
 }
 
-const WHATSAPP_NUMBER = "9779845000000";
-
-function whatsAppHref(message: string): string {
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-}
-
-function reserveSeatMessage(departure: Departure): string {
-  return `Hi! I'd like to reserve a seat on the ${departure.package.title} departing ${formatDepartureRange(departure)}.`;
+function bookingHref(departure: DisplayDeparture): string {
+  const params = new URLSearchParams({
+    title: departure.package.title,
+    date: new Date(departure.departureDate).toISOString().slice(0, 10),
+  });
+  const days = Number.parseInt(departure.package.duration, 10);
+  if (departure.package.durationType.toLowerCase() === "days" && Number.isFinite(days)) {
+    params.set("days", String(days));
+  }
+  const price = Number.parseFloat(departure.departureCost);
+  if (Number.isFinite(price) && price > 0) params.set("price", String(price));
+  return `/last-minute-booking?${params.toString()}`;
 }
 
 const dateFormatter = new Intl.DateTimeFormat("en-GB", {

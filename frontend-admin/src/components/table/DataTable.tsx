@@ -31,15 +31,15 @@ export function DataTable<T>({
   onRowClick,
 }: DataTableProps<T>) {
   return (
-    <div className={cn("overflow-x-auto rounded-lg border border-gray-200 bg-white", className)}>
+    <div className={cn("overflow-x-auto rounded-2xl border border-[#efe6da] bg-white", className)}>
       <table className="w-full min-w-[640px] text-left text-sm">
-        <thead className="sticky top-0 bg-gray-50">
+        <thead className="sticky top-0 bg-logo-navy-dark">
           <tr>
             {columns.map((col) => (
               <th
                 key={col.key}
                 style={col.width ? { width: col.width } : undefined}
-                className="whitespace-nowrap px-4 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500"
+                className="whitespace-nowrap px-4 py-3 text-xs font-semibold uppercase tracking-wide text-white"
               >
                 {col.header}
               </th>
@@ -60,7 +60,7 @@ export function DataTable<T>({
             data.map((row, i) => (
               <tr
                 key={i}
-                className={cn("hover:bg-gray-50", onRowClick && "cursor-pointer")}
+                className={cn("hover:bg-site-row", onRowClick && "cursor-pointer")}
                 onClick={onRowClick ? () => onRowClick(row) : undefined}
               >
                 {columns.map((col) => (

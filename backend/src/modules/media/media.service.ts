@@ -55,6 +55,21 @@ export class MediaService {
       });
     }
 
+    // Animated WebP for video reviews (folder "videos"): keep the file byte-for-byte so it still animates.
+    if (mimetype === 'image/webp' && folderPath === 'videos') {
+      const diskFilename = `${randomUUID()}.webp`;
+      const { path: savedPath } = await this.filesService.savePublicRaw(buffer, `${folderPath}/${diskFilename}`);
+      return this.repository.create({
+        fullName: originalFilename || diskFilename,
+        fullPath: savedPath,
+        altText: altText ?? null,
+        mime: 'image/webp',
+        extension: 'webp',
+        width: null,
+        height: null,
+      });
+    }
+
     const diskFilename = `${randomUUID()}.webp`;
     const storagePath = `${folderPath}/${diskFilename}`;
 
@@ -105,7 +120,17 @@ export class MediaService {
 
   async remove(id: string) {
     const media = await this.findById(id);
-    await this.filesService.deleteFile(media.fullPath, 'public');
+    // Attachments (package/page/blog photos, ...) reference media with ON DELETE RESTRICT — refuse up front
+    // with a readable message instead of a 500, and before the file is removed from disk.
+    const usages = await this.repository.countAttachments(id);
+    if (usages > 0) {
+      throw new ApiError(
+        409,
+        `This file is still used by ${usages} item${usages === 1 ? '' : 's'} (e.g. a package, page or blog). Remove it from there first, then delete it.`,
+      );
+    }
+    // Row first, file second: if the database refuses, the file is never orphaned from its record.
     await this.repository.delete(id);
+    await this.filesService.deleteFile(media.fullPath, 'public');
   }
 }

@@ -56,7 +56,7 @@ const nextConfig: NextConfig = {
     // (and first-hit encodes) small.
     deviceSizes: [480, 768, 1080, 1440, 1920],
     imageSizes: [64, 128, 256, 384],
-    qualities: [75, 85],
+    qualities: [75, 85, 95],
   },
 
   // Legacy image/document URL handling (remote patterns for the *old*

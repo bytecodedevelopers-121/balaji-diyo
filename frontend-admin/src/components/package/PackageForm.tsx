@@ -1,8 +1,12 @@
-import { useForm, useFieldArray, useWatch, Controller, type Control, type Path, type UseFormRegister } from "react-hook-form";
+import { useState } from "react";
+import { useForm, useFieldArray, useWatch, Controller, type Control, type Path, type UseFormRegister, type UseFormSetValue } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
+import { TripPlacement } from "@/components/package/TripPlacement";
+import { PackageWrittenReviews } from "@/components/package/PackageWrittenReviews";
+import { VideoReviewsEditor } from "@/components/package/VideoReviewsEditor";
 import { Textarea } from "@/components/ui/Textarea";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { Button } from "@/components/ui/Button";
@@ -146,7 +150,7 @@ const schema = z.object({
   isActive: z.boolean(),
   publishedAt: z.string().optional(),
 
-  destinationId: z.string().min(1, "Destination is required"),
+  destinationId: z.string().min(1, "Pick a country (or region) in \"Where does this trip go?\" above"),
   gradeId: z.string().optional(),
   styleId: z.string().optional(),
   transportationId: z.string().optional(),
@@ -175,6 +179,22 @@ const schema = z.object({
 });
 
 type FormInput = z.input<typeof schema>;
+
+/** Guided tour type / country / region picker that fills `categoryIds` and `destinationId`. */
+function TripPlacementField({ control, setValue }: { control: Control<FormInput, unknown, FormValues>; setValue: UseFormSetValue<FormInput> }) {
+  const categoryIds = useWatch({ control, name: "categoryIds" }) ?? [];
+  const destinationId = useWatch({ control, name: "destinationId" }) ?? "";
+  return (
+    <TripPlacement
+      categoryIds={categoryIds}
+      destinationId={destinationId}
+      onChange={(next) => {
+        setValue("categoryIds", next.categoryIds, { shouldDirty: true });
+        setValue("destinationId", next.destinationId, { shouldDirty: true, shouldValidate: true });
+      }}
+    />
+  );
+}
 type FormValues = z.output<typeof schema>;
 
 const OVERVIEW_SECTIONS: PanelSection[] = [
@@ -240,12 +260,15 @@ export function PackageForm({ defaultValues, onSubmit, isLoading, submitLabel, a
    *   array-shaped, so an edit to some *other* field on a raw-HTML
    *   package doesn't silently overwrite that real content with `[]`.
    */
+  const [invalidMessage, setInvalidMessage] = useState<string | null>(null);
   const extraFaqsIsStructured = Array.isArray(defaultValues?.extraFaqs);
 
   const {
     register,
     handleSubmit,
     control,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<FormInput, unknown, FormValues>({
     resolver: zodResolver(schema),
@@ -503,11 +526,13 @@ export function PackageForm({ defaultValues, onSubmit, isLoading, submitLabel, a
     label: string,
     keyLabel: string,
     required = false,
+    hint?: string,
   ) => (
     <div>
       <label className="mb-1.5 block text-sm font-medium text-gray-700">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
+      {hint && <p className="mb-1.5 text-xs text-gray-500">{hint}</p>}
       {scoped.categoryType ? (
         <Controller
           name={name}
@@ -659,7 +684,16 @@ export function PackageForm({ defaultValues, onSubmit, isLoading, submitLabel, a
   );
 
   return (
-    <form id={PACKAGE_FORM_ID} onSubmit={handleSubmit(submit)} className="space-y-6">
+    <form
+      id={PACKAGE_FORM_ID}
+      onSubmit={handleSubmit(submit, (fieldErrors) => {
+        // Fields on other tabs are hidden, so say which ones blocked the save instead of failing silently.
+        const names = Object.keys(fieldErrors).join(", ");
+        setInvalidMessage(`Not saved. Please fix these fields (they may be on another tab): ${names}.`);
+      })}
+      className="space-y-6"
+    >
+      {invalidMessage && <Alert variant="error" message={invalidMessage} onClose={() => setInvalidMessage(null)} />}
       {!isOnline && <Alert variant="warning" message="You are offline. Changes are disabled." />}
 
       <fieldset disabled={!isOnline} className="space-y-6">
@@ -671,6 +705,32 @@ export function PackageForm({ defaultValues, onSubmit, isLoading, submitLabel, a
               <FormSection title="Basic Information" columns={2}>
                 <div className="sm:col-span-2">
                   <Input label="Package Title" required error={errors.title?.message} {...register("title")} />
+                </div>
+                <div className="sm:col-span-2 rounded-2xl border border-[#efe6da] bg-site-row p-4">
+                  <p className="mb-3 text-sm font-semibold text-logo-navy-dark">Visibility and homepage</p>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <label className="flex cursor-pointer items-start gap-3 rounded-xl bg-white p-3 ring-1 ring-[#efe6da]">
+                      <Checkbox {...register("isActive")} />
+                      <span>
+                        <span className="block text-sm font-semibold text-on-surface">Published</span>
+                        <span className="block text-xs text-on-surface-variant">Visible on the website</span>
+                      </span>
+                    </label>
+                    <label className="flex cursor-pointer items-start gap-3 rounded-xl bg-white p-3 ring-1 ring-[#efe6da]">
+                      <Checkbox {...register("isPopular")} />
+                      <span>
+                        <span className="block text-sm font-semibold text-on-surface">Best Seller</span>
+                        <span className="block text-xs text-on-surface-variant">Shows in the homepage "10 Best Treks" carousel</span>
+                      </span>
+                    </label>
+                    <label className="flex cursor-pointer items-start gap-3 rounded-xl bg-white p-3 ring-1 ring-[#efe6da]">
+                      <Checkbox {...register("isFeatured")} />
+                      <span>
+                        <span className="block text-sm font-semibold text-on-surface">Featured Trip</span>
+                        <span className="block text-xs text-on-surface-variant">Shows in the homepage "10 Best Tours and Holidays" section</span>
+                      </span>
+                    </label>
+                  </div>
                 </div>
                 <Input label="URL Title" hint="Defaults to the package title" error={errors.urlTitle?.message} {...register("urlTitle")} />
                 <Input label="Slug" hint="Leave blank to auto-generate" error={errors.slug?.message} {...register("slug")} />
@@ -684,7 +744,15 @@ export function PackageForm({ defaultValues, onSubmit, isLoading, submitLabel, a
               <FormSection title="Categorization" columns={2}>
                 <Input label="Package Duration" type="number" step="0.5" required error={errors.duration?.message} {...register("duration", { valueAsNumber: true })} />
                 <Input label="Duration Unit" hint='e.g. "Days", "Nights"' required error={errors.durationType?.message} {...register("durationType")} />
-                {singleScopedPicker(destination, "destinationId", "Package Destination", "destination", true)}
+                <TripPlacementField control={control} setValue={setValue} />
+                {singleScopedPicker(
+                  destination,
+                  "destinationId",
+                  "Main destination",
+                  "destination",
+                  true,
+                  "Filled in automatically from the country / region you pick above. Only change it to override.",
+                )}
                 <div />
                 {scopedPicker(generalCategories, "categoryIds", "Categories", "destination")}
                 {placesPicker}
@@ -724,19 +792,6 @@ export function PackageForm({ defaultValues, onSubmit, isLoading, submitLabel, a
                   error={errors.publishedAt?.message}
                   {...register("publishedAt")}
                 />
-                <div className="flex items-end gap-4">
-                  <Checkbox label="Publish" {...register("isActive")} />
-                  <Checkbox
-                    label="Featured"
-                    title="Shows in the Featured carousel and The 2026/27 Lineup"
-                    {...register("isFeatured")}
-                  />
-                  <Checkbox
-                    label="Popular"
-                    title="Shows in the homepage's Most Popular Journeys section"
-                    {...register("isPopular")}
-                  />
-                </div>
               </FormSection>
             </SectionAnchor>
           </SectionedLayout>
@@ -889,17 +944,23 @@ export function PackageForm({ defaultValues, onSubmit, isLoading, submitLabel, a
                 <Repeater
                   label="Facts"
                   description="Key/value facts shown on the trip page"
-                  fields={factsArray.fields}
+                  fields={factsArray.fields.filter((f) => f.factTitle !== "video")}
                   onAdd={() => factsArray.append({ factTitle: "", factValue: "" })}
-                  onRemove={factsArray.remove}
+                  onRemove={(filteredIndex) => {
+                    const target = factsArray.fields.filter((f) => f.factTitle !== "video")[filteredIndex];
+                    factsArray.remove(factsArray.fields.findIndex((f) => f.id === target?.id));
+                  }}
                   addLabel="+ Add more facts"
                   emptyMessage="No facts yet."
-                  renderRow={(_field, index) => (
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                      <Input label="Title" required {...register(`facts.${index}.factTitle`)} error={errors.facts?.[index]?.factTitle?.message} />
-                      <Input label="Value" required {...register(`facts.${index}.factValue`)} error={errors.facts?.[index]?.factValue?.message} />
-                    </div>
-                  )}
+                  renderRow={(field) => {
+                    const index = factsArray.fields.findIndex((f) => f.id === field.id);
+                    return (
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <Input label="Title" required {...register(`facts.${index}.factTitle`)} error={errors.facts?.[index]?.factTitle?.message} />
+                        <Input label="Value" required {...register(`facts.${index}.factValue`)} error={errors.facts?.[index]?.factValue?.message} />
+                      </div>
+                    );
+                  }}
                 />
               </div>
             </SectionAnchor>
@@ -975,6 +1036,29 @@ export function PackageForm({ defaultValues, onSubmit, isLoading, submitLabel, a
               </FormSection>
             </SectionAnchor>
           </SectionedLayout>
+        </div>
+
+        <div className={tab === "reviews" ? "space-y-8" : "hidden"}>
+          <FormSection title="Video Reviews" description="Traveller video reviews, shown under Video Reviews on this trip's page. Upload video files or add YouTube links." columns={2}>
+            <VideoReviewsEditor
+              items={factsArray.fields
+                .map((field, index) => ({ field, index }))
+                .filter(({ field }) => field.factTitle === "video")
+                .map(({ index }) => ({ index, value: String(watch(`facts.${index}.factValue`) ?? "") }))}
+              onAdd={(value) => factsArray.append({ factTitle: "video", factValue: value })}
+              onRemove={(index) => factsArray.remove(index)}
+            />
+          </FormSection>
+
+          <FormSection title="Written Reviews" description="Reviews from travellers, shown under Reviews on this trip's page." columns={2}>
+            {defaultValues?.id ? (
+              <PackageWrittenReviews packageId={defaultValues.id} />
+            ) : (
+              <p className="rounded-xl border border-dashed border-[#e6dccd] px-4 py-8 text-center text-sm text-on-surface-variant">
+                Create the package first, then add written reviews here.
+              </p>
+            )}
+          </FormSection>
         </div>
 
         <div className={tab === "gear" ? "" : "hidden"}>

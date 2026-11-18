@@ -14,7 +14,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const VARIANT_MAP: Record<ButtonVariant, string> = {
-  primary: "bg-indigo-600 text-white hover:bg-indigo-700",
+  primary: "bg-logo-sun text-logo-navy-dark font-semibold shadow-sm hover:brightness-95",
   secondary: "bg-gray-100 text-gray-700 hover:bg-gray-200",
   danger: "bg-red-600 text-white hover:bg-red-700",
   ghost: "bg-transparent text-gray-600 hover:bg-gray-100",
@@ -28,7 +28,7 @@ const SIZE_MAP: Record<ButtonSize, string> = {
 };
 
 const SPINNER_COLOR_MAP: Record<ButtonVariant, SpinnerColor> = {
-  primary: "white",
+  primary: "gray",
   secondary: "gray",
   danger: "white",
   ghost: "gray",
@@ -52,7 +52,7 @@ export function Button({
       type={type}
       disabled={disabled || isLoading}
       className={cn(
-        "relative inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors",
+        "relative inline-flex items-center justify-center gap-2 rounded-full font-medium transition-colors",
         "focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:ring-offset-1",
         "disabled:cursor-not-allowed disabled:opacity-50",
         VARIANT_MAP[variant],

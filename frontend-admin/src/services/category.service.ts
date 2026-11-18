@@ -11,6 +11,7 @@ export interface CategoryListParams {
   isActive?: boolean;
   includeTrashed?: boolean;
   hasPackages?: boolean;
+  extraField1?: string;
 }
 
 export const categoryService = {

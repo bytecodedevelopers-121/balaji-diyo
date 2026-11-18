@@ -11,6 +11,9 @@ export const GetDeparturesDto = z.object({
   // DeparturesTab (which lists every departure for a package regardless
   // of date/status) is unaffected.
   upcoming: z.coerce.boolean().optional(),
+  // Only departures an admin flagged as "last minute". Send `lastMinute=true`
+  // to filter; omit it for no filtering.
+  lastMinute: z.enum(['true']).optional(),
 });
 
 export type GetDeparturesDtoType = z.infer<typeof GetDeparturesDto>;

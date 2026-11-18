@@ -17,7 +17,7 @@ const PADDING_MAP: Record<PageCardPadding, string> = {
 
 export function PageCard({ children, className, padding = "md" }: PageCardProps) {
   return (
-    <div className={cn("rounded-xl border border-gray-100 bg-white shadow-sm", PADDING_MAP[padding], className)}>
+    <div className={cn("rounded-2xl border border-[#efe6da] bg-white shadow-[0_6px_24px_rgba(6,74,112,0.06)]", PADDING_MAP[padding], className)}>
       {children}
     </div>
   );

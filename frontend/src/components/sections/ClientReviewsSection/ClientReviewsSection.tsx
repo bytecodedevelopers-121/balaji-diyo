@@ -3,13 +3,11 @@ import { ArrowRight, Mountain, Quote, Star } from "lucide-react";
 import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
 import { getFeaturedTestimonials } from "@/features/testimonials/api/get-testimonials";
 import { TiltCard } from "./TiltCard";
-import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
 
 /**
  * "What Our Clients Say?" — centred heading, review-platform ratings and three
  * slightly tilted review cards. Cards come from the admin's featured testimonials
- * (`isFeatured`); when there are none, development shows sample reviews
- * (unless `SHOW_SAMPLE_DATA=false`) and the section is hidden otherwise.
+ * (`isFeatured`); the section is hidden when there are none.
  */
 interface ReviewCard {
   id: string;
@@ -18,7 +16,7 @@ interface ReviewCard {
   date: string;
   rating: number;
   title: string;
-  /** Rich-text HTML from the CMS, or plain sample text. */
+  /** Rich-text HTML from the CMS. */
   body: string;
 }
 
@@ -26,36 +24,6 @@ const PLATFORMS = [
   { name: "Tripadvisor", meta: "287 reviews", color: "text-[#00aa6c]" },
   { name: "Google Reviews", meta: "111 reviews", color: "text-[#fbbc04]" },
   { name: "Trustpilot", meta: "79 reviews", color: "text-[#00b67a]" },
-];
-
-const SAMPLE_REVIEWS: ReviewCard[] = [
-  {
-    id: "r1",
-    name: "Mark",
-    country: "Australia",
-    date: "May 31, 2026",
-    rating: 5,
-    title: "A rewarding Annapurna adventure with comfortable stays",
-    body: "I completed the Comfort Annapurna Circuit Trek in May 2026. For me, the appeal was combining the mountain experience with more comfortable accommodation where available and our guide looked after us every step of the way.",
-  },
-  {
-    id: "r2",
-    name: "Katie Marquis",
-    country: "Australia",
-    date: "May 13, 2026",
-    rating: 5,
-    title: "Amazing experience",
-    body: "Our trekking guide was Saroj and our porter was Uttam. They were both amazing. The hike itself was sweaty work but so worth it. Unfortunately it was too cloudy to see the peaks.",
-  },
-  {
-    id: "r3",
-    name: "Debz",
-    country: "Australia",
-    date: "Apr 12, 2026",
-    rating: 5,
-    title: "Magical memories - Poon Hill Trek with Chitwan Jungle Safari",
-    body: "Incredible experience combining Kathmandu, the Poon Hill trek and Chitwan jungle safari. The trek offered stunning Himalayan views, beautiful villages, and well-managed trails.",
-  },
 ];
 
 /** Resting tilt (degrees) of each card, repeating. */
@@ -79,20 +47,15 @@ function Stars({ rating }: { rating: number }) {
 
 export async function ClientReviewsSection() {
   const featured = await getFeaturedTestimonials(3).catch(() => []);
-  const cards: ReviewCard[] =
-    featured.length > 0
-      ? featured.map((t) => ({
-          id: t.id,
-          name: t.fullName,
-          country: t.countryName,
-          date: t.reviewDate ? dateFormat.format(new Date(t.reviewDate)) : "",
-          rating: Number(t.reviewRating) || 5,
-          title: t.reviewTitle || t.fullName,
-          body: t.reviewAbstract || t.review,
-        }))
-      : SHOW_SAMPLE_DATA
-        ? SAMPLE_REVIEWS
-        : [];
+  const cards: ReviewCard[] = featured.map((t) => ({
+    id: t.id,
+    name: t.fullName,
+    country: t.countryName,
+    date: t.reviewDate ? dateFormat.format(new Date(t.reviewDate)) : "",
+    rating: Number(t.reviewRating) || 5,
+    title: t.reviewTitle || t.fullName,
+    body: t.reviewAbstract || t.review,
+  }));
   if (cards.length === 0) return null;
 
   return (

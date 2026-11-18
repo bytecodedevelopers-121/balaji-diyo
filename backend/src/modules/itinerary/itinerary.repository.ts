@@ -158,12 +158,15 @@ export class ItineraryRepository {
       await tx.itineraryDetail.deleteMany({ where: { id: { in: staleIds } } });
     }
 
+    // Facts have no dependents of their own (unlike the detail row itself), so a plain
+    // delete-then-recreate carries none of the orphaning risk above. One delete for every kept
+    // row (instead of one per row) saves a network round trip per day on a remote database.
+    if (keptIds.size > 0) {
+      await tx.itineraryFact.deleteMany({ where: { detailId: { in: [...keptIds] } } });
+    }
+
     for (const [index, { id: detailId, facts, ...rest }] of details.entries()) {
       if (detailId && keptIds.has(detailId)) {
-        // Facts have no dependents of their own (unlike the detail row
-        // itself), so a plain delete-then-recreate for just this row's
-        // facts is simplest and carries none of the orphaning risk above.
-        await tx.itineraryFact.deleteMany({ where: { detailId } });
         await tx.itineraryDetail.update({
           where: { id: detailId },
           data: { ...rest, sortOrder: index, facts: { create: facts ?? [] } },

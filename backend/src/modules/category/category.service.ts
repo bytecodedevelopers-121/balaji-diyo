@@ -95,6 +95,7 @@ export class CategoryService {
       ...(dto.typeId ? { typeId: dto.typeId } : {}),
       ...(dto.parentId ? { parentId: dto.parentId === 'root' ? null : dto.parentId } : {}),
       ...(dto.isActive !== undefined ? { isActive: dto.isActive } : {}),
+      ...(dto.extraField1 ? { extraField1: dto.extraField1 } : {}),
       ...(dto.hasPackages ? { packages: { some: { deletedAt: null } } } : {}),
       ...(dto.search ? { title: { contains: dto.search, mode: 'insensitive' } } : {}),
     };

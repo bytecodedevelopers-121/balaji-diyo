@@ -13,6 +13,8 @@ export const GetCategoriesDto = z.object({
   // Only categories with at least one non-trashed package tagged — the
   // admin's "which category pages can I reorder" filter.
   hasPackages: booleanQueryParam,
+  // Exact match on the free-form marker field (e.g. "tour-type" for admin-created tour types).
+  extraField1: z.string().optional(),
 });
 
 export type GetCategoriesDtoType = z.infer<typeof GetCategoriesDto>;

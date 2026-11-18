@@ -1,7 +1,5 @@
 import { apiFetch } from "@/lib/api/api-client";
 import { ApiError } from "@/lib/api/api-error";
-import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
-import { SAMPLE_TEAM_MEMBERS } from "../sample-team";
 import type { TeamMember } from "../types/team-member.types";
 
 /**
@@ -24,14 +22,7 @@ export async function getTeamMemberBySlug(
       next: { revalidate: 900, tags: ["team-members", `team-member:${slug}`] },
     });
   } catch (error) {
-    const sample = SHOW_SAMPLE_DATA ? SAMPLE_TEAM_MEMBERS.find((member) => member.slug === slug) : undefined;
-    if (error instanceof ApiError && error.status === 404) {
-      return sample ?? null;
-    }
-    // Backend unreachable: the sample member still opens when sample data is on.
-    if (sample && error instanceof ApiError && error.status === 0) {
-      return sample;
-    }
+    if (error instanceof ApiError && error.status === 404) return null;
     throw error;
   }
 }

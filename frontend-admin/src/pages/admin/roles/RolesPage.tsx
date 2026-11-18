@@ -26,7 +26,7 @@ export default function RolesPage() {
   const [viewTarget, setViewTarget] = useState<Role | null>(null);
 
   useEffect(() => {
-    document.title = "Roles | Boundless Adventure Admin";
+    document.title = "Roles | Joyful Trekking Admin";
   }, []);
 
   const { data, isLoading, isError, isFetching, refetch } = useRoles({ page, perPage: 10, search: search || undefined });

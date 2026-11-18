@@ -21,8 +21,8 @@ export function Sidebar({ collapsed, mobileOpen, onCollapse }: SidebarProps) {
     <aside
       className={[
         // Base
-        "fixed top-0 left-0 z-40 h-screen flex flex-col text-on-surface shadow-xl",
-        "bg-surface border-r border-outline-variant/60",
+        "fixed top-0 left-0 z-40 h-screen flex flex-col text-white shadow-xl",
+        "bg-logo-navy-dark border-r border-white/10",
         "transition-all duration-300 ease-in-out",
         // Width
         collapsed ? "w-20" : "w-64",
@@ -32,9 +32,9 @@ export function Sidebar({ collapsed, mobileOpen, onCollapse }: SidebarProps) {
       ].join(" ")}
     >
       {/* Logo area */}
-      <div className="flex items-center justify-center px-5 h-16 border-b border-outline-variant/60 shrink-0 bg-surface/50 backdrop-blur-sm">
+      <div className="flex items-center justify-center px-5 h-16 border-b border-white/10 shrink-0 bg-black/10">
         <img
-          src="/logo.svg"
+          src="/logo.png"
           alt={COMPANY_INFO.name}
           className={collapsed ? "h-8 w-8 shrink-0 object-contain" : "h-9 w-auto shrink-0 object-contain"}
         />
@@ -44,13 +44,13 @@ export function Sidebar({ collapsed, mobileOpen, onCollapse }: SidebarProps) {
       <SidebarNav collapsed={collapsed} />
 
       {/* Collapse toggle — desktop only */}
-      <div className="hidden lg:flex px-4 py-4 border-t border-outline-variant/60 shrink-0">
+      <div className="hidden lg:flex px-4 py-4 border-t border-white/10 shrink-0">
         <button
           type="button"
           onClick={onCollapse}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant
-                     hover:bg-surface-container-high hover:text-on-surface transition-all duration-300 w-full
-                     cursor-pointer group ring-1 ring-transparent hover:ring-outline-variant/50"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70
+                     hover:bg-white/10 hover:text-white transition-all duration-300 w-full
+                     cursor-pointer group ring-1 ring-transparent hover:ring-white/10"
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {collapsed ? (

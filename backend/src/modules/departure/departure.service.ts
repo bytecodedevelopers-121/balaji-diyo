@@ -27,8 +27,16 @@ export class DepartureService {
     if (!pkg) throw new ApiError(400, 'Invalid packageId');
   }
 
+  // A package can have only one "last minute" deal at a time.
+  private async assertNoLastMinuteDuplicate(packageId: string, excludeId?: string) {
+    if (await this.repository.hasLastMinute(packageId, excludeId)) {
+      throw new ApiError(409, 'This package already has a last minute deal');
+    }
+  }
+
   async create(dto: CreateDepartureDtoType) {
     await this.assertPackageExists(dto.packageId);
+    if (dto.isLastMinute) await this.assertNoLastMinuteDuplicate(dto.packageId);
     const departure = await this.repository.create(dto);
     await this.revalidate(dto.packageId);
     return departure;
@@ -36,6 +44,9 @@ export class DepartureService {
 
   async createBulk(dto: CreateDeparturesBulkDtoType) {
     await this.assertPackageExists(dto.packageId);
+    const flagged = dto.departures.filter((d) => d.isLastMinute).length;
+    if (flagged > 1) throw new ApiError(409, 'A package can have only one last minute deal');
+    if (flagged === 1) await this.assertNoLastMinuteDuplicate(dto.packageId);
     await this.repository.createMany(dto.departures.map((d) => ({ ...d, packageId: dto.packageId })));
     await this.revalidate(dto.packageId);
     return this.repository.findMany({ packageId: dto.packageId });
@@ -50,8 +61,9 @@ export class DepartureService {
       // not-yet-departed trips. Additive/opt-in — see GetDeparturesDto's
       // own comment on why this can't change default behavior.
       ...(dto.upcoming
-        ? { departureDate: { gte: new Date() }, departureStatus: { not: 'closed' } }
+        ? { departureDate: { gte: new Date() }, departureStatus: { not: 'closed', mode: 'insensitive' as const } }
         : {}),
+      ...(dto.lastMinute ? { isLastMinute: true } : {}),
     };
 
     const [items, total] = await Promise.all([
@@ -70,6 +82,7 @@ export class DepartureService {
 
   async update(id: string, dto: UpdateDepartureDtoType) {
     const existing = await this.findById(id);
+    if (dto.isLastMinute && !existing.isLastMinute) await this.assertNoLastMinuteDuplicate(existing.packageId, id);
     const departure = await this.repository.update(id, dto);
     await this.revalidate(existing.packageId);
     return departure;

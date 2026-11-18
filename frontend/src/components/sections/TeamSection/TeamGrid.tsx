@@ -3,21 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/animation/Reveal";
 import { FillImage } from "@/components/ui/FillImage";
 import { getTeamMembers } from "@/features/team/api/get-team-members";
-import { SAMPLE_TEAM_MEMBERS } from "@/features/team/sample-team";
-import type { TeamMember } from "@/features/team/types/team-member.types";
-import { SHOW_SAMPLE_DATA } from "@/lib/sample-data";
 import { resolveMemberPhoto } from "./photo-fallback";
-
-/** The real roster, else (API down or empty) the placeholder one when sample data is on. */
-async function loadMembers(): Promise<TeamMember[]> {
-  try {
-    const members = await getTeamMembers();
-    if (members.length > 0 || !SHOW_SAMPLE_DATA) return members;
-  } catch (error) {
-    if (!SHOW_SAMPLE_DATA) throw error;
-  }
-  return SAMPLE_TEAM_MEMBERS;
-}
 
 /**
  * The team photo grid: an async Server Component fetching the roster from
@@ -27,7 +13,7 @@ async function loadMembers(): Promise<TeamMember[]> {
  * another as the grid scrolls into view.
  */
 export async function TeamGrid() {
-  const members = await loadMembers();
+  const members = await getTeamMembers();
 
   return (
     <Reveal variant="stagger-soft" targets="li">

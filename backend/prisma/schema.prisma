@@ -996,6 +996,8 @@ model Departure {
   departureCost   Decimal  @db.Decimal(12, 2)
   departureNote   String?
   departureStatus String
+  // Featured in the public "Last Minute Trip Deals" lists.
+  isLastMinute    Boolean  @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1388,4 +1390,83 @@ model BirthdayOptOut {
   createdAt DateTime @default(now())
 
   @@map("birthday_optouts")
+}
+
+// ==================== SITE CONTENT (formerly hardcoded in the frontend) ====================
+
+model Destination {
+  id           String  @id @default(cuid())
+  slug         String  @unique
+  name         String
+  countryLabel String
+  heroImage    String
+  intro        String  @db.Text
+  // [{ label, href, image, categoryKey? }]
+  cards        Json
+  // CMS-style HTML article rendered under the cards.
+  contentHtml  String  @db.Text
+  sortOrder    Int     @default(0)
+  isActive     Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("destinations")
+}
+
+model TravelGuide {
+  id        String  @id @default(cuid())
+  slug      String  @unique
+  country   String
+  title     String
+  image     String
+  summary   String  @db.Text
+  sortOrder Int     @default(0)
+  isActive  Boolean @default(true)
+
+  topics TravelGuideTopic[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("travel_guides")
+}
+
+model TravelGuideTopic {
+  id        String  @id @default(cuid())
+  guideId   String
+  slug      String
+  title     String
+  image     String
+  summary   String  @db.Text
+  // string[] opening paragraphs (overrides summary on the page)
+  intro     Json?
+  // [{ heading?, body?, paragraphs?, bullets?, note? }]
+  sections  Json
+  sortOrder Int     @default(0)
+  isActive  Boolean @default(true)
+
+  guide TravelGuide @relation(fields: [guideId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([guideId, slug])
+  @@map("travel_guide_topics")
+}
+
+model WebStory {
+  id        String  @id @default(cuid())
+  slug      String  @unique
+  title     String
+  cover     String
+  // [{ image, caption }]
+  slides    Json
+  sortOrder Int     @default(0)
+  isActive  Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("web_stories")
 }

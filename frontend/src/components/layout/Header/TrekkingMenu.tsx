@@ -19,8 +19,10 @@ interface Region {
 
 /** Sample trips carry activity categories; API trips don't, so only samples are filtered to trekking here. */
 function isTrek(trip: Trip): boolean {
-  const categories = (trip as { categories?: string[] }).categories;
-  return !categories || categories.includes("trekking");
+  const categories = (trip as { categories?: unknown }).categories;
+  // API packages carry category objects here (not activity keys) — only sample trips can be filtered this way.
+  if (!Array.isArray(categories) || !categories.every((entry) => typeof entry === "string")) return true;
+  return categories.includes("trekking");
 }
 
 /**

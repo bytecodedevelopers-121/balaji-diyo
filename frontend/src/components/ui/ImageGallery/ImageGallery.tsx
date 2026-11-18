@@ -83,14 +83,14 @@ export function ImageGallery({
         inside the caller's fixed height (border-box), so the collage's
         overall size doesn't grow.
       */}
-      <div className="hidden h-full bg-white p-2 sm:block">
+      <div className="hidden h-full sm:block">
         <Mosaic
           images={images.slice(0, tileCount)}
           hiddenCount={hiddenCount}
           onOpen={openAt}
         />
       </div>
-      <div className="overflow-hidden rounded-2xl bg-white p-2 sm:hidden">
+      <div className="overflow-hidden rounded-2xl shadow-lg sm:hidden">
         <Tile
           image={images[0]}
           index={0}
@@ -103,6 +103,16 @@ export function ImageGallery({
           showAllImagesButton={images.length > 1}
         />
       </div>
+      {images.length > 1 ? (
+        <button
+          type="button"
+          onClick={() => openAt(0)}
+          className="absolute right-5 bottom-5 hidden items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-[13px] font-semibold text-brand-neutral-900 shadow-lg backdrop-blur transition hover:bg-white hover:shadow-xl sm:flex"
+        >
+          <ImagesIcon className="size-4" />
+          Show all {images.length} photos
+        </button>
+      ) : null}
       {lightboxIndex !== null ? (
         <Lightbox
           images={images}
@@ -126,7 +136,7 @@ function Mosaic({
   switch (images.length) {
     case 1:
       return (
-        <div className="h-full gap-2">
+        <div className="h-full gap-3">
           <Tile
             image={images[0]}
             index={0}
@@ -139,7 +149,7 @@ function Mosaic({
 
     case 2:
       return (
-        <div className="grid h-full grid-cols-2 gap-2">
+        <div className="grid h-full grid-cols-2 gap-3">
           {images.map((image, index) => (
             <Tile
               key={image.src}
@@ -155,7 +165,7 @@ function Mosaic({
 
     case 3:
       return (
-        <div className="grid h-full grid-cols-[1.4fr_1fr] gap-2">
+        <div className="grid h-full grid-cols-[1.4fr_1fr] gap-3">
           <Tile
             image={images[0]}
             index={0}
@@ -163,7 +173,7 @@ function Mosaic({
             preload
             sizes="55vw"
           />
-          <div className="grid grid-rows-2 gap-2">
+          <div className="grid grid-rows-2 gap-3">
             <Tile
               image={images[1]}
               index={1}
@@ -187,36 +197,36 @@ function Mosaic({
       // folded into a "+N photos" overlay on the last tile.
       const [lead, second, third, fourth] = images;
       return (
-        <div className="grid h-full grid-cols-1 gap-2 sm:grid-cols-[1fr_0.7fr]">
+        <div className="grid h-full grid-cols-1 gap-3 sm:grid-cols-[1fr_0.7fr]">
           <Tile
             image={lead}
             index={0}
             onOpen={onOpen}
             preload
-            sizes="(max-width: 640px) 100vw, 55vw"
+            sizes="(max-width: 640px) 100vw, 100vw"
             wrapperClassName="aspect-16/10 sm:aspect-auto sm:h-full"
           />
-          <div className="grid grid-cols-1 gap-2 sm:grid-rows-[0.62fr_0.38fr]">
+          <div className="grid grid-cols-1 gap-3 sm:grid-rows-[0.62fr_0.38fr]">
             <Tile
               image={second}
               index={1}
               onOpen={onOpen}
-              sizes="(max-width: 640px) 100vw, 40vw"
+              sizes="(max-width: 640px) 100vw, 80vw"
               wrapperClassName="aspect-16/10 sm:aspect-auto sm:h-full"
             />
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-3">
               <Tile
                 image={third}
                 index={2}
                 onOpen={onOpen}
-                sizes="(max-width: 640px) 50vw, 20vw"
+                sizes="(max-width: 640px) 100vw, 50vw"
                 wrapperClassName="aspect-16/10 sm:aspect-auto sm:h-full"
               />
               <Tile
                 image={fourth}
                 index={3}
                 onOpen={onOpen}
-                sizes="(max-width: 640px) 50vw, 20vw"
+                sizes="(max-width: 640px) 100vw, 50vw"
                 wrapperClassName="aspect-16/10 sm:aspect-auto sm:h-full"
                 overlayCount={hiddenCount > 0 ? hiddenCount : undefined}
               />
@@ -253,7 +263,7 @@ function Tile({
       type="button"
       onClick={() => onOpen(index)}
       className={cn(
-        "group relative block aspect-16/10 w-full cursor-pointer overflow-hidden rounded-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 sm:aspect-auto sm:h-full",
+        "group relative block aspect-16/10 w-full cursor-pointer overflow-hidden rounded-2xl shadow-[0_8px_24px_-8px_rgba(8,40,70,0.35)] ring-1 ring-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 sm:aspect-auto sm:h-full",
         wrapperClassName,
       )}
       aria-label={
@@ -269,7 +279,11 @@ function Tile({
         alt={image.alt}
         sizes={sizes}
         preload={preload}
-        className="transition-transform duration-300 group-hover:scale-105"
+        // Tiles are filled edge to edge (no blurred letterbox bars); the lightbox still shows each whole photo.
+        fit="cover"
+        showBlurBackdrop={false}
+        quality={95}
+        className="scale-[1.03] transition-transform duration-500 ease-out group-hover:scale-[1.08]"
       />
       {overlayCount ? (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50 transition-colors group-hover:bg-black/60">

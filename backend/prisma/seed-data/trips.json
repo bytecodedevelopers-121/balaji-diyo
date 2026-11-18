@@ -1,0 +1,515 @@
+[
+  {
+    "id": "s1",
+    "isPopular": true,
+    "countries": [
+      "Nepal"
+    ],
+    "regions": [
+      "everest"
+    ],
+    "slug": "everest-base-camp-trek",
+    "title": "Everest Base Camp Trek",
+    "imageUrl": "/images/journey/trek.jpg",
+    "duration": 14,
+    "durationType": "Days",
+    "priceFrom": 1300,
+    "rating": 5,
+    "reviewCount": 10,
+    "badge": "Best Seller",
+    "isFeatured": false,
+    "categories": [
+      "trekking"
+    ]
+  },
+  {
+    "id": "s2",
+    "isPopular": true,
+    "countries": [
+      "Nepal"
+    ],
+    "regions": [
+      "annapurna"
+    ],
+    "slug": "annapurna-base-camp-trekking",
+    "title": "Annapurna Base Camp Trek",
+    "imageUrl": "/images/trips/featured-annapurna-trek.jpg",
+    "duration": 14,
+    "durationType": "Days",
+    "priceFrom": 850,
+    "rating": 5,
+    "reviewCount": 16,
+    "badge": "Most Popular",
+    "isFeatured": false,
+    "categories": [
+      "trekking"
+    ]
+  },
+  {
+    "id": "s3",
+    "isFeatured": true,
+    "countries": [
+      "Nepal"
+    ],
+    "regions": [
+      "langtang"
+    ],
+    "slug": "langtang-valley-trekking",
+    "title": "Langtang Valley Trek",
+    "imageUrl": "/images/journey/climb.jpg",
+    "duration": 12,
+    "durationType": "Days",
+    "priceFrom": 700,
+    "rating": 5,
+    "reviewCount": 2,
+    "badge": "Less Crowded",
+    "isPopular": false,
+    "categories": [
+      "trekking"
+    ]
+  },
+  {
+    "id": "s4",
+    "isFeatured": true,
+    "countries": [
+      "Nepal"
+    ],
+    "regions": [
+      "manaslu"
+    ],
+    "slug": "manaslu-circuit-trek",
+    "title": "Manaslu Circuit Trek",
+    "imageUrl": "/images/hero/hero-3.jpeg",
+    "duration": 14,
+    "durationType": "Days",
+    "priceFrom": 1000,
+    "rating": 5,
+    "reviewCount": 2,
+    "badge": "Off Trodden",
+    "isPopular": false,
+    "categories": [
+      "trekking"
+    ]
+  },
+  {
+    "id": "s5",
+    "countries": [
+      "Nepal"
+    ],
+    "regions": [
+      "annapurna"
+    ],
+    "slug": "annapurna-circuit-trekking",
+    "title": "Annapurna Circuit Trek",
+    "imageUrl": "/images/hero/12.jpeg",
+    "duration": 15,
+    "durationType": "Days",
+    "priceFrom": 1000,
+    "rating": 5,
+    "reviewCount": 1,
+    "badge": "Best Circuit Trek",
+    "isPopular": false,
+    "isFeatured": false,
+    "categories": [
+      "trekking"
+    ]
+  },
+  {
+    "id": "s6",
+    "countries": [
+      "Nepal"
+    ],
+    "regions": [
+      "pokhara"
+    ],
+    "slug": "ghorepani-poon-hill-trekking",
+    "title": "Ghorepani Poon Hill Trek",
+    "imageUrl": "/images/hero/hero-4.jpeg",
+    "duration": 4,
+    "durationType": "Days",
+    "priceFrom": 350,
+    "rating": 5,
+    "reviewCount": 7,
+    "badge": "Beginner Friendly",
+    "isPopular": true,
+    "isFeatured": false,
+    "categories": [
+      "trekking",
+      "deals"
+    ]
+  },
+  {
+    "id": "s7",
+    "countries": [
+      "Nepal"
+    ],
+    "regions": [
+      "everest"
+    ],
+    "slug": "cho-la-pass-with-ebc-trekking",
+    "title": "Cho La Pass With EBC Trek",
+    "imageUrl": "/images/cta/gokyo-lake-yak-wide.jpg",
+    "duration": 19,
+    "durationType": "Days",
+    "priceFrom": 1500,
+    "rating": 5,
+    "reviewCount": 2,
+    "badge": "Cross Cho La Pass",
+    "isPopular": false,
+    "isFeatured": false,
+    "categories": [
+      "trekking"
+    ]
+  },
+  {
+    "id": "s8",
+    "countries": [
+      "Nepal"
+    ],
+    "regions": [
+      "manaslu"
+    ],
+    "slug": "comfort-manaslu-circuit-trek",
+    "title": "Comfort Manaslu Circuit Trek",
+    "imageUrl": "/images/journey/tour.jpg",
+    "duration": 17,
+    "durationType": "Days",
+    "priceFrom": 1500,
+    "rating": 5,
+    "reviewCount": 1,
+    "badge": "Manaslu in Luxury",
+    "isPopular": false,
+    "isFeatured": false,
+    "categories": [
+      "trekking"
+    ]
+  },
+  {
+    "id": "t1",
+    "isPopular": true,
+    "countries": [
+      "Nepal"
+    ],
+    "regions": [],
+    "slug": "spirit-of-nepal-tour",
+    "title": "Spirit of Nepal Tour",
+    "imageUrl": "/images/journey/tour.jpg",
+    "duration": 10,
+    "durationType": "Days",
+    "priceFrom": 600,
+    "rating": 5,
+    "reviewCount": 10,
+    "badge": "Nepal Highlights",
+    "isFeatured": false,
+    "categories": [
+      "tours"
+    ]
+  },
+  {
+    "id": "t2",
+    "isFeatured": true,
+    "countries": [
+      "Nepal",
+      "Bhutan",
+      "Multi Country"
+    ],
+    "regions": [],
+    "slug": "nepal-and-bhutan-highlights",
+    "title": "Nepal and Bhutan Highlights",
+    "imageUrl": "/images/hero/hero-2.jpeg",
+    "duration": 12,
+    "durationType": "Days",
+    "priceFrom": 2200,
+    "rating": 5,
+    "reviewCount": 4,
+    "badge": "Two Countries",
+    "isPopular": false,
+    "categories": [
+      "tours"
+    ]
+  },
+  {
+    "id": "t3",
+    "isFeatured": true,
+    "countries": [
+      "Nepal"
+    ],
+    "regions": [
+      "everest"
+    ],
+    "slug": "everest-helicopter-landing-tour",
+    "title": "Everest Base Camp Helicopter Tour with Landing",
+    "imageUrl": "/images/journey/heli.jpg",
+    "duration": 5,
+    "durationType": "Hours",
+    "priceFrom": 1400,
+    "badge": "Best Heli Tour",
+    "isPopular": false,
+    "categories": [
+      "tours"
+    ]
+  },
+  {
+    "id": "t4",
+    "countries": [
+      "Nepal"
+    ],
+    "regions": [],
+    "slug": "kathmandu-day-tour",
+    "title": "Kathmandu Day Tour - 1 Full Day",
+    "imageUrl": "/images/hero/hero-3.jpeg",
+    "duration": 1,
+    "durationType": "Day",
+    "priceFrom": 32,
+    "rating": 5,
+    "reviewCount": 6,
+    "badge": "Best of Kathmandu",
+    "isPopular": false,
+    "isFeatured": false,
+    "categories": [
+      "day",
+      "deals"
+    ]
+  },
+  {
+    "id": "t5",
+    "countries": [
+      "Nepal"
+    ],
+    "regions": [],
+    "slug": "nepal-premium-adventure",
+    "title": "Nepal Premium Adventure",
+    "imageUrl": "/images/hero/hero-4.jpeg",
+    "duration": 12,
+    "durationType": "Days",
+    "priceFrom": 1200,
+    "isPopular": false,
+    "isFeatured": false,
+    "categories": [
+      "tours"
+    ]
+  },
+  {
+    "id": "t6",
+    "countries": [
+      "Nepal"
+    ],
+    "regions": [
+      "pokhara"
+    ],
+    "slug": "chitwan-jungle-safari",
+    "title": "Chitwan Jungle Safari",
+    "imageUrl": "/images/hero/hero-1.png",
+    "duration": 3,
+    "durationType": "Days",
+    "priceFrom": 200,
+    "rating": 5,
+    "reviewCount": 3,
+    "badge": "Jungle Adventure",
+    "isPopular": true,
+    "isFeatured": false,
+    "categories": [
+      "safari"
+    ]
+  },
+  {
+    "id": "t7",
+    "isFeatured": true,
+    "countries": [
+      "Bhutan"
+    ],
+    "regions": [],
+    "slug": "bhutan-highlights-tour",
+    "title": "Bhutan Highlights Tour",
+    "imageUrl": "/images/hero/12.jpeg",
+    "duration": 5,
+    "durationType": "Days",
+    "priceFrom": 1570,
+    "badge": "Bhutan Highlights",
+    "isPopular": false,
+    "categories": [
+      "tours"
+    ]
+  },
+  {
+    "id": "t8",
+    "countries": [
+      "Nepal"
+    ],
+    "regions": [
+      "everest"
+    ],
+    "slug": "everest-heli-tour-with-stay",
+    "title": "Everest Heli Tour with Stay at Everest View Hotel",
+    "imageUrl": "/images/trips/featured-heli-tour.jpg",
+    "duration": 2,
+    "durationType": "Days",
+    "priceFrom": 3000,
+    "badge": "Himalayan Luxury Tour",
+    "isPopular": false,
+    "isFeatured": true,
+    "categories": [
+      "tours"
+    ]
+  },
+  {
+    "id": "t9",
+    "countries": [
+      "Bhutan"
+    ],
+    "regions": [],
+    "slug": "short-bhutan-tour",
+    "title": "Short Bhutan Tour",
+    "imageUrl": "/images/cta/plan-your-trip.jpg",
+    "duration": 4,
+    "durationType": "Days",
+    "priceFrom": 1190,
+    "badge": "Short Escape",
+    "isPopular": false,
+    "isFeatured": false,
+    "categories": [
+      "tours"
+    ]
+  },
+  {
+    "id": "t10",
+    "isPopular": true,
+    "countries": [
+      "Tibet"
+    ],
+    "regions": [],
+    "slug": "mount-kailash-tour",
+    "title": "Mount Kailash Tour",
+    "imageUrl": "/images/cta/gokyo-lake-yak.jpg",
+    "duration": 14,
+    "durationType": "Days",
+    "priceFrom": 2400,
+    "rating": 5,
+    "reviewCount": 3,
+    "badge": "Sacred Journey",
+    "isFeatured": false,
+    "categories": [
+      "tours"
+    ]
+  },
+  {
+    "id": "t11",
+    "countries": [
+      "Tibet"
+    ],
+    "regions": [],
+    "slug": "lhasa-cultural-tour",
+    "title": "Lhasa Cultural Tour",
+    "imageUrl": "/images/hero/hero-2.jpeg",
+    "duration": 7,
+    "durationType": "Days",
+    "priceFrom": 1650,
+    "badge": "Culture",
+    "isPopular": false,
+    "isFeatured": false,
+    "categories": [
+      "tours"
+    ]
+  },
+  {
+    "id": "t12",
+    "isFeatured": true,
+    "countries": [
+      "Multi Country"
+    ],
+    "regions": [],
+    "slug": "nepal-tibet-bhutan-tour",
+    "title": "Nepal Tibet Bhutan Tour",
+    "imageUrl": "/images/journey/tour.jpg",
+    "duration": 21,
+    "durationType": "Days",
+    "priceFrom": 4200,
+    "badge": "Three Kingdoms",
+    "isPopular": false,
+    "categories": [
+      "tours"
+    ]
+  },
+  {
+    "id": "m1",
+    "countries": [
+      "Nepal"
+    ],
+    "regions": [
+      "everest"
+    ],
+    "slug": "lobuche-peak-climbing",
+    "title": "Lobuche Peak Climbing",
+    "imageUrl": "/images/journey/climb.jpg",
+    "duration": 18,
+    "durationType": "Days",
+    "priceFrom": 2900,
+    "badge": "Peak Climbing",
+    "isPopular": false,
+    "isFeatured": false,
+    "categories": [
+      "climbing"
+    ]
+  },
+  {
+    "id": "m2",
+    "countries": [
+      "Nepal"
+    ],
+    "regions": [
+      "everest"
+    ],
+    "slug": "mera-peak-climbing",
+    "title": "Mera Peak Climbing",
+    "imageUrl": "/images/hero/hero-3.jpeg",
+    "duration": 19,
+    "durationType": "Days",
+    "priceFrom": 2700,
+    "badge": "Peak Climbing",
+    "isPopular": false,
+    "isFeatured": false,
+    "categories": [
+      "climbing"
+    ]
+  },
+  {
+    "id": "m3",
+    "countries": [
+      "Nepal"
+    ],
+    "regions": [
+      "pokhara"
+    ],
+    "slug": "bardia-jungle-safari",
+    "title": "Bardia Jungle Safari",
+    "imageUrl": "/images/hero/hero-1.png",
+    "duration": 4,
+    "durationType": "Days",
+    "priceFrom": 480,
+    "badge": "Wildlife",
+    "isPopular": false,
+    "isFeatured": false,
+    "categories": [
+      "safari"
+    ]
+  },
+  {
+    "id": "m4",
+    "countries": [
+      "Nepal"
+    ],
+    "regions": [],
+    "slug": "bhaktapur-and-patan-day-tour",
+    "title": "Bhaktapur and Patan Day Tour",
+    "imageUrl": "/images/hero/hero-4.jpeg",
+    "duration": 1,
+    "durationType": "Day",
+    "priceFrom": 45,
+    "badge": "Day Tour",
+    "isPopular": false,
+    "isFeatured": false,
+    "categories": [
+      "day"
+    ]
+  }
+]

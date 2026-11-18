@@ -50,7 +50,7 @@ export function AttachmentField({ label, hint, ownerType, ownerId, role, aspect 
 
       {!ownerId ? (
         <p className="rounded-lg border border-dashed border-gray-300 px-3 py-6 text-center text-xs text-gray-500">
-          Save first to add {label.toLowerCase()}
+          Create the post first, then add the {label.toLowerCase()} on its edit page
         </p>
       ) : (
         <>

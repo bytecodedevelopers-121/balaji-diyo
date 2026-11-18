@@ -5,6 +5,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
+import { Checkbox } from "@/components/ui/Checkbox";
 import { toNumber } from "@/lib/decimal";
 import type { Departure } from "@/types/departure";
 
@@ -14,6 +15,7 @@ export interface DepartureFormSubmitValues {
   departureCost: number;
   departureStatus: string;
   departureNote?: string;
+  isLastMinute: boolean;
 }
 
 const schema = z.object({
@@ -21,6 +23,7 @@ const schema = z.object({
   departureCost: z.number().min(0, "Cost is required"),
   departureStatus: z.string().min(1, "Status is required"),
   departureNote: z.string().optional(),
+  isLastMinute: z.boolean(),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -47,6 +50,7 @@ export function DepartureFormModal({ isOpen, onClose, departure, onSubmit, isLoa
       departureCost: toNumber(departure?.departureCost) ?? 0,
       departureStatus: departure?.departureStatus ?? "",
       departureNote: departure?.departureNote ?? "",
+      isLastMinute: departure?.isLastMinute ?? false,
     },
   });
 
@@ -56,6 +60,7 @@ export function DepartureFormModal({ isOpen, onClose, departure, onSubmit, isLoa
       departureCost: values.departureCost,
       departureStatus: values.departureStatus,
       departureNote: values.departureNote || undefined,
+      isLastMinute: values.isLastMinute,
     });
   };
 
@@ -86,6 +91,7 @@ export function DepartureFormModal({ isOpen, onClose, departure, onSubmit, isLoa
           error={errors.departureStatus?.message}
           {...register("departureStatus")}
         />
+        <Checkbox label="Show in Last Minute Trip Deals" {...register("isLastMinute")} />
         <Textarea label="Note" rows={2} error={errors.departureNote?.message} {...register("departureNote")} />
       </form>
     </Modal>

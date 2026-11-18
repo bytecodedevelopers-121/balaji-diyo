@@ -55,7 +55,7 @@ export function PageHeader({ title, breadcrumbs, action, backHref, isLoading }: 
         {isLoading ? (
           <Skeleton className="h-8 w-48" />
         ) : (
-          <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+          <h1 className="font-display text-2xl font-bold text-logo-navy-dark">{title}</h1>
         )}
         {action && <div className="flex shrink-0 items-center gap-2">{action}</div>}
       </div>

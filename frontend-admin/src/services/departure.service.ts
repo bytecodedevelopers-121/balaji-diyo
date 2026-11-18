@@ -7,6 +7,7 @@ export interface DepartureListParams {
   perPage?: number;
   packageId?: string;
   departureStatus?: string;
+  lastMinute?: boolean;
 }
 
 export const departureService = {

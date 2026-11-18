@@ -75,6 +75,9 @@ import { StoryAuthorController } from '../modules/story-author/story-author.cont
 import { StoryRepository } from '../modules/story/story.repository';
 import { StoryService } from '../modules/story/story.service';
 import { StoryController } from '../modules/story/story.controller';
+import { SiteContentRepository } from '../modules/site-content/site-content.repository';
+import { SiteContentService } from '../modules/site-content/site-content.service';
+import { SiteContentController } from '../modules/site-content/site-content.controller';
 import { PackageRepository } from '../modules/package/package.repository';
 import { PackageService } from '../modules/package/package.service';
 import { PackageController } from '../modules/package/package.controller';
@@ -251,6 +254,11 @@ export const storyAuthorController = new StoryAuthorController(storyAuthorServic
 const storyRepository = new StoryRepository(prisma);
 const storyService = new StoryService(storyRepository);
 export const storyController = new StoryController(storyService);
+
+// ─── Site content (destinations, travel guides, web stories) ─────────────────
+const siteContentRepository = new SiteContentRepository(prisma);
+const siteContentService = new SiteContentService(siteContentRepository);
+export const siteContentController = new SiteContentController(siteContentService);
 
 // ─── Package ──────────────────────────────────────────────────────────────────
 const packageRepository = new PackageRepository(prisma);

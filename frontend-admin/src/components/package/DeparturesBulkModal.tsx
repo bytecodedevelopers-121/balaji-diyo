@@ -4,6 +4,7 @@ import { z } from "zod";
 import { Modal } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { Checkbox } from "@/components/ui/Checkbox";
 import { Repeater } from "@/components/form/Repeater";
 import type { CreateDeparturesBulkDto } from "@/types/departure";
 
@@ -12,6 +13,7 @@ const rowSchema = z.object({
   departureCost: z.number().min(0, "Cost is required"),
   departureStatus: z.string().min(1, "Status is required"),
   departureNote: z.string().optional(),
+  isLastMinute: z.boolean(),
 });
 
 const schema = z.object({ departures: z.array(rowSchema).min(1, "Add at least one departure") });
@@ -33,7 +35,7 @@ export function DeparturesBulkModal({ isOpen, onClose, onSubmit, isLoading }: De
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { departures: [{ departureDate: "", departureCost: 0, departureStatus: "", departureNote: "" }] },
+    defaultValues: { departures: [{ departureDate: "", departureCost: 0, departureStatus: "", departureNote: "", isLastMinute: false }] },
   });
 
   const { fields, append, remove } = useFieldArray({ control, name: "departures" });
@@ -65,7 +67,7 @@ export function DeparturesBulkModal({ isOpen, onClose, onSubmit, isLoading }: De
         <Repeater
           label="Departures"
           fields={fields}
-          onAdd={() => append({ departureDate: "", departureCost: 0, departureStatus: "", departureNote: "" })}
+          onAdd={() => append({ departureDate: "", departureCost: 0, departureStatus: "", departureNote: "", isLastMinute: false })}
           onRemove={remove}
           minRows={1}
           renderRow={(_field, index) => (
@@ -93,6 +95,7 @@ export function DeparturesBulkModal({ isOpen, onClose, onSubmit, isLoading }: De
                 error={errors.departures?.[index]?.departureStatus?.message}
               />
               <Input label="Note" {...register(`departures.${index}.departureNote`)} />
+              <Checkbox label="Last minute deal" {...register(`departures.${index}.isLastMinute`)} />
             </div>
           )}
         />

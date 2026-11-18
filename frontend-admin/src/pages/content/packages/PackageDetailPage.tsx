@@ -7,28 +7,18 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { Button } from "@/components/ui/Button";
 import { Tabs } from "@/components/layout/Tabs";
 import { PackageForm } from "@/components/package/PackageForm";
-import { PACKAGE_FORM_TABS, PACKAGE_FORM_ID } from "@/components/package/packageFormTabs";
+import { PackageHero } from "@/components/package/PackageHero";
+import { PACKAGE_FORM_TABS, PACKAGE_FORM_ID, PACKAGE_ALL_TABS, ITINERARY_TAB, AVAILABILITY_TAB, TRIP_MAP_TAB } from "@/components/package/packageFormTabs";
 import { DeparturesTab } from "@/components/package/DeparturesTab";
 import { ItineraryTab } from "@/components/package/ItineraryTab";
 import { TripMapTab } from "@/components/package/TripMapTab";
 import { usePackage, useUpdatePackage } from "@/hooks/queries/usePackages";
-import { getErrorMessage, getErrorStatus } from "@/lib/apiError";
+import { getDetailedErrorMessage, getErrorStatus } from "@/lib/apiError";
 import { PATHS } from "@/constants/PATHS";
 import { COMPANY_INFO } from "@/constants";
 
-const ITINERARY_TAB = "itinerary";
-const AVAILABILITY_TAB = "availability";
-const TRIP_MAP_TAB = "trip-map";
 
-// Itinerary, Departures, and Trip Map are their own forms, so they sit
-// alongside the package form's own tabs rather than nesting a second tab bar
-// inside them.
-const TABS = [
-  ...PACKAGE_FORM_TABS,
-  { value: ITINERARY_TAB, label: "Itinerary" },
-  { value: TRIP_MAP_TAB, label: "Trip Map" },
-  { value: AVAILABILITY_TAB, label: "Pricing & Availability" },
-];
+const TABS = PACKAGE_ALL_TABS;
 
 export default function PackageDetailPage() {
   const { id = "" } = useParams<{ id: string }>();
@@ -77,6 +67,8 @@ export default function PackageDetailPage() {
 
       {error && <Alert variant="error" message={error} onClose={() => setError(null)} />}
 
+      {pkg && <PackageHero pkg={pkg} />}
+
       <Tabs tabs={TABS} value={tab} onChange={setTab} />
 
       <PageCard>
@@ -96,7 +88,7 @@ export default function PackageDetailPage() {
               setError(null);
               updatePackage.mutate(values, {
                 onSuccess: () => navigate(PATHS.PACKAGES),
-                onError: (err) => setError(getErrorMessage(err)),
+                onError: (err) => setError(getDetailedErrorMessage(err)),
               });
             }}
             isLoading={updatePackage.isPending}

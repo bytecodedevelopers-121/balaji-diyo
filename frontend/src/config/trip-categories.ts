@@ -7,7 +7,7 @@ export const TRIP_CATEGORIES = [
   { key: "climbing", label: "Climbing and Expedition", href: "/nepal-peak-climbing" },
   { key: "safari", label: "Jungle and Wildlife Safari", href: "/nepal-tour-packages" },
   { key: "tours", label: "Nepal Tours and Holidays", href: "/nepal-tour-packages" },
-  { key: "day", label: "Day Tours and Activities", href: "/nepal-tour-packages" },
+  { key: "day", label: "Day Tours and Activities", href: "/nepal-day-tours" },
   { key: "deals", label: "Deals and Discounts", href: "/last-minute-trip-deals" },
 ] as const;
 

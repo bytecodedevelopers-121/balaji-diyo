@@ -52,12 +52,15 @@ async function startServer() {
     await prisma.$queryRaw`SELECT 1`;
     console.log("✅ Database query test passed");
 
-    const server = app.listen(appConfig.port, appConfig.host, () => {
-      console.log(
-        `🚀 Server running at http://${appConfig.host}:${appConfig.port}`,
-      );
+    const onListen = () => {
+      console.log(`🚀 Server running on ${appConfig.port}`);
       console.log(`🌍 Environment: ${appConfig.env}`);
-    });
+    };
+    // Passenger (cPanel Node) may give a unix socket path instead of a port number.
+    const server =
+      typeof appConfig.port === "string"
+        ? app.listen(appConfig.port, onListen)
+        : app.listen(appConfig.port, appConfig.host, onListen);
 
     startBirthdayScheduler();
 

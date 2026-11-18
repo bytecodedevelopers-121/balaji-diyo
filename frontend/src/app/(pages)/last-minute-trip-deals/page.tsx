@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { PageHero } from "@/components/sections/PageHero";
 import { LastMinuteTripsSection } from "@/components/sections/LastMinuteTripsSection";
 import { CtaSection } from "@/components/sections/CtaSection";
@@ -15,7 +14,6 @@ export async function generateMetadata(): Promise<Metadata> {
     return buildMetadata({
       title: "Last Minute Trip Deals",
       path: `/${SLUG}`,
-      noIndex: true,
     });
   }
 
@@ -49,12 +47,8 @@ export async function generateMetadata(): Promise<Metadata> {
  * as-is per this codebase's fidelity rule.
  */
 export default async function LastMinuteTripDealsPage() {
-  const page = await getCmsPage(SLUG);
-
-  if (!page) {
-    notFound();
-  }
-
+  // The CMS record is optional (used only for SEO metadata); the page
+  // content is static + live departures, so never 404 when it's missing.
   return (
     <>
       <PageHero

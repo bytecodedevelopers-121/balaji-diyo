@@ -33,7 +33,6 @@ const BlogAuthorsPage = lazy(() => import("@/pages/content/blog-authors/BlogAuth
 const BlogsPage = lazy(() => import("@/pages/content/blogs/BlogsPage"));
 const CreateBlogPage = lazy(() => import("@/pages/content/blogs/CreateBlogPage"));
 const BlogDetailPage = lazy(() => import("@/pages/content/blogs/BlogDetailPage"));
-const BlogCommentsPage = lazy(() => import("@/pages/content/blog-comments/BlogCommentsPage"));
 const ContactsPage = lazy(() => import("@/pages/content/contacts/ContactsPage"));
 const MediaLibraryPage = lazy(() => import("@/pages/content/media/MediaLibraryPage"));
 const FaqsPage = lazy(() => import("@/pages/content/faqs/FaqsPage"));
@@ -60,8 +59,14 @@ const TestimonialDetailPage = lazy(() => import("@/pages/content/testimonials/Te
 const TripInfosPage = lazy(() => import("@/pages/content/trip-infos/TripInfosPage"));
 const StoryAuthorsPage = lazy(() => import("@/pages/content/story-authors/StoryAuthorsPage"));
 const StoriesPage = lazy(() => import("@/pages/content/stories/StoriesPage"));
+const DestinationsAdminPage = lazy(() => import("@/pages/content/site-content/SiteContentPage").then((m) => ({ default: m.DestinationsAdminPage })));
+const TravelGuidesAdminPage = lazy(() => import("@/pages/content/site-content/SiteContentPage").then((m) => ({ default: m.TravelGuidesAdminPage })));
+const TourTypesAdminPage = lazy(() => import("@/pages/content/tour-types/TourTypesPage").then((m) => ({ default: m.TourTypesAdminPage })));
+const RegionsAdminPage = lazy(() => import("@/pages/content/tour-types/TourTypesPage").then((m) => ({ default: m.RegionsAdminPage })));
+const WebStoriesAdminPage = lazy(() => import("@/pages/content/site-content/SiteContentPage").then((m) => ({ default: m.WebStoriesAdminPage })));
 const CreateStoryPage = lazy(() => import("@/pages/content/stories/CreateStoryPage"));
 const StoryDetailPage = lazy(() => import("@/pages/content/stories/StoryDetailPage"));
+const LastMinuteDealsPage = lazy(() => import("@/pages/content/last-minute/LastMinuteDealsPage"));
 const PackagesPage = lazy(() => import("@/pages/content/packages/PackagesPage"));
 const TripMapsPage = lazy(() => import("@/pages/content/trip-maps/TripMapsPage"));
 const CreateTripMapPage = lazy(() => import("@/pages/content/trip-maps/CreateTripMapPage"));
@@ -153,10 +158,6 @@ export const router = createBrowserRouter([
               {
                 element: <PermissionRoute permission="create:blog" />,
                 children: [{ path: "blogs/create", element: withSuspense(<CreateBlogPage />) }],
-              },
-              {
-                element: <PermissionRoute permission="read:comment" />,
-                children: [{ path: "blog-comments", element: withSuspense(<BlogCommentsPage />) }],
               },
               {
                 element: <PermissionRoute permission="read:contact" />,
@@ -254,8 +255,14 @@ export const router = createBrowserRouter([
                   { path: "cost-categories", element: withSuspense(<CostCategoriesPage />) },
                   { path: "story-authors", element: withSuspense(<StoryAuthorsPage />) },
                   { path: "stories", element: withSuspense(<StoriesPage />) },
+                  { path: "destinations", element: withSuspense(<DestinationsAdminPage />) },
+                  { path: "travel-guides", element: withSuspense(<TravelGuidesAdminPage />) },
+                  { path: "web-stories", element: withSuspense(<WebStoriesAdminPage />) },
+                  { path: "tour-types", element: withSuspense(<TourTypesAdminPage />) },
+                  { path: "regions", element: withSuspense(<RegionsAdminPage />) },
                   { path: "stories/:id", element: withSuspense(<StoryDetailPage />) },
                   { path: "packages", element: withSuspense(<PackagesPage />) },
+                  { path: "last-minute-deals", element: withSuspense(<LastMinuteDealsPage />) },
                   { path: "packages/:id", element: withSuspense(<PackageDetailPage />) },
                   { path: "trip-maps", element: withSuspense(<TripMapsPage />) },
                   { path: "trip-maps/:id", element: withSuspense(<TripMapDetailPage />) },

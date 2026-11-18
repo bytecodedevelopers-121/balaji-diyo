@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import type { WebStory } from "@/config/web-stories";
+import type { WebStory } from "@/features/site-content/types";
 
 const SLIDE_MS = 5000;
 
@@ -11,12 +11,19 @@ export function StoryViewer({ story }: { story: WebStory }) {
   const [index, setIndex] = useState(0);
   const last = story.slides.length - 1;
   const slide = story.slides[index]!;
+  const isVideo = !!slide.video;
+  // Video slides advance when the clip ends; the progress bar runs for its length.
+  const [videoSeconds, setVideoSeconds] = useState<number | null>(null);
 
   useEffect(() => {
-    if (index >= last) return;
+    setVideoSeconds(null);
+  }, [index]);
+
+  useEffect(() => {
+    if (index >= last || isVideo) return;
     const timer = window.setTimeout(() => setIndex((i) => i + 1), SLIDE_MS);
     return () => window.clearTimeout(timer);
-  }, [index, last]);
+  }, [index, last, isVideo]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -30,8 +37,21 @@ export function StoryViewer({ story }: { story: WebStory }) {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black">
       <div className="relative h-full w-full max-w-[460px] overflow-hidden bg-brand-neutral-1000 md:h-[92vh] md:rounded-[14px]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={slide.image} alt="" className="absolute inset-0 size-full object-cover" />
+        {slide.video ? (
+          <video
+            key={slide.video}
+            src={slide.video}
+            autoPlay
+            muted
+            playsInline
+            onLoadedMetadata={(e) => setVideoSeconds(e.currentTarget.duration)}
+            onEnded={() => setIndex((i) => Math.min(last, i + 1))}
+            className="absolute inset-0 size-full object-cover"
+          />
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={slide.image} alt="" className="absolute inset-0 size-full object-cover" />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
 
         <div className="absolute inset-x-3 top-3 flex gap-1" aria-hidden="true">
@@ -40,7 +60,12 @@ export function StoryViewer({ story }: { story: WebStory }) {
               <span
                 // key restarts the fill animation each time this bar becomes the active one
                 key={i === index ? `active-${index}` : `idle-${i}`}
-                className={`block h-full bg-white ${i < index ? "w-full" : i === index ? "animate-[story-fill_5s_linear_forwards]" : "w-0"}`}
+                className={`block h-full bg-white ${i < index ? "w-full" : "w-0"}`}
+                style={
+                  i === index && (!isVideo || videoSeconds)
+                    ? { animation: `story-fill ${isVideo ? videoSeconds : SLIDE_MS / 1000}s linear forwards` }
+                    : undefined
+                }
               />
             </span>
           ))}

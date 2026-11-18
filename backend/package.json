@@ -11,7 +11,12 @@
     "lint:fix": "eslint src --fix",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "seed:content": "ts-node -O \"{\\\"module\\\":\\\"CommonJS\\\"}\" prisma/seed-content.ts",
+    "seed:trips": "ts-node -O \"{\\\"module\\\":\\\"CommonJS\\\"}\" prisma/seed-trips.ts",
+    "migrate:himalayan": "ts-node -O \"{\\\"module\\\":\\\"CommonJS\\\"}\" scripts/migrate-to-himalayan.ts",
+    "cleanup:last-minute": "ts-node -O \"{\\\"module\\\":\\\"CommonJS\\\"}\" prisma/cleanup-last-minute.ts",
+    "seed:last-minute":"ts-node -O \"{\\\"module\\\":\\\"CommonJS\\\"}\" prisma/seed-last-minute.ts"
   },
   "author": "",
   "license": "ISC",

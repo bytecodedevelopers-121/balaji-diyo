@@ -1,4 +1,4 @@
 export const COMPANY_INFO = {
-  name: "Boundless Adventure",
-  email: "info@boundlessadventure.com",
+  name: "Joyful Trekking",
+  email: "info@joyfultrekking.com",
 };

@@ -19,6 +19,10 @@ export function Navbar({ onMobileMenuToggle }: NavbarProps) {
                  bg-surface/85 backdrop-blur-md border-b border-outline-variant/60 shadow-sm
                  flex items-center gap-4 px-4 lg:px-6 transition-all duration-300"
     >
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[3px] bg-[linear-gradient(90deg,var(--color-logo-sky),var(--color-logo-green),var(--color-logo-sun))]"
+      />
       {/* Mobile hamburger */}
       <button
         type="button"

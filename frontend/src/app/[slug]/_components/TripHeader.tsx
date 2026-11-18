@@ -48,7 +48,7 @@ export function TripHeader({ trip }: { trip: PackageDetail }) {
        * than padding so the sm:/lg: fixed heights below still describe
        * the gallery itself.
        */}
-      <div className="mx-auto w-full pt-5 max-w-360 px-6 sm:h-[360px] md:px-16 lg:h-[540px]">
+      <div className="mx-auto w-full max-w-360 px-4 pt-5 pb-4 sm:h-[380px] sm:px-6 md:px-16 lg:h-[560px]">
         <ImageGallery
           images={galleryImages}
           className="h-full"

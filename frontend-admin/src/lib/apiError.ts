@@ -9,6 +9,14 @@ export function getErrorMessage(error: unknown, fallback = DEFAULT_MESSAGE): str
   return fallback;
 }
 
+/** The message plus, for validation failures, each field and why it was rejected ("title: too short"). */
+export function getDetailedErrorMessage(error: unknown, fallback = DEFAULT_MESSAGE): string {
+  const base = getErrorMessage(error, fallback);
+  const fields = getFieldErrors(error);
+  if (!fields || fields.length === 0) return base;
+  return `${base}: ${fields.map((f) => `${f.field || "form"} (${f.message})`).join("; ")}`;
+}
+
 export function getErrorStatus(error: unknown): number | undefined {
   return isAxiosError(error) ? error.response?.status : undefined;
 }

@@ -29,7 +29,8 @@ export default function CreateBlogPage() {
           onSubmit={(data) => {
             setError(null);
             createBlog.mutate(data, {
-              onSuccess: () => navigate(PATHS.BLOGS),
+              // Photos can only be attached to a saved blog, so open it for editing straight away.
+              onSuccess: (res) => navigate(res?.data?.id ? PATHS.BLOG_DETAIL(res.data.id) : PATHS.BLOGS),
               onError: (err) => setError(getErrorMessage(err)),
             });
           }}
