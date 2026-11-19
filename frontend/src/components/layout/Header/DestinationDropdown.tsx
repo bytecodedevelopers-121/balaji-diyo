@@ -326,6 +326,16 @@ export function DestinationDropdown({
     }).length;
   };
 
+  // The same region can arrive twice under different links (a menu entry and an admin-created one).
+  // Show each name once, keeping the copy that actually has packages.
+  const displayRegions = shownRegions.reduce<typeof shownRegions>((acc, region) => {
+    const name = region.title.trim().toLowerCase();
+    const existingIndex = acc.findIndex((other) => other.title.trim().toLowerCase() === name);
+    if (existingIndex === -1) acc.push(region);
+    else if (regionCount(region) > regionCount(acc[existingIndex])) acc[existingIndex] = region;
+    return acc;
+  }, []);
+
   // Countries with neither regions nor trips fall back to the menu's plain link list.
   const showPackages = browseRegions.length > 0 || !countryLoaded || countryItems.length > 0;
 
@@ -597,7 +607,7 @@ export function DestinationDropdown({
                 <div className="destination-dropdown-group destination-scroll overflow-y-auto border-white/10 px-5 py-6 min-[1120px]:border-r">
                   <p className="mb-2 text-[11px] font-bold tracking-[0.14em] text-logo-sun uppercase">{activeTripCategory.label}</p>
                   <ul className="flex flex-col gap-1">
-                    {shownRegions.map((region) => {
+                    {displayRegions.map((region) => {
                       const isSelected = region.href === regionHref;
                       const count = regionCount(region);
                       return (

@@ -20,6 +20,7 @@ import { HeroVideo } from "./HeroVideo";
  */
 export async function HeroSection({ content = HOME_DEFAULTS.hero }: { content?: HeroContent } = {}) {
   const CATEGORIES = content.categories;
+  const videos = content.videos.map((video) => video.src).filter(Boolean);
   const PLACES = content.places.map((p) => p.name);
   // Real package counts where a category slug exists; others keep their
   // short subtitle. Failures resolve to null, so the hero never errors.
@@ -30,12 +31,12 @@ export async function HeroSection({ content = HOME_DEFAULTS.hero }: { content?: 
     <section id="home-hero" className="relative isolate flex min-h-[100dvh] w-full flex-col overflow-hidden bg-[#064a70] text-white">
       {/* Background video (poster image for reduced motion) under a navy fade. */}
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[#064a70]">
-        <HeroVideo />
+        <HeroVideo videos={videos} poster={content.poster} />
         <FillImage
-          src="/images/hero/hero-poster.jpg"
+          src={content.poster}
           alt=""
           aria-hidden="true"
-          className="hidden object-cover motion-reduce:block"
+          className={videos.length > 0 ? "hidden object-cover motion-reduce:block" : "object-cover"}
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#064a70]/55 via-[#064a70]/35 to-[#064a70]" />

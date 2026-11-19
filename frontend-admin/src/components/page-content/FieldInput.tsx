@@ -4,6 +4,7 @@ import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { RichTextEditor } from "@/components/form/RichTextEditor";
 import { ThumbnailField } from "@/components/site-content/ThumbnailField";
+import { VideoField } from "@/components/site-content/VideoField";
 import type { FieldDef } from "@/types/page-content";
 
 type Row = Record<string, unknown>;
@@ -63,6 +64,13 @@ export function FieldInput({ field, value, onChange }: Props) {
       return (
         <div>
           <ThumbnailField label={field.label} value={asString(value)} onChange={onChange} folder="page-content" noun="image" />
+          {field.hint && <p className="mt-1 text-xs text-gray-500">{field.hint}</p>}
+        </div>
+      );
+    case "video":
+      return (
+        <div>
+          <VideoField label={field.label} value={asString(value)} onChange={onChange} folder="page-content" />
           {field.hint && <p className="mt-1 text-xs text-gray-500">{field.hint}</p>}
         </div>
       );

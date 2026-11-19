@@ -9,6 +9,8 @@ export interface PageCoreFields {
   pageOrder?: number;
   isActive?: boolean;
   parentId?: string | null;
+  linkedPagePath?: string | null;
+  linkedPageLabel?: string | null;
 }
 
 export interface PageSeoFields {
@@ -46,6 +48,8 @@ export class PageRepository {
           pageOrder: data.pageOrder ?? 0,
           isActive: data.isActive ?? true,
           parentId: data.parentId ?? null,
+          linkedPagePath: data.linkedPagePath ?? null,
+          linkedPageLabel: data.linkedPageLabel ?? null,
         },
       });
 
@@ -81,6 +85,8 @@ export class PageRepository {
           pageOrder: data.pageOrder,
           isActive: data.isActive,
           parentId: data.parentId,
+          linkedPagePath: data.linkedPagePath,
+          linkedPageLabel: data.linkedPageLabel,
         },
       });
 

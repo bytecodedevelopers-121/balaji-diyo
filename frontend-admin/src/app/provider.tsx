@@ -8,6 +8,7 @@ import { useAuthStore } from "@/store/auth.store";
 import { useAuthReconnect } from "@/hooks/useAuthReconnect";
 import { FullPageSpinner } from "@/components/ui/FullPageSpinner";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import { Toaster } from "@/components/ui/Toaster";
 
 export const AppProviders = () => {
   const hasHydrated = useAuthStore((s) => s.hasHydrated);
@@ -34,6 +35,7 @@ export const AppProviders = () => {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
+        <Toaster />
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </ErrorBoundary>

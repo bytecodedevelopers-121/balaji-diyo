@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { tripHref } from "@/lib/trip-href";
 import { buildMetadata } from "@/lib/seo/metadata";
@@ -7,6 +8,7 @@ import { overviewText } from "./data";
 import { TrekkingRegionDetailSection } from "@/components/sections/TrekkingRegionsSection";
 import { CategoryDetailSection } from "@/components/sections/CategoryDetailSection";
 import { CtaSection } from "@/components/sections/CtaSection";
+import { CompanyProsePage } from "@/components/sections/CompanyProsePage";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -65,6 +67,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         image: category.imageUrl ?? undefined,
       });
     }
+    case "cms-page": {
+      const cms = content.data;
+      return buildMetadata({
+        title: cms.meta?.metaTitle || cms.title,
+        description:
+          cms.meta?.metaDescription ||
+          cms.content?.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200),
+        path: `/${cms.slug ?? slug}`,
+      });
+    }
   }
 }
 
@@ -95,6 +107,25 @@ export default async function FlatSlugPage({ params, searchParams }: PageProps) 
           <CategoryDetailSection data={content.data} />
           <CtaSection />
         </>
+      );
+    case "cms-page":
+      return (
+        <CompanyProsePage
+          content={{ title: content.data.title, body: content.data.content ?? "" }}
+          crumb={null}
+          after={
+            content.data.linkedPagePath ? (
+              <div className="bg-brand-neutral-000 px-4 pb-16 text-center min-[768px]:px-10">
+                <Link
+                  href={content.data.linkedPagePath}
+                  className="inline-flex h-12 items-center justify-center rounded-pill bg-logo-sun px-8 text-[16px] font-bold text-logo-navy-dark transition-opacity hover:opacity-90"
+                >
+                  Continue to {content.data.linkedPageLabel || "the next page"} →
+                </Link>
+              </div>
+            ) : null
+          }
+        />
       );
   }
 }

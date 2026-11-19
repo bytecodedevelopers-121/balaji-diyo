@@ -20,5 +20,8 @@ export interface CmsPage {
   /** Rich CMS-authored HTML (headings, lists, figures). Trusted admin content — see PageContent for how it's rendered/normalized. */
   content: string | null;
   slug: string | null;
+  /** Optional "continue to" link to another page of the site, set in Admin → Pages. */
+  linkedPagePath?: string | null;
+  linkedPageLabel?: string | null;
   meta: CmsPageMeta | null;
 }

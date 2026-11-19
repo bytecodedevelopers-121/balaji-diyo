@@ -108,6 +108,16 @@ export const PAGE_DEFS: PageDef[] = [
           text("headlinePrefix", "Hidden headline prefix", "Read by search engines and screen readers only."),
           area("description", "Description"),
           {
+            key: "videos",
+            label: "Background videos",
+            kind: "list",
+            itemLabel: "video",
+            hint: "Played one after another, then repeated. MP4 / WebM / MOV, up to 60 MB each. Remove all to show only the poster photo.",
+            defaultValue: [{ src: "/videos/hero-1.mp4" }, { src: "/videos/hero-2.mp4" }],
+            itemFields: [{ key: "src", label: "Video", kind: "video" }],
+          },
+          { ...img("poster", "Poster photo"), defaultValue: "/images/hero/hero-poster.jpg", hint: "Shown while the video loads and for visitors who prefer reduced motion." },
+          {
             key: "categories",
             label: "Category cards",
             kind: "list",
@@ -252,6 +262,27 @@ export const PAGE_DEFS: PageDef[] = [
             kind: "list",
             itemLabel: "partner",
             itemFields: [text("name", "Name"), { key: "src", label: "Logo", kind: "image" }],
+          },
+        ],
+      },
+      {
+        key: "customSections",
+        title: "Extra sections",
+        description: "Your own blocks, shown just above the closing banner. Add as many as you like; they alternate photo left / right.",
+        fields: [
+          {
+            key: "items",
+            label: "Sections",
+            kind: "list",
+            itemLabel: "section",
+            itemFields: [
+              text("title", "Title"),
+              area("text", "Text"),
+              img("image", "Photo (optional)"),
+              text("imageAlt", "Photo description (alt text)"),
+              text("buttonLabel", "Button text", "Leave empty for no button."),
+              link("buttonHref", "Button link — e.g. /my-new-page for a page created under Pages"),
+            ],
           },
         ],
       },
@@ -521,7 +552,28 @@ export const PAGE_DEFS: PageDef[] = [
   },
   proseDef("guided", "Why Guided Travel?", "/company/why-guided-travel", true),
   proseDef("responsible", "Responsible Travel", "/company/responsible-travel", true),
-  proseDef("partner", "Partner with Us", "/company/partner-with-us", false, "The partner enquiry form below the text isn't editable here."),
+  (() => {
+    const page = proseDef("partner", "Partner with Us", "/company/partner-with-us", false, "Which enquiry forms appear below the text is set under “Enquiry forms”.");
+    const formToggle = (key: string, label: string): FieldDef => ({
+      key,
+      label,
+      kind: "select",
+      options: ["Show", "Hide"],
+      hint: "Leave on “Choose…” to show it (the default).",
+    });
+    page.sections.push({
+      key: "forms",
+      title: "Enquiry forms",
+      description:
+        "Choose which tabs of the enquiry form appear on the website. Hide all three (or switch this section off) to remove the form completely.",
+      fields: [
+        formToggle("brand", "Brand / Sponsor form"),
+        formToggle("creator", "Creator form"),
+        formToggle("agency", "Agency / Reseller form"),
+      ],
+    });
+    return page;
+  })(),
   proseDef("terms", "Terms and Conditions", "/company/terms-and-conditions", false),
   proseDef("privacy", "Privacy Policy", "/company/privacy-policy", false),
   {

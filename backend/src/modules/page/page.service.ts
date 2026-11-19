@@ -46,6 +46,8 @@ export class PageService {
         pageOrder: dto.pageOrder ?? 0,
         isActive: dto.isActive ?? true,
         parentId: dto.parentId ?? null,
+        linkedPagePath: dto.linkedPagePath ?? null,
+        linkedPageLabel: dto.linkedPageLabel ?? null,
         slug,
         metaTitle: dto.metaTitle ?? null,
         metaKeywords: dto.metaKeywords ?? null,

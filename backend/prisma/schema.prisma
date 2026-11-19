@@ -381,6 +381,10 @@ model Page {
   pageOrder Int     @default(0)
   isActive  Boolean @default(true)
 
+  // Optional "continue to" button at the bottom of the page, pointing at another page of the site.
+  linkedPagePath  String?
+  linkedPageLabel String?
+
   parentId String?
   parent   Page?   @relation("PageTree", fields: [parentId], references: [id])
   children Page[]  @relation("PageTree")

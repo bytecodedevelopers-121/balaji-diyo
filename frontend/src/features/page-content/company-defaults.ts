@@ -60,11 +60,16 @@ export interface ProsePageContent {
   content: { title: string; body: string; image?: string; imageAlt?: string };
 }
 
+/** Partner with Us: a text page plus which enquiry-form tabs are shown ("Show" | "Hide"). */
+export interface PartnerPageContent extends ProsePageContent {
+  forms: { brand: string; creator: string; agency: string };
+}
+
 export const ABOUT_DEFAULTS: AboutContent = about;
 export const TEAM_DEFAULTS: TeamContent = team;
 export const LEGAL_DEFAULTS: LegalContent = legal;
 export const GUIDED_DEFAULTS: ProsePageContent = guided;
 export const RESPONSIBLE_DEFAULTS: ProsePageContent = responsible;
-export const PARTNER_DEFAULTS: ProsePageContent = partner;
+export const PARTNER_DEFAULTS: PartnerPageContent = partner;
 export const TERMS_DEFAULTS: ProsePageContent = terms;
 export const PRIVACY_DEFAULTS: ProsePageContent = privacy;

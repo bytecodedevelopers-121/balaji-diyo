@@ -37,11 +37,21 @@ export interface ResolvedSection<T> {
  * from the CMS (or saved empty) keeps its default, so a half-filled section
  * still renders completely; arrays are replaced as a whole, never merged.
  */
-export function resolveSection<T extends object>(sections: PageSections, key: string, defaults: T): ResolvedSection<T> {
+export function resolveSection<T extends object>(
+  sections: PageSections,
+  key: string,
+  defaults: T,
+  /** Optional fields where an empty saved value means "show nothing" instead of "use the default". */
+  clearableFields: readonly string[] = [],
+): ResolvedSection<T> {
   const saved = sections[key];
   if (!saved) return { content: defaults, isActive: true };
   const merged: Record<string, unknown> = { ...(defaults as Record<string, unknown>) };
   for (const [field, value] of Object.entries(saved.content ?? {})) {
+    if (value === "" && clearableFields.includes(field)) {
+      merged[field] = "";
+      continue;
+    }
     if (value === undefined || value === null || value === "") continue;
     merged[field] = value;
   }

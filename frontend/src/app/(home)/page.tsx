@@ -9,6 +9,7 @@ import { WebStoriesSection } from "@/components/sections/WebStoriesSection";
 import { FaqGuidedSection } from "@/components/sections/FaqGuidedSection";
 import { TravelNewsSection } from "@/components/sections/TravelNewsSection";
 import { AssociatedWithSection } from "@/components/sections/AssociatedWithSection";
+import { CustomSections } from "@/components/sections/CustomSections";
 import { CtaSection } from "@/components/sections/CtaSection";
 import { getPageSections, resolveSection } from "@/features/page-content/api";
 import { HOME_DEFAULTS } from "@/features/page-content/home-defaults";
@@ -34,7 +35,7 @@ export default async function HomePage() {
   const sections = await getPageSections("home");
   const hero = resolveSection(sections, "hero", HOME_DEFAULTS.hero);
   const bestSellers = resolveSection(sections, "bestSellers", HOME_DEFAULTS.bestSellers);
-  const upcomingTrips = resolveSection(sections, "upcomingTrips", HOME_DEFAULTS.upcomingTrips);
+  const upcomingTrips = resolveSection(sections, "upcomingTrips", HOME_DEFAULTS.upcomingTrips, ["noteTitle", "noteBody"]);
   const featuredTours = resolveSection(sections, "featuredTours", HOME_DEFAULTS.featuredTours);
   const exploreNepal = resolveSection(sections, "exploreNepal", HOME_DEFAULTS.exploreNepal);
   const clientReviews = resolveSection(sections, "clientReviews", HOME_DEFAULTS.clientReviews);
@@ -42,6 +43,7 @@ export default async function HomePage() {
   const faqGuided = resolveSection(sections, "faqGuided", HOME_DEFAULTS.faqGuided);
   const travelNews = resolveSection(sections, "travelNews", HOME_DEFAULTS.travelNews);
   const associatedWith = resolveSection(sections, "associatedWith", HOME_DEFAULTS.associatedWith);
+  const customSections = resolveSection(sections, "customSections", HOME_DEFAULTS.customSections);
   const cta = resolveSection(sections, "cta", HOME_DEFAULTS.cta);
 
   return (
@@ -92,6 +94,7 @@ export default async function HomePage() {
           <AssociatedWithSection content={associatedWith.content} />
         </Reveal>
       )}
+      {customSections.isActive && <CustomSections content={customSections.content} />}
       {cta.isActive && (
         <Reveal variant="auto">
           <CtaSection content={cta.content} />

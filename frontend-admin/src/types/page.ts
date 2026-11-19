@@ -11,6 +11,8 @@ export interface Page {
   pageOrder: number;
   isActive: boolean;
   parentId: string | null;
+  linkedPagePath: string | null;
+  linkedPageLabel: string | null;
   slug: string | null;
   meta: PageMeta | null;
   createdAt: string;
@@ -25,6 +27,9 @@ export interface PageFormValues {
   pageOrder?: number;
   isActive?: boolean;
   parentId?: string;
+  /** null clears the link. */
+  linkedPagePath?: string | null;
+  linkedPageLabel?: string | null;
   metaTitle?: string;
   metaKeywords?: string;
   metaDescription?: string;

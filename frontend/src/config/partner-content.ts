@@ -150,6 +150,8 @@ export const partnerFormIntro = {
 
 export type PartnerFormId = "brand" | "creator" | "agency";
 
+export const PARTNER_FORM_IDS: readonly PartnerFormId[] = ["brand", "creator", "agency"];
+
 export interface PartnerFormField {
   /** Stable key — also the state key for the field's value. */
   key: string;

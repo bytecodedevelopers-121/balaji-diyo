@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PartnerFormSection } from "@/components/sections/PartnerSection";
+import { PARTNER_FORM_IDS } from "@/config/partner-content";
 import { CompanyProsePage } from "@/components/sections/CompanyProsePage";
 import { PARTNER_DEFAULTS } from "@/features/page-content/company-defaults";
 import { getPageSections, resolveSection } from "@/features/page-content/api";
@@ -15,6 +16,19 @@ export async function generateMetadata(): Promise<Metadata> {
  * with the other text pages (see CompanyProsePage).
  */
 export default async function PartnerWithUsPage() {
-  const section = resolveSection(await getPageSections("partner"), "content", PARTNER_DEFAULTS.content);
-  return <CompanyProsePage content={section.content} width={900} after={<PartnerFormSection />} withCta={false} />;
+  const sections = await getPageSections("partner");
+  const section = resolveSection(sections, "content", PARTNER_DEFAULTS.content);
+  const forms = resolveSection(sections, "forms", PARTNER_DEFAULTS.forms);
+  // The admin picks which enquiry tabs show; switching the whole section off hides the form.
+  const visibleFormIds = forms.isActive
+    ? PARTNER_FORM_IDS.filter((id) => forms.content[id] !== "Hide")
+    : [];
+  return (
+    <CompanyProsePage
+      content={section.content}
+      width={900}
+      after={visibleFormIds.length > 0 ? <PartnerFormSection visibleFormIds={visibleFormIds} /> : null}
+      withCta={false}
+    />
+  );
 }

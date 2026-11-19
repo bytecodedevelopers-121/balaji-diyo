@@ -46,6 +46,29 @@ interface ToolbarProps {
   onToggleSourceMode: () => void;
 }
 
+const EMPTY_STATE = {
+  canUndo: false,
+  canRedo: false,
+  bold: false,
+  italic: false,
+  underline: false,
+  strike: false,
+  subscript: false,
+  superscript: false,
+  code: false,
+  textColor: undefined as string | undefined,
+  highlight: undefined as string | undefined,
+  alignLeft: false,
+  alignCenter: false,
+  alignRight: false,
+  alignJustify: false,
+  bulletList: false,
+  orderedList: false,
+  taskList: false,
+  blockquote: false,
+  inList: false,
+};
+
 export function Toolbar({ editor, disabled, sourceMode, onToggleSourceMode }: ToolbarProps) {
   const [findReplaceOpen, setFindReplaceOpen] = useState(false);
 
@@ -55,7 +78,11 @@ export function Toolbar({ editor, disabled, sourceMode, onToggleSourceMode }: To
   // separately subscribing.
   const state = useEditorState({
     editor,
-    selector: ({ editor }) => ({
+    selector: ({ editor }) => {
+      // Tiptap v3 passes `null` while the editor is being torn down / recreated
+      // (Strict Mode, remounts), so every read must be guarded.
+      if (!editor || editor.isDestroyed) return EMPTY_STATE;
+      return {
       canUndo: editor.can().undo(),
       canRedo: editor.can().redo(),
       bold: editor.isActive("bold"),
@@ -76,7 +103,8 @@ export function Toolbar({ editor, disabled, sourceMode, onToggleSourceMode }: To
       taskList: editor.isActive("taskList"),
       blockquote: editor.isActive("blockquote"),
       inList: editor.isActive("listItem"),
-    }),
+      };
+    },
   });
 
   const toggleAlign = (align: "left" | "center" | "right" | "justify") =>

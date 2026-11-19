@@ -12,6 +12,8 @@ export interface HeroContent {
   headlineLine2: string;
   headlinePrefix: string;
   description: string;
+  videos: { src: string }[];
+  poster: string;
   categories: { label: string; sub: string; href: string; image: string; countSlug: string }[];
   places: { name: string }[];
 }
@@ -105,6 +107,11 @@ export interface CtaContent {
   buttonHref: string;
 }
 
+/** Extra blocks an admin adds between the last section and the closing banner (Page Content → Home → Extra sections). */
+export interface CustomSectionsContent {
+  items: { title: string; text: string; image: string; imageAlt: string; buttonLabel: string; buttonHref: string }[];
+}
+
 export const HOME_DEFAULTS: {
   hero: HeroContent;
   bestSellers: BestSellersContent;
@@ -116,5 +123,6 @@ export const HOME_DEFAULTS: {
   faqGuided: FaqGuidedContent;
   travelNews: TravelNewsContent;
   associatedWith: AssociatedWithContent;
+  customSections: CustomSectionsContent;
   cta: CtaContent;
 } = defaults;

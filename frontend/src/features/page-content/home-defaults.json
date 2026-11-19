@@ -5,6 +5,8 @@
     "headlineLine2": "you’ve only dreamed of.",
     "headlinePrefix": "Nepal's Local Trekking Agency",
     "description": "Created for travellers who don’t just visit the Himalayas, they feel them. Prayer flags at 5,000 m, rhinos at dawn, lakes the colour of sky. Guided by born-here locals since 2011.",
+    "videos": [{ "src": "/videos/hero-1.mp4" }, { "src": "/videos/hero-2.mp4" }],
+    "poster": "/images/hero/hero-poster.jpg",
     "categories": [
       { "label": "Trekking and Hiking", "sub": "Himalayan treks", "href": "/trekking-routes-in-nepal", "image": "/images/nav/trekking-and-hiking.jpg", "countSlug": "" },
       { "label": "Climbing and Expedition", "sub": "Summit expeditions", "href": "/nepal-peak-climbing", "image": "/images/nav/climbing-and-expedition.jpg", "countSlug": "nepal-peak-climbing" },
@@ -123,6 +125,7 @@
       { "name": "Kathmandu Environmental Education Project (KEEP)", "src": "/images/associate/keep-logo.svg" }
     ]
   },
+  "customSections": { "items": [] },
   "cta": {
     "title": "Ready for the Himalaya Holidays?",
     "description": "Let us know when and where you want to spend your next holiday in Nepal, Bhutan, and Tibet. Locals know more than anyone about the destinations. Let's plan your next travel with Joyful Trekking Pvt. Ltd.",

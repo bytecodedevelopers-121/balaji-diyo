@@ -19,7 +19,16 @@ interface Props {
 /** One collapsible section card: its fields, a visibility switch and a Save button. */
 export function SectionEditor({ def, saved, canEdit, onSave }: Props) {
   const [open, setOpen] = useState(false);
-  const [content, setContent] = useState<Record<string, unknown>>(saved?.content ?? {});
+  // Fields never saved yet start from the website's built-in value, so the editor shows what is live now.
+  const [content, setContent] = useState<Record<string, unknown>>(() => {
+    const initial = { ...(saved?.content ?? {}) };
+    for (const field of def.fields) {
+      const current = initial[field.key];
+      const isBlank = current === undefined || current === null || current === "";
+      if (isBlank && field.defaultValue !== undefined) initial[field.key] = field.defaultValue;
+    }
+    return initial;
+  });
   const [isActive, setIsActive] = useState(saved?.isActive ?? true);
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);

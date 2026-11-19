@@ -18,6 +18,7 @@ import { SearchInput } from "@/components/table/SearchInput";
 import { usePermission } from "@/hooks/usePermission";
 import { usePages, useDeletePage, useRestorePage, useHardDeletePage } from "@/hooks/queries/usePages";
 import { getErrorMessage } from "@/lib/apiError";
+import { publicPageUrl } from "@/lib/publicUrl";
 import { PATHS } from "@/constants/PATHS";
 import { COMPANY_INFO } from "@/constants";
 import type { Page } from "@/types/page";
@@ -85,7 +86,20 @@ export default function PagesPage() {
 
   const columns: DataTableColumn<Page>[] = [
     { key: "title", header: "Title", render: (p) => <span className="font-medium text-gray-900">{p.title}</span> },
-    { key: "slug", header: "Slug", render: (p) => p.slug ?? "—" },
+    {
+      key: "slug",
+      header: "Website address",
+      render: (p) => {
+        const url = publicPageUrl(p.slug);
+        return url ? (
+          <a href={url} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline">
+            /{p.slug}
+          </a>
+        ) : (
+          "—"
+        );
+      },
+    },
     {
       key: "isActive",
       header: "Status",
@@ -204,7 +218,11 @@ export default function PagesPage() {
           <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-2">
               <Badge label={viewTarget.isActive ? "Active" : "Inactive"} variant={viewTarget.isActive ? "green" : "gray"} />
-              {viewTarget.slug && <span className="text-sm text-gray-500">/{viewTarget.slug}</span>}
+              {viewTarget.slug && (
+                <a href={publicPageUrl(viewTarget.slug) ?? "#"} target="_blank" rel="noreferrer" className="text-sm text-indigo-600 hover:underline">
+                  Open on website: /{viewTarget.slug}
+                </a>
+              )}
             </div>
 
             <RichTextView html={viewTarget.content} />

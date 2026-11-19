@@ -14,7 +14,7 @@ export interface SaveSectionDto {
   isActive?: boolean;
 }
 
-export type FieldKind = "text" | "textarea" | "html" | "url" | "number" | "image" | "list" | "select" | "richtext";
+export type FieldKind = "text" | "textarea" | "html" | "url" | "number" | "image" | "list" | "select" | "richtext" | "video";
 
 /** One editable field of a section. `list` fields repeat `itemFields` once per row. */
 export interface FieldDef {
@@ -25,6 +25,8 @@ export interface FieldDef {
   /** For `list`: the fields of each row, and what to call a row ("question", "partner"). */
   itemFields?: FieldDef[];
   itemLabel?: string;
+  /** What the website shows until an admin saves a value — pre-filled in the editor so it can be seen and changed. */
+  defaultValue?: unknown;
   /** For `select`: the allowed values. */
   options?: string[];
 }

@@ -10,6 +10,7 @@ import { Alert } from "@/components/ui/Alert";
 import { FormSection } from "@/components/form/FormSection";
 import { RichTextEditor } from "@/components/form/RichTextEditor";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
+import { PAGE_DEFS } from "@/constants/pageContent";
 import type { Page, PageFormValues } from "@/types/page";
 
 const schema = z.object({
@@ -17,6 +18,7 @@ const schema = z.object({
   slug: z.string().optional(),
   content: z.string().optional(),
   parentId: z.string().optional(),
+  linkedPagePath: z.string().optional(),
   pageOrder: z.number().optional(),
   isActive: z.boolean(),
   metaTitle: z.string().optional(),
@@ -50,6 +52,7 @@ export function PageForm({ defaultValues, pages = [], onSubmit, isLoading, submi
       slug: defaultValues?.slug ?? "",
       content: defaultValues?.content ?? "",
       parentId: defaultValues?.parentId ?? "",
+      linkedPagePath: defaultValues?.linkedPagePath ?? "",
       pageOrder: defaultValues?.pageOrder ?? 0,
       isActive: defaultValues?.isActive ?? true,
       metaTitle: defaultValues?.meta?.metaTitle ?? "",
@@ -62,12 +65,32 @@ export function PageForm({ defaultValues, pages = [], onSubmit, isLoading, submi
     .filter((p) => p.id !== defaultValues?.id)
     .map((p) => ({ value: p.id, label: p.title }));
 
+  // Every page visitors can open today: the site's built-in pages plus the ones created here.
+  const linkOptions = (() => {
+    const seen = new Set<string>();
+    const options: { value: string; label: string }[] = [];
+    const add = (value: string, label: string) => {
+      if (seen.has(value)) return;
+      seen.add(value);
+      options.push({ value, label: `${label}  (${value})` });
+    };
+    PAGE_DEFS.forEach((def) => add(def.path, def.title));
+    pages
+      .filter((p) => p.id !== defaultValues?.id && p.slug && p.isActive && !p.deletedAt)
+      .forEach((p) => add(`/${p.slug}`, p.title));
+    return options;
+  })();
+
   const submit = (values: FormValues) => {
+    const linked = linkOptions.find((option) => option.value === values.linkedPagePath);
     onSubmit({
       title: values.title,
       slug: values.slug || undefined,
       content: values.content || undefined,
       parentId: values.parentId || undefined,
+      // null (not undefined) so choosing "No link" removes an existing link.
+      linkedPagePath: linked ? linked.value : null,
+      linkedPageLabel: linked ? linked.label.replace(/\s+\(.*\)$/, "") : null,
       pageOrder: values.pageOrder,
       isActive: values.isActive,
       metaTitle: values.metaTitle || undefined,
@@ -98,6 +121,17 @@ export function PageForm({ defaultValues, pages = [], onSubmit, isLoading, submi
             error={errors.parentId?.message}
             {...register("parentId")}
           />
+          {/* "Link to page" hidden for now — uncomment to bring it back (the backend and website still support it).
+          <div className="sm:col-span-2">
+            <Select
+              label="Link to page"
+              placeholder="No link"
+              hint="Optional. Adds a “Continue to …” button at the bottom of this page that opens the page you choose. Leave on “No link” for none."
+              options={linkOptions}
+              {...register("linkedPagePath")}
+            />
+          </div>
+          */}
           <div className="sm:col-span-2">
             <label className="mb-1.5 block text-sm font-medium text-gray-700">Body</label>
             <Controller

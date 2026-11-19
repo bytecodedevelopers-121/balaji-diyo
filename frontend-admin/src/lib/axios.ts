@@ -1,7 +1,8 @@
-import axios, { AxiosError, type InternalAxiosRequestConfig } from "axios";
+import axios, { AxiosError, type AxiosResponse, type InternalAxiosRequestConfig } from "axios";
 import { useAuthStore } from "@/store/auth.store";
 import { PATHS } from "@/constants/PATHS";
 import { isConnectionError } from "@/lib/connectionError";
+import { toast } from "@/lib/toast";
 
 interface RetryableRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
@@ -61,8 +62,32 @@ function notifyRefreshSubscribers(token: string | null) {
   refreshSubscribers = [];
 }
 
+// Requests that write but aren't a "save" the admin should be told about.
+const SILENT_WRITE_URLS = ["/auth/", "/files/", "/media/upload"];
+
+const WRITE_FALLBACK_MESSAGE: Record<string, string> = {
+  post: "Created successfully",
+  put: "Saved successfully",
+  patch: "Updated successfully",
+  delete: "Deleted successfully",
+};
+
+/** Toast for every successful create / save / update / delete, using the API's own message when it sends one. */
+function announceWrite(response: AxiosResponse) {
+  const method = response.config.method?.toLowerCase() ?? "get";
+  const fallback = WRITE_FALLBACK_MESSAGE[method];
+  if (!fallback) return;
+  const url = response.config.url ?? "";
+  if (SILENT_WRITE_URLS.some((silent) => url.includes(silent))) return;
+  const apiMessage = (response.data as { message?: unknown } | undefined)?.message;
+  toast.success(typeof apiMessage === "string" && apiMessage.trim() ? apiMessage : fallback);
+}
+
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    announceWrite(response);
+    return response;
+  },
   async (error: AxiosError | OfflineSkipError) => {
     // Handle skipped offline requests
     if (isOfflineSkipError(error)) {

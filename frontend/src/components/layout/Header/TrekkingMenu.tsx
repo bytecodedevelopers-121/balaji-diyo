@@ -59,7 +59,18 @@ export function TrekkingMenu({
     .map((region) => ({ title: toTitleCase(region.title), href: region.href }))
     .filter((region, index, all) => all.findIndex((other) => other.href === region.href) === index);
 
-  const active = regions.find((region) => region.href === activeHref) ?? regions[0] ?? null;
+  // The same region can arrive twice under different links. Show each name once,
+  // keeping the copy that has packages (the first one until counts have loaded).
+  const packageCount = (region: Region) => (regionTrips[region.href] ?? []).filter(isTrek).length;
+  const displayRegions = regions.reduce<Region[]>((acc, region) => {
+    const name = region.title.trim().toLowerCase();
+    const existingIndex = acc.findIndex((other) => other.title.trim().toLowerCase() === name);
+    if (existingIndex === -1) acc.push(region);
+    else if (packageCount(region) > packageCount(acc[existingIndex])) acc[existingIndex] = region;
+    return acc;
+  }, []);
+
+  const active = displayRegions.find((region) => region.href === activeHref) ?? displayRegions[0] ?? null;
   const trips = active ? (regionTrips[active.href] ?? null) : null;
   const treks = (trips ?? []).filter(isTrek);
   const preview = hovered ?? treks[0] ?? null;
@@ -146,7 +157,7 @@ export function TrekkingMenu({
                   <div className="destination-scroll overflow-y-auto border-white/10 px-5 py-6 min-[1120px]:border-r">
                     <p className="mb-3 text-[11px] font-bold tracking-[0.14em] text-white/55 uppercase">Regions</p>
                     <ul className="flex flex-col gap-1">
-                      {regions.map((region) => {
+                      {displayRegions.map((region) => {
                         const isActive = region.href === active?.href;
                         const loaded = regionTrips[region.href];
                         const count = loaded ? loaded.filter(isTrek).length : 0;

@@ -6,6 +6,8 @@ import { getTripsByCategory } from "@/features/trips/api/get-trips";
 import type { Category } from "@/features/trips/types/category.types";
 import type { Trip } from "@/features/trips/types/trip.types";
 import type { PaginationMeta } from "@/types/api.types";
+import { getCmsPage } from "@/features/pages/api/get-cms-page";
+import type { CmsPage } from "@/features/pages/types/cms-page.types";
 
 /**
  * Flat-URL content resolver for this route.
@@ -56,7 +58,9 @@ export interface CategoryDetail {
 export type ResolvedContent =
   | { type: "package"; data: PackageDetail }
   | { type: "trekking-region"; data: TrekkingRegionDetail }
-  | { type: "category"; data: CategoryDetail };
+  | { type: "category"; data: CategoryDetail }
+  // A page an admin created under Admin → Pages; it lives at /<its slug>.
+  | { type: "cms-page"; data: CmsPage };
 
 /**
  * `page` only ever affects the "category" branch — a package/trekking-
@@ -80,6 +84,12 @@ export async function resolveContentBySlug(slug: string, page = 1): Promise<Reso
   if (category) {
     const { items: trips, meta } = await getTripsByCategory(category.id, page);
     return { type: "category", data: { category, trips, meta } };
+  }
+
+  // Last: pages created in the admin (Admin → Pages), so real content always wins a slug clash.
+  const cmsPage = await getCmsPage(slug);
+  if (cmsPage) {
+    return { type: "cms-page", data: cmsPage };
   }
 
   return null;

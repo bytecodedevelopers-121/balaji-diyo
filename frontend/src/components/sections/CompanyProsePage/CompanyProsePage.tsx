@@ -14,13 +14,15 @@ interface Props {
   after?: ReactNode;
   /** Hide the closing banner on pages that end with their own form. */
   withCta?: boolean;
+  /** Middle breadcrumb; pass null to leave it out (pages created in the admin aren't under Company). */
+  crumb?: string | null;
 }
 
 /**
  * Shared layout of the text-only Company pages (Why Guided Travel, Responsible Travel, Partner with Us,
  * Terms, Privacy): optional wide photo, breadcrumb, heading and the rich-text body written in the admin.
  */
-export function CompanyProsePage({ content, width = 900, after, withCta = true }: Props) {
+export function CompanyProsePage({ content, width = 900, after, withCta = true, crumb = "Company" }: Props) {
   const wide = Boolean(content.image);
   // Static class names (Tailwind can't see ones built from a variable).
   const column = width === 860 ? "max-w-[860px]" : "max-w-[900px]";
@@ -45,7 +47,7 @@ export function CompanyProsePage({ content, width = 900, after, withCta = true }
               <Breadcrumbs
                 tone="dark"
                 className="[&_ol]:justify-start"
-                items={[{ label: "Home", href: "/" }, { label: "Company" }, { label: content.title }]}
+                items={[{ label: "Home", href: "/" }, ...(crumb ? [{ label: crumb }] : []), { label: content.title }]}
               />
               <h1 data-reveal="up" className="mt-6 font-display text-[clamp(30px,5vw,44px)] leading-tight font-bold text-brand-neutral-1000">
                 {content.title}

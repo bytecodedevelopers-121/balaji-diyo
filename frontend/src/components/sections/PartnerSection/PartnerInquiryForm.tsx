@@ -27,9 +27,13 @@ const inputClassName =
  * into `message` as "Label: value" lines, same as the country line on the
  * Customize Trip form.
  */
-export function PartnerInquiryForm() {
+export function PartnerInquiryForm({ visibleFormIds }: { visibleFormIds?: readonly PartnerFormId[] }) {
   const baseId = useId();
-  const [activeId, setActiveId] = useState<PartnerFormId>("brand");
+  // Which tabs the admin switched on (Page Content → Partner with Us → Enquiry forms).
+  const forms = visibleFormIds ? partnerForms.filter((form) => visibleFormIds.includes(form.id)) : partnerForms;
+  const [selectedId, setActiveId] = useState<PartnerFormId>(forms[0]?.id ?? "brand");
+  // If the selected tab was hidden meanwhile, fall back to the first visible one.
+  const activeId = forms.some((form) => form.id === selectedId) ? selectedId : forms[0]?.id;
   const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
   function focusTab(id: PartnerFormId) {
@@ -38,7 +42,7 @@ export function PartnerInquiryForm() {
   }
 
   function handleTabKeyDown(event: React.KeyboardEvent, index: number) {
-    const last = partnerForms.length - 1;
+    const last = forms.length - 1;
     let next: number | null = null;
     if (event.key === "ArrowRight") next = index === last ? 0 : index + 1;
     else if (event.key === "ArrowLeft") next = index === 0 ? last : index - 1;
@@ -46,19 +50,26 @@ export function PartnerInquiryForm() {
     else if (event.key === "End") next = last;
     if (next === null) return;
     event.preventDefault();
-    focusTab(partnerForms[next]!.id);
+    focusTab(forms[next]!.id);
   }
 
-  const active = partnerForms.find((form) => form.id === activeId)!;
+  const active = forms.find((form) => form.id === activeId);
+  if (!active) return null;
 
   return (
     <div>
+      {/* A single visible form needs no tab to switch to — show its name as a title instead. */}
+      {forms.length === 1 ? (
+        <h3 className="mb-6 border-b border-brand-neutral-200 pb-3 text-body-l font-bold text-primary-500">
+          {active.tabLabel}
+        </h3>
+      ) : null}
       <div
         role="tablist"
         aria-label="Partnership type"
-        className="mb-8 flex flex-wrap gap-x-6 gap-y-2 border-b border-brand-neutral-200"
+        className={`mb-8 flex flex-wrap gap-x-6 gap-y-2 border-b border-brand-neutral-200 ${forms.length < 2 ? "hidden" : ""}`}
       >
-        {partnerForms.map((form, index) => {
+        {forms.map((form, index) => {
           const selected = form.id === activeId;
           return (
             <button

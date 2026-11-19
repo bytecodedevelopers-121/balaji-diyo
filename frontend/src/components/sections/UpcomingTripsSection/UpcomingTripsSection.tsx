@@ -166,15 +166,20 @@ export async function UpcomingTripsSection({ content = HOME_DEFAULTS.upcomingTri
             </table>
           </div>
 
-          <div className="flex gap-3 bg-[#fdf3d6] px-5 py-5">
-            <Info aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-[#d98a00]" />
-            <div>
-              <p className="text-[16px] font-semibold text-logo-navy-dark">{content.noteTitle}</p>
-              <p className="mt-1.5 text-[14px] leading-relaxed text-brand-neutral-800">
-                {content.noteBody}
-              </p>
+          {/* The notice is optional: leave both fields empty in the admin to hide it. */}
+          {content.noteTitle || content.noteBody ? (
+            <div className="flex gap-3 bg-[#fdf3d6] px-5 py-5">
+              <Info aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-[#d98a00]" />
+              <div>
+                {content.noteTitle ? (
+                  <p className="text-[16px] font-semibold text-logo-navy-dark">{content.noteTitle}</p>
+                ) : null}
+                {content.noteBody ? (
+                  <p className="mt-1.5 text-[14px] leading-relaxed text-brand-neutral-800">{content.noteBody}</p>
+                ) : null}
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
       </div>
     </section>

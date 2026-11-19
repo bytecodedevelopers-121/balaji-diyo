@@ -1,4 +1,4 @@
-import { partnerFormIntro } from "@/config/partner-content";
+import { partnerFormIntro, type PartnerFormId } from "@/config/partner-content";
 import { PartnerInquiryForm } from "./PartnerInquiryForm";
 
 function TrustIcon({ icon }: { icon: "48h" | "lock" | "globe" }) {
@@ -34,7 +34,7 @@ function TrustIcon({ icon }: { icon: "48h" | "lock" | "globe" }) {
  *
  * Server Component — only `PartnerInquiryForm` is interactive.
  */
-export function PartnerFormSection() {
+export function PartnerFormSection({ visibleFormIds }: { visibleFormIds?: readonly PartnerFormId[] }) {
   const { label, heading, body, trustSignals } = partnerFormIntro;
 
   return (
@@ -67,7 +67,7 @@ export function PartnerFormSection() {
         </div>
 
         <div className="rounded-card border border-secondary-500/40 bg-brand-neutral-000 p-5 shadow-card-strong sm:p-8 lg:col-span-3">
-          <PartnerInquiryForm />
+          <PartnerInquiryForm visibleFormIds={visibleFormIds} />
         </div>
       </div>
     </section>
