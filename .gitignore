@@ -56,3 +56,6 @@ react-front/node_modules/
 # Database export + uploads archive for server migration (contain customer data)
 *.json.gz
 uploads.zip
+
+# Local Claude Code settings (can contain pasted tokens)
+.claude/
