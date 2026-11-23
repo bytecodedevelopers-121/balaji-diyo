@@ -139,7 +139,7 @@ export default function LoginPage() {
 
           <img
             src="/logo.png"
-            alt="Joyful Trekking"
+            alt="Your Company"
             className="login-enter-brand relative z-10 h-auto w-48"
           />
 
@@ -169,7 +169,7 @@ export default function LoginPage() {
 
         <main className="login-enter-form flex min-h-[580px] w-full flex-col justify-center bg-[#fffdf9] px-7 py-10 sm:px-12 lg:min-h-[620px] lg:px-16">
           <div className="mb-10 flex justify-center rounded-2xl bg-brand-surface px-5 py-3 lg:hidden">
-            <img src="/logo.png" alt="Joyful Trekking" className="h-auto w-44" />
+            <img src="/logo.png" alt="Your Company" className="h-auto w-44" />
           </div>
 
           <div className="mb-9">

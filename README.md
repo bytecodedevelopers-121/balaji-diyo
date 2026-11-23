@@ -1,6 +1,6 @@
-# Joyful Trekking
+# Your Company
 
-Website for Joyful Trekking Pvt. Ltd., a Kathmandu-based trekking, tour and travel company.
+Website for Your Company Pvt. Ltd., a Kathmandu-based trekking, tour and travel company.
 
 
 ## Project structure

@@ -16,7 +16,7 @@ export function formatBlogDateLong(iso: string): string {
 }
 
 export function blogAuthorName(post: BlogPost): string {
-  return post.authors[0]?.name ?? "Joyful Trekking";
+  return post.authors[0]?.name ?? "Your Company";
 }
 
 /** Plain-text excerpt: the abstract, else the content, with tags stripped. */

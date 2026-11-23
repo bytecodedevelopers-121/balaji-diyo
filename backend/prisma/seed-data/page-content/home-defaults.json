@@ -53,21 +53,21 @@
   },
   "exploreNepal": {
     "eyebrow": "We make your travel dreams come true,",
-    "title": "Explore Nepal with Joyful Trekking Pvt. Ltd.",
-    "bodyHtml": "<p><strong>Joyful Trekking Pvt. Ltd.</strong>, known simply as <strong>Joyful Trekking</strong>, is an independent, Kathmandu-based trekking, tour and travel company with <strong>over 20 years of experience</strong> in Nepal's tourism and hospitality industry. We specialize in trekking, hiking, tours, holidays, jungle safaris and climbing adventures across the Nepal Himalayas, and extend our travel services to Bhutan and Tibet.</p><p>Our best-selling holiday packages include the <strong>Everest Base Camp, Annapurna Base Camp, Manaslu Circuit, Langtang Valley, Annapurna Circuit, Kathmandu Tour, Pokhara Tour, Spirit of Nepal, Chitwan Safari</strong> and the <strong>Nepal Bhutan Tour</strong>.</p>",
+    "title": "Explore Nepal with Your Company Pvt. Ltd.",
+    "bodyHtml": "<p><strong>Your Company Pvt. Ltd.</strong>, known simply as <strong>Your Company</strong>, is an independent, Kathmandu-based trekking, tour and travel company with <strong>over 20 years of experience</strong> in Nepal's tourism and hospitality industry. We specialize in trekking, hiking, tours, holidays, jungle safaris and climbing adventures across the Nepal Himalayas, and extend our travel services to Bhutan and Tibet.</p><p>Our best-selling holiday packages include the <strong>Everest Base Camp, Annapurna Base Camp, Manaslu Circuit, Langtang Valley, Annapurna Circuit, Kathmandu Tour, Pokhara Tour, Spirit of Nepal, Chitwan Safari</strong> and the <strong>Nepal Bhutan Tour</strong>.</p>",
     "buttonLabel": "Know More",
     "buttonHref": "/company/about-us",
     "whyTitle": "Why Choose Us?",
     "whyItems": [
       { "title": "20+ Years Experienced Team", "body": "Our guides and trip planners have spent over two decades on the trails and in the villages of Nepal, so every itinerary is built on first-hand knowledge." },
-      { "title": "Registered and Authorized", "body": "Joyful Trekking Pvt. Ltd. is a government-registered and authorized trekking and travel company, fully licensed to operate in Nepal." },
+      { "title": "Registered and Authorized", "body": "Your Company Pvt. Ltd. is a government-registered and authorized trekking and travel company, fully licensed to operate in Nepal." },
       { "title": "Happy Clients and Repeated Customers", "body": "Travelers from around the world trust us, and many return year after year for their next trek, tour or climb." },
       { "title": "Use of Local Products", "body": "We stay in local lodges, eat local food and hire local porters and guides, so your trip supports the communities you walk through." }
     ],
     "backgroundImage": "/images/why-choose-us/choose-us.jpg"
   },
   "clientReviews": {
-    "badge": "Joyful Trekking Reviews",
+    "badge": "Your Company Reviews",
     "titleLine1": "What Our Clients",
     "titleLine2": "Say?",
     "platforms": [
@@ -88,10 +88,10 @@
   },
   "faqGuided": {
     "faqEyebrow": "Top FAQs",
-    "faqTitle": "Joyful Travel Queries",
+    "faqTitle": "Your Travel Queries",
     "faqs": [
-      { "q": "What is Joyful Trekking Pvt. Ltd.?", "a": "Joyful Trekking Pvt. Ltd. is a Kathmandu-based trekking, tour and travel company offering treks, peak climbs, tours and safaris across Nepal, Bhutan and Tibet." },
-      { "q": "Where is Joyful Trekking Pvt. Ltd. located?", "a": "Our main office is in Kathmandu, Nepal. See the contact page for the full address and map." },
+      { "q": "What is Your Company Pvt. Ltd.?", "a": "Your Company Pvt. Ltd. is a Kathmandu-based trekking, tour and travel company offering treks, peak climbs, tours and safaris across Nepal, Bhutan and Tibet." },
+      { "q": "Where is Your Company Pvt. Ltd. located?", "a": "Our main office is in Kathmandu, Nepal. See the contact page for the full address and map." },
       { "q": "What is the best time to travel to Nepal?", "a": "Spring (March to May) and autumn (September to November) offer the clearest views and the most stable weather for trekking." },
       { "q": "How to get a Nepal tourist visa?", "a": "Most nationalities can get a visa on arrival at Kathmandu airport or apply online in advance. We can guide you through the steps." }
     ],
@@ -125,7 +125,7 @@
   },
   "cta": {
     "title": "Ready for the Himalaya Holidays?",
-    "description": "Let us know when and where you want to spend your next holiday in Nepal, Bhutan, and Tibet. Locals know more than anyone about the destinations. Let's plan your next travel with Joyful Trekking Pvt. Ltd.",
+    "description": "Let us know when and where you want to spend your next holiday in Nepal, Bhutan, and Tibet. Locals know more than anyone about the destinations. Let's plan your next travel with Your Company Pvt. Ltd.",
     "buttonLabel": "Plan Your Trip Now",
     "buttonHref": "/plan-your-trip"
   }

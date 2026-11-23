@@ -60,7 +60,7 @@ export default function ChangePasswordPage() {
   const newPassword = watch("newPassword");
 
   useEffect(() => {
-    document.title = "Change Password | Joyful Trekking Admin";
+    document.title = "Change Password | Your Company Admin";
   }, []);
 
   useEffect(() => {

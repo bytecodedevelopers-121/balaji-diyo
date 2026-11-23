@@ -24,7 +24,7 @@ export const TREKKING_LINKS: MenuLink[] = [
 /** "Company" dropdown links — existing pages (Legal Documents = company documents). */
 export const COMPANY_LINKS: MenuLink[] = [
   { label: "About Us", href: "/company/about-us" },
-  { label: "Joyful Trekking Team", href: "/company/team" },
+  { label: "Your Company Team", href: "/company/team" },
   { label: "Legal Documents", href: "/company/legal-documents" },
   { label: "Why Guided Travel?", href: "/company/why-guided-travel" },
   { label: "Responsible Travel", href: "/company/responsible-travel" },

@@ -165,7 +165,7 @@ export function MobileNavPanel({
                 <div className="flex h-[64px] shrink-0 items-center justify-between gap-3 px-5">
                   <Link
                     href="/"
-                    aria-label="Joyful Trekking Pvt. Ltd. — Home"
+                    aria-label="Your Company Pvt. Ltd. — Home"
                     onClick={closeMenu}
                     className="rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-logo-sun"
                   >

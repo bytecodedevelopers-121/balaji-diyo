@@ -219,7 +219,7 @@ export function TestimonialsPageSection({ testimonials }: TestimonialsPageSectio
                   <Quote aria-hidden="true" className="absolute right-7 top-7 size-8 rotate-180 text-brand-neutral-300" fill="currentColor" />
                   <Stars rating={numericRating(testimonial)} />
                   <h2 className="mt-3 pr-12 font-playfair-display text-[18px] leading-none font-bold text-brand-neutral-1000">
-                    {testimonial.reviewTitle || "A memorable journey with Joyful Trekking Pvt. Ltd."}
+                    {testimonial.reviewTitle || "A memorable journey with Your Company Pvt. Ltd."}
                   </h2>
                   <div
                     className="mt-3 line-clamp-4 font-poppins text-body-m font-medium text-brand-neutral-700 [&_p]:inline"

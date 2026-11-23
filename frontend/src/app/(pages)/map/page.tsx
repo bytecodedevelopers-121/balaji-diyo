@@ -7,7 +7,7 @@ import { buildMetadata } from "@/lib/seo/metadata";
 export const metadata: Metadata = buildMetadata({
   title: "Trekking Routes Map of Nepal",
   description:
-    "Joyful Trekking Pvt. Ltd.'s trekking route maps for Nepal's most popular treks — legend, itinerary highlights, and a detailed description for every route.",
+    "Your Company Pvt. Ltd.'s trekking route maps for Nepal's most popular treks — legend, itinerary highlights, and a detailed description for every route.",
   path: "/map",
 });
 

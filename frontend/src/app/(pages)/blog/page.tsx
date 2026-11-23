@@ -11,7 +11,7 @@ import { buildMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = buildMetadata({
   title: "Nepal Travel Blog",
-  description: "Trekking guides, route and weather tips, costs, permits and packing lists for Nepal from the Joyful Trekking team.",
+  description: "Trekking guides, route and weather tips, costs, permits and packing lists for Nepal from the Your Company team.",
   path: "/blog",
 });
 

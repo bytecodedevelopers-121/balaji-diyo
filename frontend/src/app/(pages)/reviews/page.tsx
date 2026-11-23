@@ -7,7 +7,7 @@ import { buildMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = buildMetadata({
   title: "Testimonials",
-  description: "Read reviews and trekking experiences shared by Joyful Trekking Pvt. Ltd. travelers.",
+  description: "Read reviews and trekking experiences shared by Your Company Pvt. Ltd. travelers.",
   path: "/reviews",
   image: "/images/testimonials/c0d5e14dceb7ea239142d655c2a4de669d80d627.jpg",
 });

@@ -119,7 +119,7 @@ export class B2BIntegrationService {
     const eventId = WebhookDispatcher.newEventId();
     await this.repository.enqueueDelivery({
       id: eventId, endpointId: id, partnerId, eventType: WEBHOOK_TEST_EVENT,
-      payload: { id: eventId, type: WEBHOOK_TEST_EVENT, createdAt: new Date().toISOString(), data: { message: 'Test event from Joyful Trekking B2B' } },
+      payload: { id: eventId, type: WEBHOOK_TEST_EVENT, createdAt: new Date().toISOString(), data: { message: 'Test event from Your Company B2B' } },
     });
     this.dispatcher.kick();
     return { deliveryId: eventId };

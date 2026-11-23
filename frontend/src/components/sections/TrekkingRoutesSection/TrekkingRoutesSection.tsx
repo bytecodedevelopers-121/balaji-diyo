@@ -50,7 +50,7 @@ export async function TrekkingRoutesSection({ page }: { page: number }) {
           interpret them.
         </p>
         <p className="max-w-4xl font-poppins text-[16px] leading-[25.6px] font-medium text-brand-neutral-700">
-          Joyful Trekking Pvt. Ltd. has provided a map of trekking routes in
+          Your Company Pvt. Ltd. has provided a map of trekking routes in
           Nepal, offering trekkers in-depth information on the specific
           route they are trekking. By providing a map of the several
           trekking routes in Nepal, we aim to help trekkers with

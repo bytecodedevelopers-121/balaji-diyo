@@ -69,7 +69,7 @@ export class WebhookDispatcher {
       const ts = Math.floor(Date.now() / 1000).toString();
       const res = await postJson(endpoint.url, {
         'Content-Type': 'application/json',
-        'User-Agent': 'JoyfulTrekking-B2B-Webhooks/1.0',
+        'User-Agent': 'YourCompany-B2B-Webhooks/1.0',
         'X-B2B-Event': d.eventType,
         'X-B2B-Delivery-Id': d.id,
         'X-B2B-Timestamp': ts,

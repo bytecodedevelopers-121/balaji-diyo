@@ -13,7 +13,7 @@ export const partnerHero = {
   headlineLead: "Grow Your Brand on the",
   headlineAccent: "Roof of the World.",
   subheadline:
-    "Joyful Trekking Pvt. Ltd. runs treks, peak climbs, cultural tours, and private group journeys across the Himalayas. Every package is open to partnership. Pick your model and let’s get started.",
+    "Your Company Pvt. Ltd. runs treks, peak climbs, cultural tours, and private group journeys across the Himalayas. Every package is open to partnership. Pick your model and let’s get started.",
   primaryCta: "Apply to Partner",
   secondaryLink: "See what’s on offer",
   stats: [
@@ -25,7 +25,7 @@ export const partnerHero = {
 
 export const partnerModels = {
   label: "Who We Work With",
-  heading: "Three Ways to Partner With Joyful Trekking Pvt. Ltd.",
+  heading: "Three Ways to Partner With Your Company Pvt. Ltd.",
   body: "Want to co-create a trek? Earn commission on every booking you send? Or shoot content on the trail? We have a partnership model that fits each goal.",
   cards: [
     {
@@ -53,7 +53,7 @@ export const partnerModels = {
         "Dedicated content days at iconic locations on the trail",
         "Drone, photo, and production support",
         "Affiliate commission on every booking you refer",
-        "Cross-promotion across Joyful Trekking channels",
+        "Cross-promotion across Your Company channels",
       ],
     },
     {

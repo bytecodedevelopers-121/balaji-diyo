@@ -3,7 +3,7 @@
 import { useSyncExternalStore } from "react";
 import { X } from "lucide-react";
 
-const STORAGE_KEY = "joyful:announcement-dismissed";
+const STORAGE_KEY = "app:announcement-dismissed";
 
 /** Edit this copy to change the "Hot News" strip. */
 const ANNOUNCEMENT =
