@@ -74,7 +74,7 @@ export const footerColumns: FooterColumn[] = [
     title: "Company",
     links: [
       { label: "About Us", href: "/company/about-us" },
-      { label: "Joyful Trekking Team", href: "/company/team" },
+      { label: "Your Company Team", href: "/company/team" },
       { label: "Partner with Us", href: "/company/partner-with-us" },
       // No separate affiliate page yet — shares the partner page.
       { label: "Affiliate Program", href: "/company/partner-with-us" },
@@ -136,7 +136,7 @@ export const footerOffices: FooterOffice[] = [
   {
     name: "Nepal (Head Office)",
     flag: "/images/footer/flag-nepal.png",
-    company: "Joyful Trekking Pvt. Ltd.",
+    company: "Your Company Pvt. Ltd.",
     phones: [
       { label: "+977 9845000000", href: "tel:+9779845000000" },
       { label: "+977 14701884", href: "tel:+97714701884" },
@@ -157,14 +157,14 @@ export const footerOffices: FooterOffice[] = [
         ],
       },
     ],
-    email: "joyfultrekking@gmail.com",
+    email: "info@example.com",
     address: "Thamel, Kathmandu, Nepal",
     poBox: "P.O. Box No. 11670",
   },
   {
     name: "Australia",
     flag: "/images/footer/flag-australia.png",
-    company: "Joyful Trekking Pvt. Ltd.",
+    company: "Your Company Pvt. Ltd.",
     emailFirst: true,
     phones: [
       {
@@ -172,12 +172,12 @@ export const footerOffices: FooterOffice[] = [
         href: "https://wa.me/61426378149",
       },
     ],
-    email: "joyfultrekking@gmail.com",
+    email: "info@example.com",
   },
   {
     name: "Japan",
     flag: "/images/footer/flag-japan.png",
-    company: "Joyful Trekking Pvt. Ltd.",
+    company: "Your Company Pvt. Ltd.",
     emailFirst: true,
     phones: [
       {
@@ -185,7 +185,7 @@ export const footerOffices: FooterOffice[] = [
         href: "https://wa.me/818041070813",
       },
     ],
-    email: "joyfultrekking@gmail.com",
+    email: "info@example.com",
   },
 ];
 

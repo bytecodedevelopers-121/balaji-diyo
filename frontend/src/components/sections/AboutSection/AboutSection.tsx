@@ -40,7 +40,7 @@ export function AboutSection() {
           25 Years Guiding Travelers Through the Himalayas
         </h2>
         <p className="text-justify text-heading-xl text-brand-neutral-800">
-          Joyful Trekking Pvt. Ltd. started in Nepal and never left. For over 25
+          Your Company Pvt. Ltd. started in Nepal and never left. For over 25
           years we&apos;ve been guiding travelers through the Himalayas,
           not from a desk somewhere else, but from here, with local guides
           who know these trails, valleys, passes, and villages by heart.

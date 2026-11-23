@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 
-const STORAGE_KEY = "joyful:comparison-slugs";
+const STORAGE_KEY = "app:comparison-slugs";
 const EMPTY_SLUGS: readonly string[] = [];
 
 let cachedSlugs: readonly string[] = EMPTY_SLUGS;

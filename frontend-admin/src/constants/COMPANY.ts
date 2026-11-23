@@ -1,4 +1,4 @@
 export const COMPANY_INFO = {
-  name: "Joyful Trekking",
-  email: "info@joyfultrekking.com",
+  name: "Your Company",
+  email: "info@example.com",
 };

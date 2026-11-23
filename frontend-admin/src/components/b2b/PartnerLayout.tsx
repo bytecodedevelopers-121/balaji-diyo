@@ -22,7 +22,7 @@ export function PartnerLayout() {
       <header className="border-b border-[#efe6da] bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
           <div className="flex items-center gap-6">
-            <img src="/logo.png" alt="Joyful Trekking" className="h-8 w-auto" />
+            <img src="/logo.png" alt="Your Company" className="h-8 w-auto" />
             <nav className="flex items-center gap-1">
               <NavLink to={PATHS.PARTNER_HOME} end className={link}>Dashboard</NavLink>
               {isActive && <NavLink to={PATHS.PARTNER_CATALOG} className={link}>Catalog</NavLink>}

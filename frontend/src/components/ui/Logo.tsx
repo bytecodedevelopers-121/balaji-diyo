@@ -1,5 +1,5 @@
 /**
- * Circular brand emblem (public/images/brand/logo.png, 500×500, transparent
+ * Template brand emblem (public/images/brand/logo.png, generated from logo.svg, 500×500, transparent
  * corners) — reads the same on light and dark surfaces, so there's no
  * on-light variant. `onLight` is kept for existing callers and ignored.
  * 48px below 1120px, 78px above.

@@ -2,7 +2,7 @@ import { Merriweather } from "next/font/google";
 
 /**
  * SITE FONT (2026-11): every family below now loads Merriweather, a sturdy
- * serif matching the "Joyful Trekking" logo lettering (direct request: "make
+ * serif matching the "Your Company" logo lettering (direct request: "make
  * all my fonts style like this"). The three exports keep their old names
  * (`raleway`, `poppins`, `playfairDisplay`) and CSS variables so the
  * `font-raleway` / `font-poppins` / `font-playfair-display` classes used
