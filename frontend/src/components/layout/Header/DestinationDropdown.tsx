@@ -506,7 +506,7 @@ export function DestinationDropdown({
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
             <span className="font-playfair-display text-[24px] font-bold">Explore {activeCategory.label}</span>
             <span className="text-[11px] font-bold tracking-[0.14em] text-logo-sun uppercase">
-              · Ten handcrafted journeys, one joyful crew
+              · Ten handcrafted journeys, one friendly crew
             </span>
           </div>
           <Link
