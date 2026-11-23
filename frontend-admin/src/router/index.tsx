@@ -8,6 +8,8 @@ import { PublicRoute } from "@/components/guards/PublicRoute";
 import { PermissionRoute } from "@/components/guards/PermissionRoute";
 import AppLayout from "@/components/layouts/AppLayout";
 import { DashboardLayout } from "@/components/common/layout";
+import { InternalRoute, PartnerRoute } from "@/components/guards/AccountTypeRoutes";
+import { PartnerLayout } from "@/components/b2b/PartnerLayout";
 
 const LoginPage = lazy(() => import("@/pages/auth/LoginPage"));
 const ForbiddenPage = lazy(() => import("@/pages/ForbiddenPage"));
@@ -83,6 +85,27 @@ const PageGroupPage = lazy(() => import("@/pages/content/page-content/PageGroupP
 const PageSectionsPage = lazy(() => import("@/pages/content/page-content/PageSectionsPage"));
 const GlobalSettingsPage = lazy(() => import("@/pages/content/global-settings/GlobalSettingsPage"));
 const RedirectsPage = lazy(() => import("@/pages/content/redirects/RedirectsPage"));
+const PartnerRegisterPage = lazy(() => import("@/pages/partner/PartnerRegisterPage"));
+const PartnerDashboardPage = lazy(() => import("@/pages/partner/PartnerDashboardPage"));
+const PartnerTeamPage = lazy(() => import("@/pages/partner/PartnerTeamPage"));
+const PartnerCatalogPage = lazy(() => import("@/pages/partner/PartnerCatalogPage"));
+const PartnerPackagePage = lazy(() => import("@/pages/partner/PartnerPackagePage"));
+const PartnerHoldsPage = lazy(() => import("@/pages/partner/PartnerHoldsPage"));
+const B2BContractsPage = lazy(() => import("@/pages/admin/b2b/B2BContractsPage"));
+const B2BAllotmentsPage = lazy(() => import("@/pages/admin/b2b/B2BAllotmentsPage"));
+const PartnerCheckoutPage = lazy(() => import("@/pages/partner/PartnerCheckoutPage"));
+const PartnerBookingsPage = lazy(() => import("@/pages/partner/PartnerBookingsPage"));
+const PartnerBookingDetailPage = lazy(() => import("@/pages/partner/PartnerBookingDetailPage"));
+const PartnerWalletPage = lazy(() => import("@/pages/partner/PartnerWalletPage"));
+const PartnerSettlementsPage = lazy(() => import("@/pages/partner/PartnerSettlementsPage"));
+const PartnerDeveloperPage = lazy(() => import("@/pages/partner/PartnerDeveloperPage"));
+const PartnerTicketsPage = lazy(() => import("@/pages/partner/PartnerTicketsPage"));
+const B2BSlaPage = lazy(() => import("@/pages/admin/b2b/B2BSlaPage"));
+const B2BSettlementsPage = lazy(() => import("@/pages/admin/b2b/B2BSettlementsPage"));
+const B2BBookingsPage = lazy(() => import("@/pages/admin/b2b/B2BBookingsPage"));
+const B2BPartnersPage = lazy(() => import("@/pages/admin/b2b/B2BPartnersPage"));
+const B2BPartnerDetailPage = lazy(() => import("@/pages/admin/b2b/B2BPartnerDetailPage"));
+const B2BTiersPage = lazy(() => import("@/pages/admin/b2b/B2BTiersPage"));
 const ActivityLogsPage = lazy(() => import("@/pages/content/activity-logs/ActivityLogsPage"));
 
 // add more as you build them
@@ -97,12 +120,40 @@ export const router = createBrowserRouter([
     children: [
       {
         element: <PublicRoute />,
-        children: [{ path: PATHS.LOGIN, element: withSuspense(<LoginPage />) }],
+        children: [
+          { path: PATHS.LOGIN, element: withSuspense(<LoginPage />) },
+          { path: PATHS.PARTNER_REGISTER, element: withSuspense(<PartnerRegisterPage />) },
+        ],
       },
       {
         element: <PrivateRoute />,
         children: [
           { path: PATHS.HOME, element: <Navigate to={PATHS.DASHBOARD} replace /> },
+          {
+            element: <PartnerRoute />,
+            children: [
+              {
+                element: <PartnerLayout />,
+                children: [
+                  { path: PATHS.PARTNER_HOME, element: withSuspense(<PartnerDashboardPage />) },
+                  { path: PATHS.PARTNER_TEAM, element: withSuspense(<PartnerTeamPage />) },
+                  { path: PATHS.PARTNER_CATALOG, element: withSuspense(<PartnerCatalogPage />) },
+                  { path: "partner/catalog/:id", element: withSuspense(<PartnerPackagePage />) },
+                  { path: PATHS.PARTNER_HOLDS, element: withSuspense(<PartnerHoldsPage />) },
+                  { path: PATHS.PARTNER_CHECKOUT, element: withSuspense(<PartnerCheckoutPage />) },
+                  { path: PATHS.PARTNER_BOOKINGS, element: withSuspense(<PartnerBookingsPage />) },
+                  { path: "partner/bookings/:id", element: withSuspense(<PartnerBookingDetailPage />) },
+                  { path: PATHS.PARTNER_WALLET, element: withSuspense(<PartnerWalletPage />) },
+                  { path: PATHS.PARTNER_SETTLEMENTS, element: withSuspense(<PartnerSettlementsPage />) },
+                  { path: PATHS.PARTNER_DEVELOPER, element: withSuspense(<PartnerDeveloperPage />) },
+                  { path: PATHS.PARTNER_TICKETS, element: withSuspense(<PartnerTicketsPage />) },
+                ],
+              },
+            ],
+          },
+          {
+            element: <InternalRoute />,
+            children: [
           {
             element: <DashboardLayout />,
             children: [
@@ -323,6 +374,39 @@ export const router = createBrowserRouter([
                 element: <PermissionRoute permission="read:activity-log" />,
                 children: [{ path: "activity-log", element: withSuspense(<ActivityLogsPage />) }],
               },
+              {
+                element: <PermissionRoute permission="read:b2b_partner" />,
+                children: [
+                  { path: "b2b/partners", element: withSuspense(<B2BPartnersPage />) },
+                  { path: "b2b/partners/:id", element: withSuspense(<B2BPartnerDetailPage />) },
+                ],
+              },
+              {
+                element: <PermissionRoute permission="read:b2b_sla" />,
+                children: [{ path: "b2b/sla", element: withSuspense(<B2BSlaPage />) }],
+              },
+              {
+                element: <PermissionRoute permission="read:b2b_finance" />,
+                children: [{ path: "b2b/settlements", element: withSuspense(<B2BSettlementsPage />) }],
+              },
+              {
+                element: <PermissionRoute permission="read:b2b_booking" />,
+                children: [{ path: "b2b/bookings", element: withSuspense(<B2BBookingsPage />) }],
+              },
+              {
+                element: <PermissionRoute permission="read:b2b_contract" />,
+                children: [{ path: "b2b/contracts", element: withSuspense(<B2BContractsPage />) }],
+              },
+              {
+                element: <PermissionRoute permission="read:b2b_allotment" />,
+                children: [{ path: "b2b/allotments", element: withSuspense(<B2BAllotmentsPage />) }],
+              },
+              {
+                element: <PermissionRoute permission="read:b2b_tier" />,
+                children: [{ path: "b2b/tiers", element: withSuspense(<B2BTiersPage />) }],
+              },
+            ],
+          },
             ],
           },
         ],

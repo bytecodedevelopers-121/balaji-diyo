@@ -158,6 +158,27 @@ const permissionsData = [
   { action: "read", subject: "contact", name: "read:contact" },
   { action: "update", subject: "contact", name: "update:contact" },
   { action: "delete", subject: "contact", name: "delete:contact" },
+
+  // B2B partner management (internal staff) — see b2b-admin.routes.ts
+  { action: "read", subject: "b2b_partner", name: "read:b2b_partner" },
+  { action: "update", subject: "b2b_partner", name: "update:b2b_partner" },
+  { action: "read", subject: "b2b_tier", name: "read:b2b_tier" },
+  { action: "create", subject: "b2b_tier", name: "create:b2b_tier" },
+  { action: "update", subject: "b2b_tier", name: "update:b2b_tier" },
+  // B2B contracts & allotments (Phase 2)
+  { action: "read", subject: "b2b_contract", name: "read:b2b_contract" },
+  { action: "create", subject: "b2b_contract", name: "create:b2b_contract" },
+  { action: "update", subject: "b2b_contract", name: "update:b2b_contract" },
+  { action: "read", subject: "b2b_allotment", name: "read:b2b_allotment" },
+  { action: "update", subject: "b2b_allotment", name: "update:b2b_allotment" },
+  // B2B bookings & finance (Phase 3)
+  { action: "read", subject: "b2b_booking", name: "read:b2b_booking" },
+  { action: "update", subject: "b2b_booking", name: "update:b2b_booking" },
+  { action: "read", subject: "b2b_finance", name: "read:b2b_finance" },
+  { action: "update", subject: "b2b_finance", name: "update:b2b_finance" },
+  // B2B SLA tickets (Phase 4)
+  { action: "read", subject: "b2b_sla", name: "read:b2b_sla" },
+  { action: "update", subject: "b2b_sla", name: "update:b2b_sla" },
 ];
 
 // ══════════════════════════════════════════════════════════════════════════════

@@ -27,6 +27,7 @@ import {
   LayoutTemplate,
   Link2,
   History,
+  Handshake,
   type LucideIcon,
 } from "lucide-react";
 import { PATHS } from "@/constants/PATHS";
@@ -267,6 +268,22 @@ export const NAV_ITEMS: NavItem[] = [
     icon: Link2,
     permission: "read:redirect",
     section: "system",
+  },
+  {
+    label: "B2B Partners",
+    path: PATHS.B2B_PARTNERS,
+    icon: Handshake,
+    permission: "read:b2b_partner",
+    section: "main",
+    children: [
+      { label: "Partners & KYC", path: PATHS.B2B_PARTNERS, permission: "read:b2b_partner" },
+      { label: "Tiers", path: PATHS.B2B_TIERS, permission: "read:b2b_tier" },
+      { label: "Bookings & approvals", path: PATHS.B2B_BOOKINGS, permission: "read:b2b_booking" },
+      { label: "SLA tickets", path: PATHS.B2B_SLA, permission: "read:b2b_sla" },
+      { label: "Settlements", path: PATHS.B2B_SETTLEMENTS, permission: "read:b2b_finance" },
+      { label: "Contracts", path: PATHS.B2B_CONTRACTS, permission: "read:b2b_contract" },
+      { label: "Allotments & capacity", path: PATHS.B2B_ALLOTMENTS, permission: "read:b2b_allotment" },
+    ],
   },
   {
     label: "Activity Log",

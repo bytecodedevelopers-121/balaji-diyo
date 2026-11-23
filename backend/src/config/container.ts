@@ -1,6 +1,47 @@
 import { AuthRepository } from '../modules/auth/auth.repository';
 import { AuthService } from '../modules/auth/auth.service';
 import { AuthController } from '../modules/auth/auth.controller';
+import { KycStorage } from '../modules/b2b-common/b2b-kyc-storage';
+import { B2BOnboardingRepository } from '../modules/b2b-onboarding/b2b-onboarding.repository';
+import { B2BOnboardingService } from '../modules/b2b-onboarding/b2b-onboarding.service';
+import { B2BOnboardingController } from '../modules/b2b-onboarding/b2b-onboarding.controller';
+import { B2BTeamRepository } from '../modules/b2b-team/b2b-team.repository';
+import { B2BTeamService } from '../modules/b2b-team/b2b-team.service';
+import { B2BTeamController } from '../modules/b2b-team/b2b-team.controller';
+import { B2BPricingRepository } from '../modules/b2b-pricing/b2b-pricing.repository';
+import { B2BPricingService } from '../modules/b2b-pricing/b2b-pricing.service';
+import { B2BPricingController } from '../modules/b2b-pricing/b2b-pricing.controller';
+import { B2BInventoryRepository } from '../modules/b2b-inventory/b2b-inventory.repository';
+import { B2BInventoryService } from '../modules/b2b-inventory/b2b-inventory.service';
+import { B2BInventoryController } from '../modules/b2b-inventory/b2b-inventory.controller';
+import { B2BCatalogRepository } from '../modules/b2b-catalog/b2b-catalog.repository';
+import { B2BCatalogService } from '../modules/b2b-catalog/b2b-catalog.service';
+import { B2BCatalogController } from '../modules/b2b-catalog/b2b-catalog.controller';
+import { B2BContractRepository } from '../modules/b2b-contract/b2b-contract.repository';
+import { B2BContractService } from '../modules/b2b-contract/b2b-contract.service';
+import { B2BContractController } from '../modules/b2b-contract/b2b-contract.controller';
+import { B2BAllotmentService } from '../modules/b2b-allotment/b2b-allotment.service';
+import { B2BAllotmentController } from '../modules/b2b-allotment/b2b-allotment.controller';
+import { B2BFinanceRepository } from '../modules/b2b-finance/b2b-finance.repository';
+import { B2BLedgerService } from '../modules/b2b-ledger/b2b-ledger.service';
+import { B2BWalletService } from '../modules/b2b-ledger/b2b-wallet.service';
+import { B2BWalletController, B2BLedgerAdminController } from '../modules/b2b-ledger/b2b-ledger.controller';
+import { B2BBookingService } from '../modules/b2b-booking/b2b-booking.service';
+import { B2BBookingController, B2BBookingAdminController } from '../modules/b2b-booking/b2b-booking.controller';
+import { B2BIntegrationRepository } from '../modules/b2b-integration/b2b-integration.repository';
+import { B2BIntegrationService } from '../modules/b2b-integration/b2b-integration.service';
+import { B2BDeveloperController } from '../modules/b2b-integration/b2b-integration.controller';
+import { WebhookDispatcher } from '../modules/b2b-integration/webhook-dispatcher';
+import { SlidingWindowLimiter } from '../modules/b2b-integration/rate-window';
+import { createApiKeyGuard } from '../modules/b2b-integration/api-key.guard';
+import { B2BSlaService } from '../modules/b2b-sla/b2b-sla.service';
+import { B2BSlaController } from '../modules/b2b-sla/b2b-sla.controller';
+import { B2BSettlementRepository } from '../modules/b2b-settlement/b2b-settlement.repository';
+import { B2BSettlementService } from '../modules/b2b-settlement/b2b-settlement.service';
+import { B2BSettlementController, B2BSettlementAdminController } from '../modules/b2b-settlement/b2b-settlement.controller';
+import { B2BAdminRepository } from '../modules/b2b-admin/b2b-admin.repository';
+import { B2BAdminService } from '../modules/b2b-admin/b2b-admin.service';
+import { B2BAdminController } from '../modules/b2b-admin/b2b-admin.controller';
 import { RoleRepository } from '../modules/role/role.repository';
 import { RoleService } from '../modules/role/role.service';
 import { RoleController } from '../modules/role/role.controller';
@@ -348,3 +389,46 @@ export const contactMessageController = new ContactMessageController(contactMess
 const pageSectionRepository = new PageSectionRepository(prisma);
 const pageSectionService = new PageSectionService(pageSectionRepository);
 export const pageSectionController = new PageSectionController(pageSectionService);
+
+// ─── B2B (partner onboarding, team, internal admin) ───────────────────────────
+const kycStorage = new KycStorage();
+const b2bOnboardingRepository = new B2BOnboardingRepository(prisma);
+export const b2bOnboardingController = new B2BOnboardingController(new B2BOnboardingService(b2bOnboardingRepository, kycStorage));
+const b2bTeamRepository = new B2BTeamRepository(prisma);
+export const b2bTeamController = new B2BTeamController(new B2BTeamService(b2bTeamRepository));
+const b2bAdminRepository = new B2BAdminRepository(prisma);
+export const b2bAdminController = new B2BAdminController(new B2BAdminService(b2bAdminRepository, kycStorage));
+
+// ─── B2B Phase 2: pricing, inventory holds, catalog, contracts, allotments ────
+const b2bPricingRepository = new B2BPricingRepository(prisma);
+const b2bInventoryRepository = new B2BInventoryRepository(prisma);
+// Exported: server.ts starts the hold-expiry scheduler with this instance.
+export const b2bInventoryService = new B2BInventoryService(b2bInventoryRepository);
+export const b2bInventoryController = new B2BInventoryController(b2bInventoryService);
+export const b2bPricingController = new B2BPricingController(new B2BPricingService(b2bPricingRepository, b2bInventoryService));
+export const b2bCatalogController = new B2BCatalogController(new B2BCatalogService(new B2BCatalogRepository(prisma), b2bPricingRepository));
+export const b2bContractController = new B2BContractController(new B2BContractService(new B2BContractRepository(prisma)));
+export const b2bAllotmentController = new B2BAllotmentController(new B2BAllotmentService(b2bInventoryRepository));
+
+// ─── B2B Phase 3: ledger, wallet, bookings ────────────────────────────────────
+const b2bFinanceRepository = new B2BFinanceRepository(prisma);
+const b2bLedgerService = new B2BLedgerService(b2bFinanceRepository);
+// Constructing the wallet service registers its idempotent "top-up payment succeeded" listener on paymentService.
+export const b2bWalletController = new B2BWalletController(new B2BWalletService(b2bLedgerService, b2bFinanceRepository, paymentService));
+export const b2bLedgerAdminController = new B2BLedgerAdminController(b2bLedgerService);
+// Webhook outbox sender + API-key limiter (Phase 4). Declared before the booking service, which wakes the sender after commits.
+const b2bIntegrationRepository = new B2BIntegrationRepository(prisma);
+export const apiKeyLimiter = new SlidingWindowLimiter();
+export const webhookDispatcher = new WebhookDispatcher(b2bIntegrationRepository, (err) => console.error('❌ Webhook dispatch failed:', err));
+const b2bBookingService = new B2BBookingService(b2bFinanceRepository, b2bLedgerService, webhookDispatcher);
+export const b2bBookingController = new B2BBookingController(b2bBookingService);
+export const b2bBookingAdminController = new B2BBookingAdminController(b2bBookingService);
+
+// ─── B2B Phase 4: developer portal, API v1, SLA, settlements ──────────────────
+export const apiKeyAuth = createApiKeyGuard(b2bIntegrationRepository, apiKeyLimiter);
+export const b2bDeveloperController = new B2BDeveloperController(new B2BIntegrationService(b2bIntegrationRepository, webhookDispatcher, apiKeyLimiter));
+export const b2bSlaService = new B2BSlaService(b2bFinanceRepository, webhookDispatcher);
+export const b2bSlaController = new B2BSlaController(b2bSlaService);
+const b2bSettlementService = new B2BSettlementService(new B2BSettlementRepository(prisma), b2bFinanceRepository, b2bLedgerService);
+export const b2bSettlementController = new B2BSettlementController(b2bSettlementService);
+export const b2bSettlementAdminController = new B2BSettlementAdminController(b2bSettlementService);

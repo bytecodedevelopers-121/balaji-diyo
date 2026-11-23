@@ -95,4 +95,29 @@ export const PATHS = {
   GLOBAL_SETTINGS: "/global-settings",
   REDIRECTS: "/redirects",
   ACTIVITY_LOG: "/activity-log",
+
+  // B2B — internal admin console
+  B2B_PARTNERS: "/b2b/partners",
+  B2B_PARTNER_DETAIL: (id: string) => `/b2b/partners/${id}`,
+  B2B_TIERS: "/b2b/tiers",
+  B2B_CONTRACTS: "/b2b/contracts",
+  B2B_ALLOTMENTS: "/b2b/allotments",
+  B2B_BOOKINGS: "/b2b/bookings",
+  B2B_SLA: "/b2b/sla",
+  B2B_SETTLEMENTS: "/b2b/settlements",
+
+  // B2B — partner (agency) portal
+  PARTNER_REGISTER: "/partner/register",
+  PARTNER_HOME: "/partner",
+  PARTNER_TEAM: "/partner/team",
+  PARTNER_CATALOG: "/partner/catalog",
+  PARTNER_PACKAGE: (id: string) => `/partner/catalog/${id}`,
+  PARTNER_HOLDS: "/partner/holds",
+  PARTNER_CHECKOUT: "/partner/checkout",
+  PARTNER_BOOKINGS: "/partner/bookings",
+  PARTNER_BOOKING: (id: string) => `/partner/bookings/${id}`,
+  PARTNER_WALLET: "/partner/wallet",
+  PARTNER_SETTLEMENTS: "/partner/settlements",
+  PARTNER_DEVELOPER: "/partner/developer",
+  PARTNER_TICKETS: "/partner/tickets",
 } as const;

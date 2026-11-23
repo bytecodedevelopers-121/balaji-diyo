@@ -44,6 +44,22 @@ import globalSettingRoutes from "../modules/global-setting/global-setting.routes
 import redirectManagerRoutes from "../modules/redirect-manager/redirect-manager.routes";
 import activityLogRoutes from "../modules/activity-log/activity-log.routes";
 import contactMessageRoutes from "../modules/contact-message/contact-message.routes";
+import b2bOnboardingRoutes from "../modules/b2b-onboarding/b2b-onboarding.routes";
+import b2bTeamRoutes from "../modules/b2b-team/b2b-team.routes";
+import b2bAdminRoutes from "../modules/b2b-admin/b2b-admin.routes";
+
+import b2bPricingRoutes from "../modules/b2b-pricing/b2b-pricing.routes";
+import b2bCatalogRoutes from "../modules/b2b-catalog/b2b-catalog.routes";
+import b2bInventoryRoutes from "../modules/b2b-inventory/b2b-inventory.routes";
+import b2bContractRoutes from "../modules/b2b-contract/b2b-contract.routes";
+import b2bAllotmentRoutes, { departureCapacityRoutes } from "../modules/b2b-allotment/b2b-allotment.routes";
+
+import { partnerWalletRoutes, adminLedgerRoutes } from "../modules/b2b-ledger/b2b-ledger.routes";
+import { partnerBookingRoutes, adminBookingRoutes } from "../modules/b2b-booking/b2b-booking.routes";
+
+import { developerRoutes, apiV1Routes } from "../modules/b2b-integration/b2b-integration.routes";
+import { partnerSlaRoutes, adminSlaRoutes } from "../modules/b2b-sla/b2b-sla.routes";
+import { partnerSettlementRoutes, adminSettlementRoutes } from "../modules/b2b-settlement/b2b-settlement.routes";
 
 const router = Router();
 
@@ -93,5 +109,24 @@ router.use("/redirects", redirectManagerRoutes);
 router.use("/activity-logs", activityLogRoutes);
 router.use("/contacts", contactMessageRoutes);
 router.use("/birthday", birthdayRoutes);
+router.use("/b2b/team", b2bTeamRoutes);
+router.use("/b2b", b2bOnboardingRoutes);
+router.use("/b2b", b2bPricingRoutes);
+router.use("/b2b", b2bCatalogRoutes);
+router.use("/b2b", b2bInventoryRoutes);
+router.use("/b2b", partnerWalletRoutes);
+router.use("/b2b", partnerBookingRoutes);
+router.use("/b2b", developerRoutes);
+router.use("/b2b", partnerSlaRoutes);
+router.use("/b2b", partnerSettlementRoutes);
+router.use("/v1/b2b", apiV1Routes);
+router.use("/admin/b2b", adminSlaRoutes);
+router.use("/admin/b2b", adminSettlementRoutes);
+router.use("/admin/b2b", adminLedgerRoutes);
+router.use("/admin/b2b", adminBookingRoutes);
+router.use("/admin/b2b", b2bContractRoutes);
+router.use("/admin/b2b", b2bAllotmentRoutes);
+router.use("/admin/departures", departureCapacityRoutes);
+router.use("/admin/b2b", b2bAdminRoutes);
 
 export default router;

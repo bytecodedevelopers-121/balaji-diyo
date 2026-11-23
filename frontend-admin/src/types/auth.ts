@@ -9,6 +9,10 @@ export interface User {
   role: string;
   isSuperAdmin: boolean;
   permissions: string[];
+  /** Set for B2B agency accounts; null/absent for internal staff. */
+  b2bPartnerId?: string | null;
+  b2bRole?: "AGENCY_ADMIN" | "BOOKING_AGENT" | "FINANCE_MANAGER" | null;
+  b2bPartnerStatus?: "PENDING_KYC" | "ACTIVE" | "SUSPENDED" | "REJECTED" | null;
 }
 
 export interface LoginCredentials {

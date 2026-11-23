@@ -162,3 +162,11 @@ export const uploadPrivate = multer({
   fileFilter: documentFilter,
   limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
 });
+
+// ── B2B KYC upload — memory storage; B2B KycStorage verifies file signatures and writes to private disk ──
+
+export const uploadKyc = multer({
+  storage: multer.memoryStorage(),
+  fileFilter: documentFilter,
+  limits: { fileSize: 10 * 1024 * 1024, files: 5 }, // 10 MB each, 5 per request
+});

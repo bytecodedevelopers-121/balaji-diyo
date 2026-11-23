@@ -113,9 +113,9 @@ export default function LoginPage() {
     setIsSubmitting(true);
 
     try {
-      await login(values.email, values.password);
+      const user = await login(values.email, values.password);
 
-      navigate(PATHS.DASHBOARD, { replace: true });
+      navigate(user.b2bPartnerId ? PATHS.PARTNER_HOME : PATHS.DASHBOARD, { replace: true });
     } catch (error) {
       const message = isAxiosError<{ message?: string }>(error)
         ? (error.response?.data?.message ?? "Invalid email or password.")

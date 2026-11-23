@@ -76,7 +76,9 @@ export class BookingService {
   }
 
   async addTravellers(bookingId: string, dto: AddTravellersDtoType) {
-    await this.findById(bookingId);
+    const booking = await this.findById(bookingId);
+    // This route is public (a link in the customer email); B2B traveller lists are only editable through the partner portal.
+    if (booking.channel === 'B2B') throw new ApiError(403, 'Travellers on a B2B booking are managed by the agency');
     await this.repository.addTravellers(bookingId, dto.travellers);
     return this.findById(bookingId);
   }
@@ -90,12 +92,20 @@ export class BookingService {
     return this.repository.createInvoice(bookingId, dto);
   }
 
+  private async assertNoB2B(ids: string[]) {
+    if ((await this.repository.countB2B(ids)) > 0) {
+      throw new ApiError(409, 'B2B bookings cannot be deleted; cancel them from the B2B bookings console instead');
+    }
+  }
+
   async remove(id: string) {
     await this.findById(id);
+    await this.assertNoB2B([id]);
     await this.repository.delete(id);
   }
 
   async bulkRemove(ids: string[]) {
+    await this.assertNoB2B(ids);
     await this.repository.bulkDelete(ids);
   }
 }

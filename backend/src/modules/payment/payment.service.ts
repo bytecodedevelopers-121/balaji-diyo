@@ -30,12 +30,32 @@ interface PacoNotification {
   };
 }
 
+type PaymentRow = Awaited<ReturnType<PaymentRepository['update']>>;
+type PaymentSuccessListener = (payment: PaymentRow) => Promise<void>;
+
 export class PaymentService {
+  // Called whenever a payment is confirmed SUCCESS through a trusted path (see registerSuccessListener).
+  private successListeners: PaymentSuccessListener[] = [];
+
   constructor(
     private repository: PaymentRepository,
     private pacoClient: PacoClient,
     private bookingService: BookingService,
   ) {}
+
+  /**
+   * Lets other modules react to a confirmed payment (the B2B wallet top-up credit) without this
+   * service importing them. Listeners MUST be idempotent: they can run for the same payment more
+   * than once (webhook retries, manual status changes). Only trusted paths notify — the signed
+   * JOSE notification and an authenticated admin status change — never the unsigned callback.
+   */
+  registerSuccessListener(listener: PaymentSuccessListener): void {
+    this.successListeners.push(listener);
+  }
+
+  private async notifySuccessListeners(payment: PaymentRow): Promise<void> {
+    for (const listener of this.successListeners) await listener(payment);
+  }
 
   async create(dto: CreatePaymentDtoType) {
     try {
@@ -89,12 +109,16 @@ export class PaymentService {
 
   async updateStatus(id: string, dto: UpdatePaymentStatusDtoType) {
     await this.findById(id);
-    return this.repository.updateStatus(id, dto);
+    const updated = await this.repository.updateStatus(id, dto);
+    if (updated.status === 'SUCCESS') await this.notifySuccessListeners(updated);
+    return updated;
   }
 
   // `backendUrl` is computed by the controller from the trusted request host
   // (never client-supplied) — see payment.controller.ts#initiatePaco.
-  async initiatePacoPayment(dto: InitiatePacoPaymentDtoType, backendUrl: string) {
+  // `options` is server-side only (never part of the request DTO): the B2B wallet top-up passes the
+  // authenticated partner here so the payment can be matched back to it on success.
+  async initiatePacoPayment(dto: InitiatePacoPaymentDtoType, backendUrl: string, options?: { b2bPartnerId?: string }) {
     const currency = dto.currency ?? pacoConfig.chargeCurrency;
     if (!isPacoConfiguredFor(currency)) {
       throw new ApiError(503, `PACO payment gateway is not configured for ${currency}`);
@@ -116,6 +140,7 @@ export class PaymentService {
       customerName: dto.customerName,
       customerEmail: dto.customerEmail,
       description,
+      ...(options?.b2bPartnerId ? { b2bPartnerId: options.b2bPartnerId } : {}),
       percentage: dto.percentage,
       totalAmount: dto.amount,
       currency,
@@ -199,6 +224,9 @@ export class PaymentService {
 
     // A repeated notification for an already-approved payment must not resend.
     if (approved && payment.status !== 'SUCCESS') await this.sendPaymentSuccess(updated);
+    // Listeners run on every approved (signature-verified) notification, not just the first: they are
+    // idempotent, and if a previous attempt crashed after the status flip, a PACO retry still completes it.
+    if (approved) await this.notifySuccessListeners(updated);
     return { received: true };
   }
 
@@ -223,6 +251,14 @@ export class PaymentService {
   async handlePacoCallback(dto: PacoCallbackDtoType, rawBody: Record<string, unknown>) {
     const payment = await this.repository.findByGatewayReference(dto.order_id);
     if (!payment) throw new ApiError(404, 'Payment not found for this order');
+
+    // This callback is unsigned (see the SECURITY TODO above) and order numbers are timestamps, so it
+    // must never be able to move money: B2B wallet top-ups only settle via the verified JOSE
+    // notification (or an admin status change). The payload is kept for diagnostics, status untouched.
+    if (payment.b2bPartnerId) {
+      const prior = payment.responsePayload && typeof payment.responsePayload === 'object' ? (payment.responsePayload as Record<string, unknown>) : {};
+      return this.repository.update(payment.id, { responsePayload: { ...prior, unsignedCallbackIgnored: rawBody } as Prisma.InputJsonValue });
+    }
 
     const status = dto.payment_status.toUpperCase() === 'APPROVED' ? 'SUCCESS' : 'FAILED';
     // Kept alongside the initiate-time payload (not overwritten) so a real

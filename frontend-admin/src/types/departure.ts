@@ -7,6 +7,11 @@ export interface Departure {
   departureNote: string | null;
   departureStatus: string;
   isLastMinute: boolean;
+  /** Seat inventory (B2B). totalSeats null = capacity not tracked. */
+  totalSeats?: number | null;
+  bookedSeats?: number;
+  heldSeats?: number;
+  cutoffHours?: number;
   /** Joined trip (title only) — included by the backend's departureInclude. */
   package?: { title: string };
   createdAt: string;

@@ -17,6 +17,7 @@
     "seed:trips": "ts-node -O \"{\\\"module\\\":\\\"CommonJS\\\"}\" prisma/seed-trips.ts",
     "migrate:himalayan": "ts-node -O \"{\\\"module\\\":\\\"CommonJS\\\"}\" scripts/migrate-to-himalayan.ts",
     "cleanup:last-minute": "ts-node -O \"{\\\"module\\\":\\\"CommonJS\\\"}\" prisma/cleanup-last-minute.ts",
+    "seed:b2b-tiers": "ts-node -O \"{\\\"module\\\":\\\"CommonJS\\\"}\" prisma/seed-b2b-tiers.ts",
     "seed:last-minute": "ts-node -O \"{\\\"module\\\":\\\"CommonJS\\\"}\" prisma/seed-last-minute.ts"
   },
   "author": "",

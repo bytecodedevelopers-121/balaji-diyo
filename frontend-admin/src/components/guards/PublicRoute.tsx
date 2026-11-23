@@ -10,11 +10,12 @@ import { FullPageSpinner } from "@/components/ui/FullPageSpinner";
 export function PublicRoute() {
   const isLoading = useAuthStore((s) => s.isLoading);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const isPartner = useAuthStore((s) => !!s.user?.b2bPartnerId);
 
   if (isLoading) return <FullPageSpinner />;
 
   if (isAuthenticated) {
-    return <Navigate to={PATHS.DASHBOARD} replace />;
+    return <Navigate to={isPartner ? PATHS.PARTNER_HOME : PATHS.DASHBOARD} replace />;
   }
 
   return <Outlet />;

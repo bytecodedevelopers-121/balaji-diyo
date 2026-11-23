@@ -4,6 +4,10 @@ import prisma from "./config/prisma";
 import env from "./config/env";
 import { ensureUploadFolders } from "./config/storage";
 import { startBirthdayScheduler } from "./modules/birthday/birthday.scheduler";
+import { startHoldExpiryScheduler } from "./modules/b2b-inventory/b2b-inventory.scheduler";
+import { startWebhookScheduler } from "./modules/b2b-integration/webhook.scheduler";
+import { startSlaScheduler } from "./modules/b2b-sla/b2b-sla.scheduler";
+import { b2bInventoryService, b2bSlaService, webhookDispatcher } from "./config/container";
 // ── Crash guards ───────────────────────────────────────────────────────────
 process.on("uncaughtException", (err: Error) => {
   console.error("❌ UNCAUGHT EXCEPTION — shutting down:", err);
@@ -63,6 +67,9 @@ async function startServer() {
         : app.listen(appConfig.port, appConfig.host, onListen);
 
     startBirthdayScheduler();
+    startWebhookScheduler(webhookDispatcher, (err) => console.error("❌ Webhook delivery sweep failed:", err));
+    startSlaScheduler(b2bSlaService, (err) => console.error("❌ SLA sweep failed:", err));
+    startHoldExpiryScheduler(b2bInventoryService, (err) => console.error("❌ Hold expiry sweep failed:", err));
 
     process.on("SIGTERM", () => shutdown("SIGTERM", server));
     process.on("SIGINT", () => shutdown("SIGINT", server));

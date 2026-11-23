@@ -52,6 +52,11 @@ export class BookingRepository {
   // Travellers/invoice both carry a required FK back to the booking (no
   // cascade configured in the schema), so they have to go first inside the
   // same transaction or the booking delete itself would hit P2003.
+  /** B2B bookings carry ledger history and seat counters; the legacy admin delete must not remove them. */
+  countB2B(ids: string[]) {
+    return this.prisma.booking.count({ where: { id: { in: ids }, channel: 'B2B' } });
+  }
+
   delete(id: string) {
     return this.prisma.$transaction([
       this.prisma.traveller.deleteMany({ where: { bookingId: id } }),
