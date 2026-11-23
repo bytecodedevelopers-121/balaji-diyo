@@ -205,7 +205,7 @@ function Footer() {
   return (
     <View style={styles.footer} fixed>
       <Text>
-        © {new Date().getFullYear()} Joyful Trekking Pvt. Ltd.. All rights reserved.
+        © {new Date().getFullYear()} Your Company Pvt. Ltd.. All rights reserved.
       </Text>
       <Text>
         {nepalOffice?.email} | {nepalOffice?.phones[0]?.label}
@@ -232,9 +232,9 @@ export function BrochureDocument({ trip }: { trip: PackageDetail }) {
 
   return (
     <Document
-      title={`${trip.title} — Joyful Trekking Pvt. Ltd.`}
-      author="Joyful Trekking Pvt. Ltd."
-      creator="Joyful Trekking Pvt. Ltd."
+      title={`${trip.title} — Your Company Pvt. Ltd.`}
+      author="Your Company Pvt. Ltd."
+      creator="Your Company Pvt. Ltd."
       subject={`Trip brochure for ${trip.title}`}
     >
       {/* Cover */}

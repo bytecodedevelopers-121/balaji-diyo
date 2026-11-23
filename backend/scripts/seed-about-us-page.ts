@@ -17,7 +17,7 @@ const SLUG = 'about-us';
 const PAGE = {
   title: 'About Us',
   content: `<h2>Built by a community</h2>
-<p>Joyful Trekking was founded in Kathmandu in 2011 by a small group of local guides and porters who wanted to share the Himalaya the way they know it — unhurried, honest, and a little off the usual path.</p>
+<p>Your Company was founded in Kathmandu in 2011 by a small group of local guides and porters who wanted to share the Himalaya the way they know it — unhurried, honest, and a little off the usual path.</p>
 <p>Today we are a team of licensed guides, climbing Sherpas, drivers and office staff, and every trek we run still supports the villages and families along the trail.</p>
 <h2>Our promise</h2>
 <ul>
@@ -25,10 +25,10 @@ const PAGE = {
   <li>Safety first: certified leaders, first-aid kits and acclimatisation built into every itinerary.</li>
   <li>Transparent pricing with no hidden costs.</li>
 </ul>`,
-  metaTitle: 'About Us | Joyful Trekking Nepal',
-  metaKeywords: 'about joyful trekking, nepal trekking company, local guides',
+  metaTitle: 'About Us | Your Company Nepal',
+  metaKeywords: 'about your company, nepal trekking company, local guides',
   metaDescription:
-    'Meet the local team behind Joyful Trekking — guiding trekkers through Nepal since 2011.',
+    'Meet the local team behind Your Company — guiding trekkers through Nepal since 2011.',
 };
 
 async function main() {

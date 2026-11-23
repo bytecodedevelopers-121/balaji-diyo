@@ -13,7 +13,7 @@ vi.mock("next/navigation", () => ({
   usePathname: () => "/",
 }));
 
-const TEST_SITE_NAME = "Joyful Trekking Pvt. Ltd.";
+const TEST_SITE_NAME = "Your Company Pvt. Ltd.";
 const TEST_PHONE = "+1 555-0100";
 const TEST_PHONE_HREF = "tel:+15550100";
 
@@ -28,7 +28,7 @@ describe("Header", () => {
     );
 
     expect(
-      screen.getByRole("link", { name: /joyful trekking pvt. ltd. — home/i }),
+      screen.getByRole("link", { name: /your company pvt. ltd. — home/i }),
     ).toBeInTheDocument();
 
     const nav = screen.getByRole("navigation", { name: "Primary" });

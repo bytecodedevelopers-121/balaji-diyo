@@ -16,7 +16,7 @@ import { CONTACT_DEFAULTS, type ContactContent } from "@/features/page-content/c
  */
 export function ContactMapSection({ content = CONTACT_DEFAULTS.map }: { content?: ContactContent["map"] } = {}) {
   const nepalOffice = footerOffices[0]!;
-  const query = encodeURIComponent(content.searchText || `Joyful Trekking Pvt. Ltd., ${nepalOffice.address ?? ""}`);
+  const query = encodeURIComponent(content.searchText || `Your Company Pvt. Ltd., ${nepalOffice.address ?? ""}`);
   const mapsSearchUrl = `https://www.google.com/maps/search/?api=1&query=${query}`;
 
   return (

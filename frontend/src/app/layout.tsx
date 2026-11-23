@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   // mark as components/ui/Logo.tsx's logo-mark.svg), not the placeholder
   // dark-square "B" this file used before (app/icon.svg + public/icons/
   // icon.svg, both removed 2026-08-26 now that real assets exist).
-  // Joyful Trekking circular logo. The `?v=2` query busts browsers' sticky
+  // Your Company circular logo. The `?v=2` query busts browsers' sticky
   // favicon cache after the swap — bump it when the icon changes again.
   icons: {
     icon: [

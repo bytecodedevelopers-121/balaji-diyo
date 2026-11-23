@@ -92,9 +92,9 @@ async function seedBlogs() {
   const blogType = await prisma.categoryType.upsert({ where: { key: 'blog' }, update: {}, create: { key: 'blog', name: 'Blog' } });
 
   const author = await prisma.blogAuthor.upsert({
-    where: { email: 'arjun@joyfultrekking.com' },
+    where: { email: 'info@example.com' },
     update: {},
-    create: { name: 'Arjun', email: 'arjun@joyfultrekking.com', description: 'Trekking guide and writer at Joyful Trekking.' },
+    create: { name: 'Arjun', email: 'info@example.com', description: 'Trekking guide and writer at Your Company.' },
   });
 
   const categoryIds = new Map<string, string>();

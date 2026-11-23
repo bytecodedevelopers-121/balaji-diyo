@@ -10,11 +10,11 @@ import { publicEnv } from "@/lib/env";
  * combined with NEXT_PUBLIC_APP_ENV to decide indexability.
  */
 export const siteConfig = {
-  name: "Joyful Trekking Pvt. Ltd.",
-  shortName: "Joyful Trekking",
+  name: "Your Company Pvt. Ltd.",
+  shortName: "Your Company",
   /** Placeholder copy — replace once final marketing copy is provided. */
   description:
-    "Joyful Trekking Pvt. Ltd. plans guided treks, tours and expeditions. Site content is a placeholder pending the Figma implementation.",
+    "Your Company Pvt. Ltd. plans guided treks, tours and expeditions. Site content is a placeholder pending the Figma implementation.",
   url: publicEnv.NEXT_PUBLIC_SITE_URL,
   locale: "en_US",
   themeColor: "#1c1917",

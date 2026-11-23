@@ -228,10 +228,10 @@ async function seedSuperAdminUser(roleId: string) {
   const hashedPassword = await bcrypt.hash("SuperAdmin@1234", BCRYPT_COST);
 
   const user = await prisma.user.upsert({
-    where: { email: "superadmin@joyfultrekking.local" },
+    where: { email: "superadmin@example.local" },
     update: { roleId, isSuperAdmin: true, isActive: true },
     create: {
-      email: "superadmin@joyfultrekking.local",
+      email: "superadmin@example.local",
       password: hashedPassword,
       firstName: "Super",
       lastName: "Admin",
@@ -315,7 +315,7 @@ async function main() {
   await seedMenuTypes();
 
   console.log("\n--- Login Credentials ---");
-  console.log("SuperAdmin → superadmin@joyfultrekking.local / SuperAdmin@1234");
+  console.log("SuperAdmin → superadmin@example.local / SuperAdmin@1234");
   console.log("");
 }
 

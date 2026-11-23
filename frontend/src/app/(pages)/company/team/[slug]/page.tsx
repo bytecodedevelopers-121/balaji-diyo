@@ -32,7 +32,7 @@ export async function generateMetadata(
 
   return buildMetadata({
     title: member.fullName,
-    description: `${member.position} at Joyful Trekking Pvt. Ltd..`,
+    description: `${member.position} at Your Company Pvt. Ltd..`,
     path: `/company/team/${member.slug}`,
   });
 }

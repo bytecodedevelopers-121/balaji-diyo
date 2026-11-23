@@ -48,7 +48,7 @@ export default function ProfilePage() {
   const fullName = user ? `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim() || user.email : "";
 
   useEffect(() => {
-    document.title = "My Profile | Joyful Trekking Admin";
+    document.title = "My Profile | Your Company Admin";
   }, []);
 
   useEffect(() => {

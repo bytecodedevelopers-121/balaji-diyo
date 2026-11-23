@@ -169,7 +169,7 @@ function Webhooks({ reveal }: { reveal: (r: Reveal) => void }) {
         {edit && (
           <div className="space-y-3">
             {error && <Alert variant="error" message={error} />}
-            <Input label="Endpoint URL (https)" value={edit.url} onChange={(e) => setEdit({ ...edit, url: e.target.value })} placeholder="https://example.com/webhooks/joyful" />
+            <Input label="Endpoint URL (https)" value={edit.url} onChange={(e) => setEdit({ ...edit, url: e.target.value })} placeholder="https://example.com/webhooks" />
             <div><p className="mb-1.5 text-sm font-medium text-gray-700">Events</p><EventPicker value={edit.events} onChange={(events) => setEdit({ ...edit, events })} /></div>
           </div>
         )}

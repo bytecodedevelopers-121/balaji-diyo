@@ -124,11 +124,11 @@ export function VolunteeringSection() {
                 Tell us how you would like to help and how much time you have. Our team will shape a volunteering and travel plan around your interests.
               </p>
               <address className="not-italic">
-                <strong className="text-primary-500">Joyful Trekking Pvt. Ltd.</strong><br />
+                <strong className="text-primary-500">Your Company Pvt. Ltd.</strong><br />
                 Paknajol Marga, Thamel<br />
                 P.O. Box: 11670, Kathmandu, Nepal<br />
-                <a className="text-primary-500 underline" href="mailto:joyfultrekking@gmail.com">joyfultrekking@gmail.com</a><br />
-                <a className="text-primary-500 underline" href="mailto:joyfultrekking@gmail.com">joyfultrekking@gmail.com</a><br />
+                <a className="text-primary-500 underline" href="mailto:info@example.com">info@example.com</a><br />
+                <a className="text-primary-500 underline" href="mailto:info@example.com">info@example.com</a><br />
                 Phone: +977 1 4701884, +977 1 4701885<br />
                 Mobile / WhatsApp: <a className="text-primary-500 underline" href="https://wa.me/9779845000000">+977 9845000000</a>
               </address>

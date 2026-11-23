@@ -6,7 +6,7 @@ import type { CardTrip } from "@/components/ui/PackageCard";
 /** What a saved trip keeps — just enough to draw its card on /wishlist without refetching. */
 export type WishlistItem = Pick<CardTrip, "id" | "slug" | "title" | "imageUrl" | "duration" | "durationType" | "priceFrom" | "rating" | "reviewCount">;
 
-const STORAGE_KEY = "joyful-wishlist-v2";
+const STORAGE_KEY = "app-wishlist-v2";
 const EMPTY: readonly WishlistItem[] = [];
 
 let cache: readonly WishlistItem[] = EMPTY;

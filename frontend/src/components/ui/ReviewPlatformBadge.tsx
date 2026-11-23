@@ -5,7 +5,7 @@ export interface ReviewPlatform {
   title: string;
   rating: string;
   iconSrc: string;
-  /** Link to Joyful Trekking's own profile on that platform; leave out until the real URL is known. */
+  /** Link to Your Company's own profile on that platform; leave out until the real URL is known. */
   href?: string;
   starClassName: string;
 }
@@ -54,7 +54,7 @@ export function ReviewPlatformBadge({ platform, className }: ReviewPlatformBadge
   return (
     <Tag
       {...(platform.href ? { href: platform.href, target: "_blank", rel: "noopener noreferrer" } : null)}
-      aria-label={`Joyful Trekking Pvt. Ltd. reviews on ${platform.title}`}
+      aria-label={`Your Company Pvt. Ltd. reviews on ${platform.title}`}
       className={cn(
         "inline-flex h-14 items-center gap-2 rounded-full border border-brand-neutral-300 bg-brand-neutral-100 py-1 pr-4 pl-1 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-neutral-900",
         className,
